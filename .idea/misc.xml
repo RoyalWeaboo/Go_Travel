@@ -5,7 +5,9 @@
       <map>
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/drawable/bottom_nav_selector.xml" value="0.1305" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/font/inter.xml" value="0.19270833333333334" />
+        <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/activity_main.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_home.xml" value="0.16666666666666666" />
+        <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/item_ticket.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1625" />
       </map>
     </option>
