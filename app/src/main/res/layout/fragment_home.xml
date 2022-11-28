@@ -87,6 +87,7 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/linear_option"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -94,6 +95,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/linearLayoutOneWay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -107,6 +109,7 @@
                         android:text="One-Way Trip" />
 
                     <ImageView
+                        android:layout_marginStart="-4dp"
                         android:id="@+id/line_option_one_way"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -114,6 +117,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/linearLayoutRoundTrip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -122,17 +126,17 @@
                     <TextView
                         android:id="@+id/menu_round_trip"
                         style="@style/normalText16"
-                        android:layout_width="wrap_content"
+                        android:layout_width="110dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/inter"
                         android:text="Round Trip" />
 
                     <ImageView
+                        android:layout_marginStart="-4dp"
                         android:id="@+id/line_option_round"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/line_option"
-                        android:visibility="gone" />
+                        android:src="@drawable/line_option"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -161,13 +165,21 @@
                         android:textColor="#616161"
                         android:textSize="12dp" />
 
-                    <TextView
+                    <!--                    <TextView-->
+                    <!--                        style="@style/normalText20"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_below="@id/card_from"-->
+                    <!--                        android:fontFamily="@font/inter_bold"-->
+                    <!--                        android:text="JAKARTA (JKT)" />-->
+                    <Spinner
+                        android:id="@+id/spinner_from"
                         style="@style/normalText20"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/card_from"
-                        android:fontFamily="@font/inter_bold"
-                        android:text="JAKARTA (JKT)" />
+                        android:spinnerMode="dialog" />
+
 
                     <ImageView
                         android:layout_width="24dp"
@@ -177,12 +189,6 @@
                         android:src="@drawable/planetakeoff" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <!--        <ImageView-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_marginTop="-8dp"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:src="@drawable/arrow_one_way"/>-->
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -209,13 +215,13 @@
                         android:textColor="#616161"
                         android:textSize="12dp" />
 
-                    <TextView
+                    <Spinner
+                        android:id="@+id/spinner_to"
                         style="@style/normalText20"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/card_to"
-                        android:fontFamily="@font/inter_bold"
-                        android:text="BALI (DPS)" />
+                        android:spinnerMode="dialog" />
 
                     <ImageView
                         android:layout_width="24dp"
@@ -232,6 +238,7 @@
                 android:orientation="horizontal">
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_date_depart"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
                     android:layout_marginStart="16dp"
@@ -250,7 +257,7 @@
                         android:padding="16dp">
 
                         <TextView
-                            android:id="@+id/card_date_depart"
+                            android:id="@+id/depart_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/inter"
@@ -259,10 +266,11 @@
                             android:textSize="12dp" />
 
                         <TextView
+                            android:id="@+id/depart_date_text"
                             style="@style/normalText20"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/card_date_depart"
+                            android:layout_below="@id/depart_title"
                             android:layout_marginTop="16dp"
                             android:fontFamily="@font/inter_bold"
                             android:text="Nov 23, 2022" />
@@ -272,7 +280,7 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
-                    android:visibility="gone"
+                    android:id="@+id/card_date_return"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
                     android:layout_marginStart="16dp"
@@ -291,7 +299,7 @@
                         android:padding="16dp">
 
                         <TextView
-                            android:id="@+id/card_date_return"
+                            android:id="@+id/return_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/inter"
@@ -300,10 +308,11 @@
                             android:textSize="12dp" />
 
                         <TextView
+                            android:id="@+id/return_date_text"
                             style="@style/normalText20"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/card_date_return"
+                            android:layout_below="@id/return_title"
                             android:layout_marginTop="16dp"
                             android:fontFamily="@font/inter_bold"
                             android:text="Nov 30, 2022" />
@@ -333,12 +342,14 @@
                         android:text="Adults (3+)" />
 
                     <ImageView
+                        android:id="@+id/min_adult"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:src="@drawable/min" />
 
                     <TextView
+                        android:id="@+id/adult_count"
                         style="@style/normalText16"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -346,6 +357,7 @@
                         android:text="1" />
 
                     <ImageView
+                        android:id="@+id/plus_adult"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -365,19 +377,22 @@
                         android:text="Children" />
 
                     <ImageView
+                        android:id="@+id/min_children"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:src="@drawable/min" />
 
                     <TextView
+                        android:id="@+id/children_count"
                         style="@style/normalText16"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="1" />
+                        android:text="0" />
 
                     <ImageView
+                        android:id="@+id/plus_children"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
