@@ -1,11 +1,10 @@
 package com.binar.c5team.gotravel.network
 
-import com.binar.c5team.gotravel.model.AirportDataItem
-import com.binar.c5team.gotravel.model.LoginResponse
-import com.binar.c5team.gotravel.model.ProfileResponse
-import com.binar.c5team.gotravel.model.RegisterResponse
+import com.binar.c5team.gotravel.model.*
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface RestfulApi {
@@ -15,13 +14,13 @@ interface RestfulApi {
 
     //Register
     @POST("register")
-    fun register() : Call<RegisterResponse>
+    fun register(@Body register : RegisterData) : Call<RegisterResponse>
 
     //Login
     @POST("login")
-    fun login() : Call<LoginResponse>
+    fun login(@Body login : LoginData) : Call<LoginResponse>
 
     //Profile
     @GET("profile")
-    fun getProfile() : Call<ProfileResponse>
+    fun getProfile(@Header("Authorization") token: String) : Call<ProfileResponse>
 }
