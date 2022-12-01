@@ -9,8 +9,8 @@
         android:id="@+id/imageView5"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/plane" />
@@ -129,27 +129,27 @@
         android:textAlignment="center"
         android:textColor="#504C4C"
         android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/privacy_policy"
+        app:layout_constraintBottom_toBottomOf="@+id/terms_amp_conditions"
         app:layout_constraintStart_toEndOf="@+id/terms_amp_conditions"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+        app:layout_constraintTop_toTopOf="@+id/terms_amp_conditions" />
 
     <TextView
         android:id="@+id/privacy_policy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="25dp"
         android:fontFamily="@font/inter"
         android:text="@string/privacy_policy"
         android:textColor="#7135DC"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+        app:layout_constraintBottom_toBottomOf="@+id/textView16"
+        app:layout_constraintStart_toEndOf="@+id/textView16"
+        app:layout_constraintTop_toTopOf="@+id/textView16" />
 
     <TextView
         android:id="@+id/terms_amp_conditions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:fontFamily="@font/inter"
         android:text="@string/terms_amp_conditions"
         android:textColor="#7135DC"
