@@ -214,7 +214,6 @@
         android:layout_height="72dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="24dp"
         android:backgroundTint="@color/black"
         android:fontFamily="@font/inter_bold"
         android:text="LET’S GET STARTED"
@@ -223,6 +222,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_addr" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
