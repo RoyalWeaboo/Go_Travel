@@ -27,7 +27,7 @@
         <entry key="app/src/main/res/layout/fragment_login_or_register.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_payment.xml" value="0.13" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.1586147926464301" />
+        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_register_dummy.xml" value="0.15946985891406584" />
         <entry key="app/src/main/res/layout/fragment_ticket_list.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/fragment_upload_payment.xml" value="0.19427083333333334" />
@@ -35,6 +35,7 @@
         <entry key="app/src/main/res/layout/item_detail_penumpang.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/item_ticket.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/item_ticket_round.xml" value="0.19427083333333334" />
+        <entry key="app/src/main/res/layout/list_item.xml" value="0.1586147926464301" />
         <entry key="app/src/main/res/layout/simple_spinner_item.xml" value="0.19427083333333334" />
       </map>
     </option>
