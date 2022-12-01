@@ -1,6 +1,8 @@
 package com.binar.c5team.gotravel.view
 
 import android.app.DatePickerDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.transition.Slide
@@ -22,6 +24,7 @@ import java.util.*
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
+    lateinit var sharedPref : SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +35,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
+        binding.tvUsername.text = sharedPref.getString("username", "User")
 
         disableReturnCard()
         getDate()
