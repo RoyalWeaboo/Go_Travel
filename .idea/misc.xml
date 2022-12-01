@@ -19,15 +19,16 @@
         <entry key="..\:/Users/ricki/AppData/Local/Android/sdk/platforms/android-32/data/res/layout/simple_spinner_dropdown_item.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/ricki/AppData/Local/Android/sdk/platforms/android-32/data/res/layout/simple_spinner_item.xml" value="0.22" />
         <entry key="app/src/main/res/drawable/bg_upload_payment.xml" value="0.1625" />
+        <entry key="app/src/main/res/drawable/ic_baseline_lock_35.xml" value="0.178" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/custom_airport_spinner_item.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login_dummy.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login_or_register.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_payment.xml" value="0.13" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_register.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_register_dummy.xml" value="0.15946985891406584" />
         <entry key="app/src/main/res/layout/fragment_ticket_list.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/fragment_upload_payment.xml" value="0.19427083333333334" />

@@ -25,9 +25,9 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // for dropdown menu gender
-        val items = listOf("Male", "Female")
-        val adapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
-        (textField.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+//        val items = listOf("Male", "Female")
+//        val adapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
+//        (textField.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
     }
 

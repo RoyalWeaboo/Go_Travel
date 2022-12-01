@@ -54,7 +54,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView15"
         app:startIconContentDescription="Username"
-        app:startIconDrawable="@drawable/ic_baseline_account_circle_35">
+        app:startIconDrawable="@drawable/ic_baseline_account_circle_35"
+        app:startIconTint="#B3000000">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -75,7 +76,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_username"
         app:startIconContentDescription="Password"
-        app:startIconDrawable="@drawable/ic_baseline_lock_35">
+        app:startIconDrawable="@drawable/ic_baseline_lock_35"
+        app:startIconTint="#B3000000">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
