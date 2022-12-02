@@ -9,8 +9,8 @@
         android:id="@+id/btn_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
         android:src="@drawable/arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,7 +19,7 @@
         android:id="@+id/tv_booking"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="24dp"
         android:text="Create Account"
         android:textAlignment="center"
         android:textColor="@color/black"
@@ -33,7 +33,7 @@
         android:id="@+id/textView15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:fontFamily="@font/inter"
         android:text="Sign up to keep exploring amazing\ndestinations around the world!"
@@ -59,12 +59,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="24dp"
                 android:layout_marginEnd="10dp"
                 android:hint="Username"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView15"
+                app:layout_constraintTop_toTopOf="parent"
                 app:startIconContentDescription="Username"
                 app:startIconDrawable="@drawable/ic_baseline_account_circle_35"
                 app:startIconTint="#B3000000">
@@ -226,11 +225,10 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/btn_register"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="70dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="10dp"
@@ -242,5 +240,56 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/inter"
+        android:text="By creating an account, you agree to our"
+        android:textAlignment="center"
+        android:textColor="#504C4C"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_register" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter"
+        android:text=" and agree to "
+        android:textAlignment="center"
+        android:textColor="#504C4C"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/terms_amp_conditions"
+        app:layout_constraintStart_toEndOf="@+id/terms_amp_conditions"
+        app:layout_constraintTop_toTopOf="@+id/terms_amp_conditions" />
+
+    <TextView
+        android:id="@+id/privacy_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/inter"
+        android:text="@string/privacy_policy"
+        android:textColor="#7135DC"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView16"
+        app:layout_constraintStart_toEndOf="@+id/textView16"
+        app:layout_constraintTop_toTopOf="@+id/textView16" />
+
+    <TextView
+        android:id="@+id/terms_amp_conditions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="@font/inter"
+        android:text="@string/terms_amp_conditions"
+        android:textColor="#7135DC"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

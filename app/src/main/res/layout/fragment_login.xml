@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/back"
-        android:layout_width="27dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="39dp"
-        android:layout_marginTop="53dp"
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/arrow_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/left_arrow" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="38dp"
+        android:layout_marginStart="24dp"
         android:fontFamily="@font/inter_bold"
         android:text="Log In"
-        android:textColor="#000000"
-        android:textSize="24sp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/back"
-        app:layout_constraintStart_toEndOf="@+id/back"
-        app:layout_constraintTop_toTopOf="@+id/back" />
+        app:layout_constraintBottom_toBottomOf="@+id/btn_back"
+        app:layout_constraintStart_toEndOf="@+id/btn_back"
+        app:layout_constraintTop_toTopOf="@+id/btn_back" />
 
     <TextView
         android:id="@+id/textView15"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="31dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
         android:fontFamily="@font/inter"
         android:text="Welcome back!\nPlease log in to continue!"
         android:textColor="#000000"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/back" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_back" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="100dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="10dp"
         android:hint="Username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +59,8 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:inputType="textShortMessage" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -67,9 +68,9 @@
         android:id="@+id/input_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
         android:hint="Password"
         app:endIconMode="password_toggle"
         app:layout_constraintEnd_toEndOf="parent"
@@ -91,7 +92,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="16dp"
         android:text="Forgot Password?"
         android:textColor="#000000"
         android:textSize="18sp"
@@ -101,14 +102,14 @@
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:layout_marginStart="20dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="42dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="10dp"
         android:backgroundTint="@color/black"
         android:fontFamily="@font/inter_bold"
         android:text="LOG IN"
-        android:textSize="15sp"
+        android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
