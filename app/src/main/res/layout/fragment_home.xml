@@ -411,14 +411,4 @@
                 android:text="SEARCH FLIGHT" />
         </LinearLayout>
     </ScrollView>
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:id="@+id/bottom_nav"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:background="@color/white"-->
-<!--        android:elevation="16dp"-->
-<!--        app:itemIconTint="@color/bottom_nav_selector"-->
-<!--        app:itemTextColor="@color/bottom_nav_selector"-->
-<!--        app:menu="@menu/bottom_navigation_menu" />-->
 </RelativeLayout>
