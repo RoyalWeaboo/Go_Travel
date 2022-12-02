@@ -14,6 +14,8 @@ import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentLoginBinding
 import com.binar.c5team.gotravel.viewmodel.UserViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
+
 
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
@@ -28,6 +30,8 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.GONE
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
         binding.btnLogin.setOnClickListener {
             validateLoginInput(view)
@@ -58,7 +62,9 @@ class LoginFragment : Fragment() {
                 saveData.putString("username", it.username)
                 saveData.putString("token", it.token)
                 saveData.apply()
-                Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment)
+                Toast.makeText(context, it.token, Toast.LENGTH_SHORT)
+                    .show()
+                Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
             } else {
                 Toast.makeText(
                     requireActivity(),

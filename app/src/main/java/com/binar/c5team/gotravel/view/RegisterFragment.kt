@@ -11,6 +11,7 @@ import android.widget.AutoCompleteTextView
 import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentRegisterBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,6 +28,8 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.GONE
 
         // for dropdown menu gender
         val items = listOf("Male", "Female")
@@ -38,6 +41,7 @@ class RegisterFragment : Fragment() {
         }
 
         binding.btnRegister.setOnClickListener {
+
             Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_loginFragment)
         }
 

@@ -9,6 +9,7 @@ import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentLoginOrRegisterBinding
 import com.binar.c5team.gotravel.databinding.FragmentRegisterBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class OpeningFragment : Fragment() {
     lateinit var binding : FragmentLoginOrRegisterBinding
@@ -23,6 +24,8 @@ class OpeningFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.GONE
         binding.toCreate.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_openingFragment_to_registerFragment)
         }
