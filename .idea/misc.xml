@@ -22,7 +22,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_lock_35.xml" value="0.178" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/custom_airport_spinner_item.xml" value="0.19427083333333334" />
-        <entry key="app/src/main/res/layout/fragment_booking.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_booking.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login_dummy.xml" value="0.25" />
