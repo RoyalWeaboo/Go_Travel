@@ -24,6 +24,7 @@ class OpeningFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
         binding.toCreate.setOnClickListener {
@@ -37,5 +38,6 @@ class OpeningFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
     }
+
 
 }

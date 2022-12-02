@@ -12,6 +12,7 @@ import java.util.*
 
 class UserViewModel : ViewModel() {
 
+    var loading = MutableLiveData<Boolean>()
     var loginLiveData: MutableLiveData<LoginResponse> = MutableLiveData()
     var registerLiveData : MutableLiveData<RegisterResponse> = MutableLiveData()
     var profileLiveData : MutableLiveData<ProfileResponse> = MutableLiveData()
@@ -28,8 +29,9 @@ class UserViewModel : ViewModel() {
         return profileLiveData
     }
 
-    fun callRegisterApi(name : String, email : String, username:String, password:String, sex : String, dateBirth : Date) {
-        RetrofitClient.apiInstance.register(RegisterData(name, email, username, password, sex, dateBirth))
+    fun callRegisterApi(username : String, fullname : String, email : String, password:String, dateBirth : String, sex : String, idcard : String, address : String) {
+        loading.postValue(true)
+        RetrofitClient.apiInstance.register(RegisterData(username, fullname, email, password, dateBirth, sex, idcard, address))
             .enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(
                     call: Call<RegisterResponse>,
@@ -41,16 +43,19 @@ class UserViewModel : ViewModel() {
                     } else {
                         Log.d("Register Failed", response.body().toString())
                     }
+                    loading.postValue(false)
                 }
 
                 override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
                     Log.d("Register Error", call.toString())
+                    loading.postValue(false)
                 }
 
             })
     }
 
     fun callLoginApi(username : String, password : String) {
+        loading.postValue(true)
         RetrofitClient.apiInstance.login(LoginData(username,password))
             .enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(
@@ -63,10 +68,12 @@ class UserViewModel : ViewModel() {
                     } else {
                         Log.d("Login Data Failed", response.body().toString())
                     }
+                    loading.postValue(false)
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     Log.d("Login Data Error", call.toString())
+                    loading.postValue(false)
                 }
 
             })

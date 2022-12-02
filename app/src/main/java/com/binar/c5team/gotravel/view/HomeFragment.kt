@@ -1,6 +1,5 @@
 package com.binar.c5team.gotravel.view
 
-import android.R
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -16,10 +15,10 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
+import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHomeBinding
 import com.binar.c5team.gotravel.viewmodel.AirportViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,6 +36,8 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navBar = requireActivity().findViewById<BottomNavigationView>(com.binar.c5team.gotravel.R.id.bottom_nav)
+        navBar.visibility = View.VISIBLE
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
         binding.tvUsername.text = sharedPref.getString("username", "User")
 
@@ -169,7 +170,7 @@ class HomeFragment : Fragment() {
                 val adapter = context?.let { it1 ->
                     ArrayAdapter(
                         it1,
-                        com.binar.c5team.gotravel.R.layout.custom_airport_spinner_item, listSpinner
+                        R.layout.custom_airport_spinner_item, listSpinner
                     )
                 }
                 adapter?.setDropDownViewResource(com.binar.c5team.gotravel.R.layout.simple_spinner_item)

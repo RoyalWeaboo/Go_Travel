@@ -1,6 +1,8 @@
 package com.binar.c5team.gotravel.view
 
 import android.app.DatePickerDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,18 +10,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.core.view.get
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHomeBinding
 import com.binar.c5team.gotravel.databinding.FragmentProfileBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ProfileFragment : Fragment() {
 
     private lateinit var binding: FragmentProfileBinding
+    private lateinit var sharedPref : SharedPreferences
 
     private val gender = arrayOf("Pria","Wanita")
 
@@ -33,6 +39,10 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navBar = requireActivity().findViewById<BottomNavigationView>(com.binar.c5team.gotravel.R.id.bottom_nav)
+        navBar.visibility = View.VISIBLE
+
+        sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
 
         binding.btnCustomerService.setOnClickListener {
 
@@ -56,6 +66,15 @@ class ProfileFragment : Fragment() {
 
         binding.btnAddImage.setOnClickListener {
 
+        }
+
+        binding.btnLogout.setOnClickListener {
+            val clearData = sharedPref.edit()
+            clearData.clear()
+            clearData.apply()
+            Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_loginFragment)
+            Toast.makeText(context, "Logout Successful !", Toast.LENGTH_SHORT)
+                .show()
         }
 
         binding.chooseGender.adapter = ArrayAdapter<String>(this.requireActivity(),android.R.layout.simple_list_item_1,gender)

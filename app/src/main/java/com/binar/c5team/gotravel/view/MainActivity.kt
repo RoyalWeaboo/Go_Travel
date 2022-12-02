@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
         setUpNavigation()
     }
+
+
     fun setUpNavigation() {
         bottomNavigationView = binding.bottomNav
         val navHostFragment = supportFragmentManager

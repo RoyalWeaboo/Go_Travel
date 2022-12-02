@@ -3,7 +3,6 @@ package com.binar.c5team.gotravel.view
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,7 +55,6 @@ class LoginFragment : Fragment() {
         val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
         viewModel.getLoginData().observe(viewLifecycleOwner) {
             if (it.token != "") {
-                Log.d("Login Response :", it.toString())
                 val saveData = sharedPref.edit()
                 saveData.putString("session", "true")
                 saveData.putString("username", it.username)
@@ -75,4 +73,6 @@ class LoginFragment : Fragment() {
         }
         viewModel.callLoginApi(username, password)
     }
+
+
 }
