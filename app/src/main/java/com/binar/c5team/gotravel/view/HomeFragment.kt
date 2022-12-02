@@ -1,5 +1,6 @@
 package com.binar.c5team.gotravel.view
 
+import android.R
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -15,7 +16,8 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.binar.c5team.gotravel.R
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.binar.c5team.gotravel.databinding.FragmentHomeBinding
 import com.binar.c5team.gotravel.viewmodel.AirportViewModel
 import java.text.SimpleDateFormat
@@ -37,6 +39,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
         binding.tvUsername.text = sharedPref.getString("username", "User")
+
 
         disableReturnCard()
         getDate()
@@ -102,6 +105,8 @@ class HomeFragment : Fragment() {
         }
     }
 
+
+
     private fun disableReturnCard() {
         binding.returnDateText.setTextColor(Color.parseColor("#808080"))
         binding.cardDateReturn.isEnabled = false
@@ -164,10 +169,10 @@ class HomeFragment : Fragment() {
                 val adapter = context?.let { it1 ->
                     ArrayAdapter(
                         it1,
-                        R.layout.custom_airport_spinner_item, listSpinner
+                        com.binar.c5team.gotravel.R.layout.custom_airport_spinner_item, listSpinner
                     )
                 }
-                adapter?.setDropDownViewResource(R.layout.simple_spinner_item)
+                adapter?.setDropDownViewResource(com.binar.c5team.gotravel.R.layout.simple_spinner_item)
                 binding.spinnerFrom.adapter = adapter
                 binding.spinnerTo.adapter = adapter
             } else {

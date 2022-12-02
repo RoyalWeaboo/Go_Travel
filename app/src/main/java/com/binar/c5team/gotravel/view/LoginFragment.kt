@@ -12,17 +12,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
-import com.binar.c5team.gotravel.databinding.FragmentLoginDummyBinding
+import com.binar.c5team.gotravel.databinding.FragmentLoginBinding
 import com.binar.c5team.gotravel.viewmodel.UserViewModel
 
 class LoginFragment : Fragment() {
-    lateinit var binding: FragmentLoginDummyBinding
+    lateinit var binding: FragmentLoginBinding
     lateinit var sharedPref : SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLoginDummyBinding.inflate(inflater, container, false)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -38,8 +38,8 @@ class LoginFragment : Fragment() {
     }
 
     private fun validateLoginInput(view : View) {
-        val usernameInput = binding.etUsername.text.toString()
-        val passwordinput = binding.etPassword.text.toString()
+        val usernameInput = binding.inputUsername.editText?.text.toString()
+        val passwordinput = binding.inputPassword.editText?.text.toString()
         if (usernameInput.isNotEmpty() && passwordinput.isNotEmpty()) {
             validateLoginData(view, usernameInput, passwordinput)
         } else {
