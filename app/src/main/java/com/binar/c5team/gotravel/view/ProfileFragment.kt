@@ -26,7 +26,7 @@ class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var sharedPref : SharedPreferences
 
-    private val gender = arrayOf("Pria","Wanita")
+    private val gender = arrayOf("Male","Female")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

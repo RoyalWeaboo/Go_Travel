@@ -69,4 +69,8 @@
             android:id="@+id/action_historyFragment2_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/bookingFragment"
+        android:name="com.binar.c5team.gotravel.view.BookingFragment"
+        android:label="BookingFragment" />
 </navigation>
