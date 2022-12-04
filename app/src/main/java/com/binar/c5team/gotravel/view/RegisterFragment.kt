@@ -12,6 +12,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentRegisterBinding
 import com.binar.c5team.gotravel.viewmodel.UserViewModel
@@ -41,6 +42,10 @@ class RegisterFragment : Fragment() {
         val items = listOf("Male", "Female")
         val adapter = ArrayAdapter(requireContext(), R.layout.list_item, items)
         (binding.inputGender.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(R.id.action_registerFragment_to_openingFragment)
+        }
 
         binding.pickDate.setOnClickListener {
             openDatePicker()

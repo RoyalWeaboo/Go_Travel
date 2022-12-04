@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentLoginBinding
 import com.binar.c5team.gotravel.viewmodel.UserViewModel
@@ -34,6 +35,10 @@ class LoginFragment : Fragment() {
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
+
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_openingFragment)
+        }
 
         binding.btnLogin.setOnClickListener {
             validateLoginInput(view)
