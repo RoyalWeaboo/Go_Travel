@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ProfileFragment : Fragment() {
-
     private lateinit var binding: FragmentProfileBinding
     private lateinit var sharedPref : SharedPreferences
 
@@ -39,6 +38,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val navBar = requireActivity().findViewById<BottomNavigationView>(com.binar.c5team.gotravel.R.id.bottom_nav)
         navBar.visibility = View.VISIBLE
 

@@ -21,6 +21,7 @@ import java.util.*
 
 class RegisterFragment : Fragment() {
     lateinit var binding : FragmentRegisterBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +33,7 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
 
@@ -59,6 +61,7 @@ class RegisterFragment : Fragment() {
         val gender = binding.inputGender.editText?.text.toString()
         val idcard = binding.inputKtp.editText?.text.toString()
         val address = binding.inputAddr.editText?.text.toString()
+
         if (username.isNotBlank()&&fullname.isNotBlank()&&email.isNotBlank()&&password.isNotBlank()&&birthDate.isNotBlank()&&gender.isNotBlank()&&idcard.isNotBlank()&&address.isNotBlank()){
             register(view, username, fullname, email, password, birthDate, gender, idcard, address)
         }else{
