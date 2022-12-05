@@ -52,56 +52,63 @@ class RegisterFragment : Fragment() {
         }
 
         binding.btnRegister.setOnClickListener {
-            validateInput(view)
+            validateInput()
         }
 
     }
 
-    private fun validateInput(view : View) {
+    private fun validateInput() {
         val username = binding.inputUsername.editText?.text.toString()
         val fullname = binding.inputFullname.editText?.text.toString()
         val email = binding.inputEmail.editText?.text.toString()
         val password = binding.inputPassword.editText?.text.toString()
+        val conPassword = binding.inputConfirmPassword.editText?.text.toString()
         val birthDate = binding.inputDate.editText?.text.toString()
         val gender = binding.inputGender.editText?.text.toString()
-        val idcard = binding.inputKtp.editText?.text.toString()
         val address = binding.inputAddr.editText?.text.toString()
 
-        if (username.isNotBlank()&&fullname.isNotBlank()&&email.isNotBlank()&&password.isNotBlank()&&birthDate.isNotBlank()&&gender.isNotBlank()&&idcard.isNotBlank()&&address.isNotBlank()){
-            register(view, username, fullname, email, password, birthDate, gender, idcard, address)
+        if (conPassword == password){
+            if (username.isNotBlank()&&fullname.isNotBlank()&&email.isNotBlank()&&password.isNotBlank()&&birthDate.isNotBlank()&&gender.isNotBlank()&&address.isNotBlank()){
+                register(username, fullname, email, password, birthDate, gender, address)
+            }else{
+                Toast.makeText(context, "You must fill all data required !", Toast.LENGTH_SHORT)
+                    .show()
+            }
         }else{
-            Toast.makeText(context, "You must fill all the data required !", Toast.LENGTH_SHORT)
+            Toast.makeText(context, "Password Do Not Match !", Toast.LENGTH_SHORT)
                 .show()
         }
     }
 
     private fun register(
-        view : View,
         username: String,
         fullname: String,
         email: String,
         password: String,
         birthDate: String,
         gender: String,
-        idcard: String,
         address: String
     ) {
+        binding.registerProgressBar.visibility = View.VISIBLE
         val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
         viewModel.getRegisterData().observe(viewLifecycleOwner) {
             if (it!=null) {
                 Log.d("Register Response :", it.toString())
                 Toast.makeText(context, "Registration Success", Toast.LENGTH_SHORT)
                     .show()
-                Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_loginFragment)
+                binding.registerProgressBar.visibility = View.GONE
+               findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
             } else {
                 Toast.makeText(
                     requireActivity(),
                     "Registration Failed",
                     Toast.LENGTH_SHORT
                 ).show()
+                binding.registerProgressBar.visibility = View.GONE
             }
         }
-        viewModel.callRegisterApi(username, fullname, email, password, birthDate, gender, idcard, address)
+        viewModel.callRegisterApi(username, fullname, email, password, birthDate, gender, address)
+        binding.registerProgressBar.visibility = View.GONE
     }
 
 

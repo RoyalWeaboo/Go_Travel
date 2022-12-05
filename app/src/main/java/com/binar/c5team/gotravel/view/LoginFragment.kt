@@ -37,6 +37,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
+        binding.loginProgressBar.visibility = View.GONE
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
 
         binding.btnBack.setOnClickListener {
@@ -57,6 +58,7 @@ class LoginFragment : Fragment() {
         val passwordinput = binding.inputPassword.editText?.text.toString()
 
         if (usernameInput.isNotEmpty() && passwordinput.isNotEmpty()) {
+            binding.loginProgressBar.visibility = View.VISIBLE
             validateLoginData(usernameInput, passwordinput)
         } else {
             Toast.makeText(context, "Username or Password can't be empty !", Toast.LENGTH_SHORT)
@@ -79,12 +81,12 @@ class LoginFragment : Fragment() {
                             saveData.putString("username", response.body()?.username)
                             saveData.putString("token", response.body()?.token)
                             saveData.apply()
-                            Toast.makeText(context, response.body()?.token, Toast.LENGTH_SHORT)
-                                .show()
+                            binding.loginProgressBar.visibility = View.GONE
                             findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                         }
                     } else {
                         Log.d("login response", response.body().toString())
+                        binding.loginProgressBar.visibility = View.GONE
                         Toast.makeText(
                             context,
                             "Wrong Username or Password",
@@ -95,6 +97,7 @@ class LoginFragment : Fragment() {
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     Log.d("Login Data Error", call.toString())
+                    binding.loginProgressBar.visibility = View.GONE
                     Toast.makeText(
                         context,
                         "Something Went Wrong",
@@ -103,5 +106,6 @@ class LoginFragment : Fragment() {
                 }
 
             })
+        binding.loginProgressBar.visibility = View.GONE
     }
 }

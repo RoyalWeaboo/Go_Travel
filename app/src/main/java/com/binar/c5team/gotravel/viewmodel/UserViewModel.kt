@@ -21,17 +21,13 @@ class UserViewModel : ViewModel() {
         return registerLiveData
     }
 
-    fun getLoginData(): MutableLiveData<LoginResponse> {
-        return loginLiveData
-    }
-
     fun getProfileData(): MutableLiveData<ProfileResponse> {
         return profileLiveData
     }
 
-    fun callRegisterApi(username : String, fullname : String, email : String, password:String, dateBirth : String, sex : String, idcard : String, address : String) {
+    fun callRegisterApi(username : String, fullname : String, email : String, password:String, dateBirth : String, gender : String, address : String) {
         loading.postValue(true)
-        RetrofitClient.apiInstance.register(RegisterData(username, fullname, email, password, dateBirth, sex, idcard, address))
+        RetrofitClient.apiInstance.register(RegisterData(username, fullname, email, password, dateBirth, gender, address))
             .enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(
                     call: Call<RegisterResponse>,
