@@ -20,7 +20,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
     lateinit var sharedPref : SharedPreferences
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,7 +30,6 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
@@ -43,7 +41,6 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             validateLoginInput(view)
         }
-
         binding.tvRegister.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment)
         }

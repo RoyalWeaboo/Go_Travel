@@ -80,7 +80,7 @@ class UserViewModel : ViewModel() {
     }
 
     fun callProfileApi(token : String) {
-        RetrofitClient.apiInstance.getProfile(token)
+        RetrofitClient.apiProfile(token).getProfile()
             .enqueue(object : Callback<ProfileResponse> {
                 override fun onResponse(
                     call: Call<ProfileResponse>,

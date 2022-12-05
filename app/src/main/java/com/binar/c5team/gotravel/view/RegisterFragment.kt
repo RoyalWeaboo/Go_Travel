@@ -114,9 +114,9 @@ class RegisterFragment : Fragment() {
         val dpd = DatePickerDialog(requireActivity(), DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
 
             // Display Selected date in textbox
-            val sdf = SimpleDateFormat("yyyy-mm-dd")
+            val sdf = SimpleDateFormat("YYYY-MM-dd")
             val date = sdf.format(c.time)
-            binding.inputDate.editText?.setText(date)
+            binding.inputDate.editText?.setText("" + year + "-" + month + "-" + dayOfMonth)
 
         }, year, month, day)
         dpd.show()

@@ -1,5 +1,6 @@
 package com.binar.c5team.gotravel.network
 
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -21,5 +22,19 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         retrofit.create(RestfulApi::class.java)
+    }
+
+    fun apiProfile(accessToken: String): RestfulApi {
+        val client = OkHttpClient.Builder()
+            .addInterceptor(OAuthInterceptor(accessToken))
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL_API)
+            .client(client)
+            .build()
+
+        return retrofit.create(RestfulApi::class.java)
     }
 }

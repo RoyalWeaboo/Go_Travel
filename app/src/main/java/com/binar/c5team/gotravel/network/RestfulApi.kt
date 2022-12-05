@@ -22,5 +22,5 @@ interface RestfulApi {
 
     //Profile
     @GET("profile")
-    fun getProfile(@Header("Authorization") token: String) : Call<ProfileResponse>
+    fun getProfile() : Call<ProfileResponse>
 }

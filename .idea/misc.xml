@@ -3,6 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Binar Academy/Go_Travel/app/src/main/res/layout/custom_airport_spinner_item.xml" value="0.3625" />
+        <entry key="..\:/Binar Academy/Go_Travel/app/src/main/res/layout/fragment_booking.xml" value="0.3625" />
+        <entry key="..\:/Binar Academy/Go_Travel/app/src/main/res/layout/fragment_change_password.xml" value="0.3625" />
+        <entry key="..\:/Binar Academy/Go_Travel/app/src/main/res/layout/fragment_home.xml" value="0.2667572463768116" />
+        <entry key="..\:/Binar Academy/Go_Travel/app/src/main/res/layout/fragment_login.xml" value="0.18541666666666667" />
+        <entry key="..\:/Binar Academy/Go_Travel/app/src/main/res/layout/fragment_profile.xml" value="0.2667572463768116" />
+        <entry key="..\:/Binar Academy/Go_Travel/app/src/main/res/layout/fragment_register.xml" value="0.18541666666666667" />
+        <entry key="..\:/Binar Academy/Go_Travel/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.3625" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/drawable/bottom_nav_selector.xml" value="0.1305" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/font/inter.xml" value="0.19270833333333334" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/activity_main.xml" value="0.16354166666666667" />
@@ -26,12 +34,11 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/custom_airport_spinner_item.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/fragment_booking.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_history.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login_dummy.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login_or_register.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/fragment_payment.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_payment.xml" value="0.13" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_register_dummy.xml" value="0.15946985891406584" />
@@ -46,7 +53,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
