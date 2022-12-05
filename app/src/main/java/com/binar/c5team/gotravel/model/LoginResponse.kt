@@ -10,6 +10,8 @@ data class LoginResponse(
     val email: String,
     @SerializedName("id")
     val id: Int,
+    @SerializedName("message")
+    val message: String,
     @SerializedName("token")
     val token: String,
     @SerializedName("updatedAt")

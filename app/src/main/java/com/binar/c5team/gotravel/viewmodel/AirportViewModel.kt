@@ -25,9 +25,10 @@ class AirportViewModel : ViewModel() {
                 ) {
                     if (response.isSuccessful) {
                         airportList.postValue(response.body())
-                        Log.d("data", response.body().toString())
+//                        Log.d("data", response.body().toString())
                     } else {
-                        Log.d("data", response.body().toString())
+                        airportList.postValue(response.body())
+//                        Log.d("data", response.body().toString())
                     }
                 }
 

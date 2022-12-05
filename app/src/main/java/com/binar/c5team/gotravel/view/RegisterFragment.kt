@@ -112,10 +112,6 @@ class RegisterFragment : Fragment() {
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         val dpd = DatePickerDialog(requireActivity(), DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-
-            // Display Selected date in textbox
-            val sdf = SimpleDateFormat("YYYY-MM-dd")
-            val date = sdf.format(c.time)
             binding.inputDate.editText?.setText("" + year + "-" + month + "-" + dayOfMonth)
 
         }, year, month, day)

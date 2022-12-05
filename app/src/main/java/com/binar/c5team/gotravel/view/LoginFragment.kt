@@ -3,23 +3,28 @@ package com.binar.c5team.gotravel.view
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentLoginBinding
-import com.binar.c5team.gotravel.viewmodel.UserViewModel
+import com.binar.c5team.gotravel.model.LoginData
+import com.binar.c5team.gotravel.model.LoginResponse
+import com.binar.c5team.gotravel.network.RetrofitClient
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
-    lateinit var sharedPref : SharedPreferences
+    lateinit var sharedPref: SharedPreferences
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,47 +44,64 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnLogin.setOnClickListener {
-            validateLoginInput(view)
+            validateLoginInput()
         }
         binding.tvRegister.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment)
+            Navigation.findNavController(view)
+                .navigate(R.id.action_loginFragment_to_registerFragment)
         }
     }
 
-    private fun validateLoginInput(view : View) {
+    private fun validateLoginInput() {
         val usernameInput = binding.inputUsername.editText?.text.toString()
         val passwordinput = binding.inputPassword.editText?.text.toString()
 
         if (usernameInput.isNotEmpty() && passwordinput.isNotEmpty()) {
-            validateLoginData(view, usernameInput, passwordinput)
+            validateLoginData(usernameInput, passwordinput)
         } else {
             Toast.makeText(context, "Username or Password can't be empty !", Toast.LENGTH_SHORT)
                 .show()
         }
     }
 
-    private fun validateLoginData(view : View, username : String, password : String) {
-        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
-        viewModel.getLoginData().observe(viewLifecycleOwner) {
-            if (it.token != "") {
-                val saveData = sharedPref.edit()
-                saveData.putString("session", "true")
-                saveData.putString("username", it.username)
-                saveData.putString("token", it.token)
-                saveData.apply()
-                Toast.makeText(context, it.token, Toast.LENGTH_SHORT)
-                    .show()
-                Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
-            } else {
-                Toast.makeText(
-                    requireActivity(),
-                    "Wrong Username or Password",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-        viewModel.callLoginApi(username, password)
+    private fun validateLoginData(username: String, password: String) {
+        RetrofitClient.apiInstance.login(LoginData(username, password))
+            .enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        if (response.body()?.message == "Login Success") {
+                            Log.d("login response", response.body().toString())
+                            val saveData = sharedPref.edit()
+                            saveData.putString("session", "true")
+                            saveData.putString("username", response.body()?.username)
+                            saveData.putString("token", response.body()?.token)
+                            saveData.apply()
+                            Toast.makeText(context, response.body()?.token, Toast.LENGTH_SHORT)
+                                .show()
+                            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                        }
+                    } else {
+                        Log.d("login response", response.body().toString())
+                        Toast.makeText(
+                            context,
+                            "Wrong Username or Password",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    Log.d("Login Data Error", call.toString())
+                    Toast.makeText(
+                        context,
+                        "Something Went Wrong",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            })
     }
-
-
 }

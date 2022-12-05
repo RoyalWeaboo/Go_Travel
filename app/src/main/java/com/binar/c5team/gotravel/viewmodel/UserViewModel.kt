@@ -39,9 +39,8 @@ class UserViewModel : ViewModel() {
                 ) {
                     if (response.isSuccessful) {
                         registerLiveData.postValue(response.body())
-                        Log.d("Register Success", response.body().toString())
                     } else {
-                        Log.d("Register Failed", response.body().toString())
+                        registerLiveData.postValue(response.body())
                     }
                     loading.postValue(false)
                 }
@@ -64,9 +63,8 @@ class UserViewModel : ViewModel() {
                 ) {
                     if (response.isSuccessful) {
                         loginLiveData.postValue(response.body())
-                        Log.d("Login Data Success", response.body().toString())
                     } else {
-                        Log.d("Login Data Failed", response.body().toString())
+                        loginLiveData.postValue(response.body())
                     }
                     loading.postValue(false)
                 }

@@ -67,7 +67,7 @@ class ProfileFragment : Fragment() {
         binding.chooseGender.adapter = ArrayAdapter<String>(this.requireActivity(),android.R.layout.simple_list_item_1,gender)
         binding.chooseGender.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                binding.tvGender.text = gender.get(position)
+                binding.tvGender.text = gender[position]
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -89,6 +89,7 @@ class ProfileFragment : Fragment() {
         binding.btnLogout.setOnClickListener {
             val saveData = sharedPref.edit()
             saveData.clear()
+            saveData.apply()
             Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_loginFragment)
         }
     }
