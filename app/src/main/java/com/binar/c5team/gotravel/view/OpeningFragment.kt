@@ -34,7 +34,7 @@ class OpeningFragment : Fragment() {
         if (session == "true"){
             Navigation.findNavController(view).navigate(R.id.action_openingFragment_to_homeFragment)
         }else{
-            Log.d("Session is", session)
+            Log.d("Session status", session)
         }
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
