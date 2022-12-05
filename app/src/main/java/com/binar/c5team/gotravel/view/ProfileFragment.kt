@@ -18,6 +18,7 @@ import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentProfileBinding
 import com.binar.c5team.gotravel.viewmodel.UserViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,6 +39,10 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val navBar = requireActivity().findViewById<BottomNavigationView>(com.binar.c5team.gotravel.R.id.bottom_nav)
+        navBar.visibility = View.VISIBLE
+
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
         profileData()
         binding.btnCustomerService.setOnClickListener {

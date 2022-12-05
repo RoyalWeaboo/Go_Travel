@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHistoryBinding
 import com.binar.c5team.gotravel.databinding.FragmentProfileBinding
@@ -28,6 +29,10 @@ class HistoryFragment : Fragment() {
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(com.binar.c5team.gotravel.R.id.bottom_nav)
         navBar.visibility = View.VISIBLE
+
+        binding.rvHistory.layoutManager = LinearLayoutManager(
+            context, LinearLayoutManager.VERTICAL, false
+        )
     }
 
 }

@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_historyFragment2"
+            app:destination="@id/historyFragment2" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -44,6 +47,9 @@
         <action
             android:id="@+id/action_profileFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_historyFragment2"
+            app:destination="@id/historyFragment2" />
     </fragment>
     <fragment
         android:id="@+id/openingFragment"
@@ -57,6 +63,18 @@
             app:destination="@id/registerFragment" />
         <action
             android:id="@+id/action_openingFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyFragment2"
+        android:name="com.binar.c5team.gotravel.view.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_historyFragment2_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_historyFragment2_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
 </navigation>
