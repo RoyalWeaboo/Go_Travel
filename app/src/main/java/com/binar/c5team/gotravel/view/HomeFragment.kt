@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHomeBinding
 import com.binar.c5team.gotravel.viewmodel.AirportViewModel
@@ -106,6 +107,11 @@ class HomeFragment : Fragment() {
                 binding.childrenCount.text = childCountTotal.toString()
             }
         }
+
+        binding.btnSearchFlight.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_bookingFragment)
+        }
+
     }
 
 
