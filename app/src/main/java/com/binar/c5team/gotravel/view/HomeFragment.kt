@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -38,7 +38,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navBar = requireActivity().findViewById<BottomNavigationView>(com.binar.c5team.gotravel.R.id.bottom_nav)
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.VISIBLE
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
         binding.tvUsername.text = sharedPref.getString("username", "User")
@@ -166,7 +166,7 @@ class HomeFragment : Fragment() {
                 //set json to arraylist
                 val listSpinner: MutableList<String> = ArrayList()
                 for (element in it) {
-                    listSpinner.add(element.iATA + " (" + element.iCAO + ")")
+                    listSpinner.add(element.city + " (" + element.code + ")")
                 }
                 // Set result to spinner
                 val adapter = context?.let { it1 ->

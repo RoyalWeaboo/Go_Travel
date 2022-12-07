@@ -33,7 +33,7 @@ class AirportViewModel : ViewModel() {
                 }
 
                 override fun onFailure(call: Call<List<AirportDataItem>>, t: Throwable) {
-                    Log.d("data", call.toString())
+                    Log.d("data error", call.toString())
                 }
 
             })
