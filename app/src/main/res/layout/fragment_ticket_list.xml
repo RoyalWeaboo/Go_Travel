@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#0D000000">
 
     <ImageView
         android:layout_width="match_parent"
@@ -17,61 +18,11 @@
         android:layout_margin="16dp"
         android:src="@drawable/arrow_back" />
 
-    <LinearLayout
-        android:id="@+id/ticket_list_opt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ticket_list_arrow_back"
-        android:layout_marginStart="24dp"
-        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/menu_one_way"
-                style="@style/normalText16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter"
-                android:text="One-Way Trip" />
-
-            <ImageView
-                android:id="@+id/line_option_one_way"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/line_option" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/menu_round_trip"
-                style="@style/normalText16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter"
-                android:text="Round Trip" />
-
-            <ImageView
-                android:id="@+id/line_option_round_trip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/line_option"
-                android:visibility="gone" />
-        </LinearLayout>
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/flight_information_1"
-        android:layout_below="@id/ticket_list_opt"
+        android:layout_below="@id/ticket_list_arrow_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -89,6 +40,7 @@
             app:strokeWidth="1dp">
 
             <TextView
+                android:id="@+id/fromCity"
                 style="@style/normalText18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,6 +63,7 @@
             app:strokeWidth="1dp">
 
             <TextView
+                android:id="@+id/toCity"
                 android:paddingStart="8dp"
                 android:layout_margin="8dp"
                 style="@style/normalText18"
@@ -131,6 +84,7 @@
         android:orientation="horizontal">
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/departureDateCard"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -143,6 +97,7 @@
             app:strokeWidth="1dp">
 
             <TextView
+                android:id="@+id/departureDateText"
                 android:layout_margin="8dp"
                 style="@style/normalText18"
                 android:layout_width="wrap_content"
@@ -153,7 +108,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:visibility="gone"
+            android:id="@+id/returnDateCard"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -166,6 +121,7 @@
             app:strokeWidth="1dp">
 
             <TextView
+                android:id="@+id/returnDateText"
                 android:layout_margin="8dp"
                 style="@style/normalText18"
                 android:layout_width="wrap_content"
@@ -177,23 +133,54 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/passenger_info"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="20dp"
-        style="@style/normalText16"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/inter_bold"
+        android:orientation="horizontal"
         android:layout_below="@id/flight_information_2"
-        android:text="Passenger : 1 Adult - 0 Child"/>
+        android:id="@+id/linearPassenger">
+        <TextView
+            android:id="@+id/passenger_info"
+            style="@style/normalText16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/flight_information_2"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="Passenger :" />
+
+        <TextView
+            style="@style/normalText16"
+            android:id="@+id/adultTotalCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/flight_information_2"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="1 Adult"/>
+
+        <TextView
+            style="@style/normalText16"
+            android:id="@+id/childTotalCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/flight_information_2"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="0 Children"/>
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:visibility="gone"
         android:id="@+id/round_flight_opt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/passenger_info"
+        android:layout_below="@id/linearPassenger"
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="horizontal">
@@ -221,11 +208,11 @@
             android:src="@drawable/filter_icon" />
     </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_ticket_list"
-            android:layout_below="@id/round_flight_opt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_ticket_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/round_flight_opt"
+        android:layout_marginTop="16dp" />
 
 </RelativeLayout>

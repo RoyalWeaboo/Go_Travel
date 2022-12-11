@@ -26,7 +26,9 @@ import java.util.*
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    lateinit var sharedPref : SharedPreferences
+    lateinit var sharedPref: SharedPreferences
+    private val listSpinner: MutableList<String> = ArrayList()
+    private val listCity: MutableList<String> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +80,7 @@ class HomeFragment : Fragment() {
 
         binding.plusAdult.setOnClickListener {
             var adultCountTotal = binding.adultCount.text.toString().toInt()
-            if (adultCountTotal<99) {
+            if (adultCountTotal < 99) {
                 adultCountTotal++
                 binding.adultCount.text = adultCountTotal.toString()
             }
@@ -86,7 +88,7 @@ class HomeFragment : Fragment() {
 
         binding.minAdult.setOnClickListener {
             var adultCountTotal = binding.adultCount.text.toString().toInt()
-            if (adultCountTotal>1){
+            if (adultCountTotal > 1) {
                 adultCountTotal--
                 binding.adultCount.text = adultCountTotal.toString()
             }
@@ -94,7 +96,7 @@ class HomeFragment : Fragment() {
 
         binding.plusChildren.setOnClickListener {
             var childCountTotal = binding.childrenCount.text.toString().toInt()
-            if (childCountTotal<99) {
+            if (childCountTotal < 99) {
                 childCountTotal++
                 binding.childrenCount.text = childCountTotal.toString()
             }
@@ -102,18 +104,42 @@ class HomeFragment : Fragment() {
 
         binding.minChildren.setOnClickListener {
             var childCountTotal = binding.childrenCount.text.toString().toInt()
-            if (childCountTotal>0) {
+            if (childCountTotal > 0) {
                 childCountTotal--
                 binding.childrenCount.text = childCountTotal.toString()
             }
         }
 
         binding.btnSearchFlight.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_bookingFragment)
+            val from = binding.spinnerFrom.selectedItemId + 1
+            val to = binding.spinnerTo.selectedItemId + 1
+            val fromCity = listCity[from.toInt()]
+            val toCity = listCity[to.toInt()]
+            val departDate = binding.departDateText.text.toString()
+            val returnDate = binding.returnDateText.text.toString()
+            var flightMode = ""
+            flightMode = if (binding.lineOptionOneWay.visibility == View.VISIBLE){
+                "oneWay"
+            }else{
+                "roundTrip"
+            }
+            val adultCountTotal = binding.adultCount.text.toString()
+            val childCountTotal = binding.childrenCount.text.toString()
+
+            val bun = Bundle()
+            bun.putInt("fromId", from.toInt())
+            bun.putInt("toId", to.toInt())
+            bun.putString("fromCity", fromCity)
+            bun.putString("toCity", toCity)
+            bun.putString("departDate", departDate)
+            bun.putString("returnDate", returnDate)
+            bun.putString("flightMode", flightMode)
+            bun.putString("adult", adultCountTotal)
+            bun.putString("child", childCountTotal)
+            findNavController().navigate(R.id.action_homeFragment_to_flightListFragment, bun)
         }
 
     }
-
 
 
     private fun disableReturnCard() {
@@ -137,14 +163,20 @@ class HomeFragment : Fragment() {
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
 
-        val dpd = DatePickerDialog(requireActivity(), DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+        val dpd = DatePickerDialog(
+            requireActivity(),
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
 
-            // Display Selected date in textbox
-            val sdf = SimpleDateFormat("MMM")
-            val monthName = sdf.format(c.time)
-            binding.departDateText.text = "" + monthName + " " + dayOfMonth + ", " + year
+                // Display Selected date in textbox
+                val sdf = SimpleDateFormat("MMM")
+                val monthName = sdf.format(c.time)
+                binding.departDateText.text = "" + monthName + " " + dayOfMonth + ", " + year
 
-        }, year, month, day)
+            },
+            year,
+            month,
+            day
+        )
         dpd.show()
     }
 
@@ -154,12 +186,18 @@ class HomeFragment : Fragment() {
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
 
-        val dpd = DatePickerDialog(requireActivity(), DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            // Display Selected date in textbox
-            val sdf = SimpleDateFormat("MMM")
-            val monthName = sdf.format(c.time)
-            binding.returnDateText.text = "" + monthName + " " + dayOfMonth + ", " + year
-        }, year, month, day)
+        val dpd = DatePickerDialog(
+            requireActivity(),
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                // Display Selected date in textbox
+                val sdf = SimpleDateFormat("MMM")
+                val monthName = sdf.format(c.time)
+                binding.returnDateText.text = "" + monthName + " " + dayOfMonth + ", " + year
+            },
+            year,
+            month,
+            day
+        )
         dpd.show()
     }
 
@@ -170,9 +208,10 @@ class HomeFragment : Fragment() {
 //                Log.d("Airport Data", it.toString())
 
                 //set json to arraylist
-                val listSpinner: MutableList<String> = ArrayList()
-                for (element in it) {
-                    listSpinner.add(element.city + " (" + element.code + ")")
+
+                for (element in it.data.airports) {
+                    listSpinner.add(element.name)
+                    listCity.add(element.city)
                 }
                 // Set result to spinner
                 val adapter = context?.let { it1 ->
@@ -181,7 +220,7 @@ class HomeFragment : Fragment() {
                         R.layout.custom_airport_spinner_item, listSpinner
                     )
                 }
-                adapter?.setDropDownViewResource(com.binar.c5team.gotravel.R.layout.simple_spinner_item)
+                adapter?.setDropDownViewResource(R.layout.simple_spinner_item)
                 binding.spinnerFrom.adapter = adapter
                 binding.spinnerTo.adapter = adapter
             } else {

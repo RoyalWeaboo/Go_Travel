@@ -17,6 +17,10 @@
         <action
             android:id="@+id/action_homeFragment_to_bookingFragment"
             app:destination="@id/bookingFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_flightListFragment"
+            app:destination="@id/flightListFragment" />
+        <argument android:name="arguments" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -84,4 +88,13 @@
         android:id="@+id/bookingFragment"
         android:name="com.binar.c5team.gotravel.view.BookingFragment"
         android:label="BookingFragment" />
+    <fragment
+        android:id="@+id/flightListFragment"
+        android:name="com.binar.c5team.gotravel.view.FlightListFragment"
+        android:label="FlightListFragment" >
+        <action
+            android:id="@+id/action_flightListFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <argument android:name="arguments" />
+    </fragment>
 </navigation>

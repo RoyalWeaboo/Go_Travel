@@ -8,8 +8,8 @@ import retrofit2.http.POST
 
 interface RestfulApi {
     //Airport Data
-    @GET("71f3256a894b72849fbe017b28b86a20/raw/ec10f42e2df547ea1dc944184f5ace2412436b30/indonesia-international-airport.json")
-    fun getAirportData() : Call<List<AirportDataItem>>
+    @GET("airport")
+    fun getAirportData() : Call<AirportResponse>
 
     //Register
     @POST("register")
@@ -22,4 +22,8 @@ interface RestfulApi {
     //Profile
     @GET("profile")
     fun getProfile() : Call<ProfileResponse>
+
+    //Flight Data
+    @GET("flight")
+    fun getFlight() : Call<FlightResponse>
 }
