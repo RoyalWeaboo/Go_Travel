@@ -78,6 +78,7 @@ class LoginFragment : Fragment() {
                             Log.d("login response", response.body().toString())
                             val saveData = sharedPref.edit()
                             saveData.putString("session", "true")
+                            saveData.putInt("userId", response.body()!!.id)
                             saveData.putString("username", response.body()?.username)
                             saveData.putString("token", response.body()?.token)
                             saveData.apply()

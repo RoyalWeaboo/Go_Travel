@@ -49,29 +49,6 @@ class UserViewModel : ViewModel() {
             })
     }
 
-    fun callLoginApi(username : String, password : String) {
-        loading.postValue(true)
-        RetrofitClient.apiInstance.login(LoginData(username,password))
-            .enqueue(object : Callback<LoginResponse> {
-                override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        loginLiveData.postValue(response.body())
-                    } else {
-                        loginLiveData.postValue(response.body())
-                    }
-                    loading.postValue(false)
-                }
-
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    Log.d("Login Data Error", call.toString())
-                    loading.postValue(false)
-                }
-
-            })
-    }
 
     fun callProfileApi(token : String) {
         RetrofitClient.apiProfile(token).getProfile()

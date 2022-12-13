@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/openingFragment">
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.binar.c5team.gotravel.view.HomeFragment"
@@ -87,7 +87,12 @@
     <fragment
         android:id="@+id/bookingFragment"
         android:name="com.binar.c5team.gotravel.view.BookingFragment"
-        android:label="BookingFragment" />
+        android:label="BookingFragment" >
+        <argument android:name="arguments" />
+        <action
+            android:id="@+id/action_bookingFragment_to_flightListFragment"
+            app:destination="@id/flightListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/flightListFragment"
         android:name="com.binar.c5team.gotravel.view.FlightListFragment"
@@ -96,5 +101,8 @@
             android:id="@+id/action_flightListFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
         <argument android:name="arguments" />
+        <action
+            android:id="@+id/action_flightListFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment" />
     </fragment>
 </navigation>

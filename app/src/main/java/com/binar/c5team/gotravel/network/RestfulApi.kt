@@ -26,4 +26,8 @@ interface RestfulApi {
     //Flight Data
     @GET("flight")
     fun getFlight() : Call<FlightResponse>
+
+    //Ticket Booking
+    @POST("booking")
+    fun postBooking(@Body bookingData : BookingData) : Call<BookingResponse>
 }

@@ -26,7 +26,8 @@ import java.util.*
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    lateinit var sharedPref: SharedPreferences
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var sharedPrefFlight : SharedPreferences
     private val listSpinner: MutableList<String> = ArrayList()
     private val listCity: MutableList<String> = ArrayList()
 
@@ -40,12 +41,13 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.VISIBLE
-        sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
-        binding.tvUsername.text = sharedPref.getString("username", "User")
 
+        sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
+        sharedPrefFlight = requireActivity().getSharedPreferences("flightInfo", Context.MODE_PRIVATE)
+
+        binding.tvUsername.text = sharedPref.getString("username", "User")
 
         disableReturnCard()
         getDate()
@@ -111,10 +113,13 @@ class HomeFragment : Fragment() {
         }
 
         binding.btnSearchFlight.setOnClickListener {
-            val from = binding.spinnerFrom.selectedItemId + 1
-            val to = binding.spinnerTo.selectedItemId + 1
+            val from = binding.spinnerFrom.selectedItemId
+            val to = binding.spinnerTo.selectedItemId
             val fromCity = listCity[from.toInt()]
             val toCity = listCity[to.toInt()]
+            val fromCityId = from.toInt()+1
+            val toCityId = to.toInt()+1
+
             val departDate = binding.departDateText.text.toString()
             val returnDate = binding.returnDateText.text.toString()
             var flightMode = ""
@@ -126,17 +131,20 @@ class HomeFragment : Fragment() {
             val adultCountTotal = binding.adultCount.text.toString()
             val childCountTotal = binding.childrenCount.text.toString()
 
-            val bun = Bundle()
-            bun.putInt("fromId", from.toInt())
-            bun.putInt("toId", to.toInt())
-            bun.putString("fromCity", fromCity)
-            bun.putString("toCity", toCity)
-            bun.putString("departDate", departDate)
-            bun.putString("returnDate", returnDate)
-            bun.putString("flightMode", flightMode)
-            bun.putString("adult", adultCountTotal)
-            bun.putString("child", childCountTotal)
-            findNavController().navigate(R.id.action_homeFragment_to_flightListFragment, bun)
+            //save flight info to shared preferences
+            val saveFlightInfo = sharedPrefFlight.edit()
+            saveFlightInfo.putInt("fromId", fromCityId)
+            saveFlightInfo.putInt("toId", toCityId)
+            saveFlightInfo.putString("fromAirport", fromCity)
+            saveFlightInfo.putString("toAirport", toCity)
+            saveFlightInfo.putString("adultCount", adultCountTotal)
+            saveFlightInfo.putString("childCount", childCountTotal)
+            saveFlightInfo.putString("departDate", departDate)
+            saveFlightInfo.putString("returnDate", returnDate)
+            saveFlightInfo.putString("flightMode", flightMode)
+            saveFlightInfo.apply()
+
+            findNavController().navigate(R.id.action_homeFragment_to_flightListFragment)
         }
 
     }

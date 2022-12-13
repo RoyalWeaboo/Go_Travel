@@ -38,7 +38,7 @@ object RetrofitClient {
         return retrofit.create(RestfulApi::class.java)
     }
 
-    fun apiFlight(accessToken: String): RestfulApi {
+    fun apiWithToken(accessToken: String): RestfulApi {
         val client = OkHttpClient.Builder()
             .addInterceptor(OAuthInterceptor(accessToken))
             .build()

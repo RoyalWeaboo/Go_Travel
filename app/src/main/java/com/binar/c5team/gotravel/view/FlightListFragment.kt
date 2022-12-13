@@ -21,12 +21,14 @@ import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 class FlightListFragment : Fragment() {
     lateinit var binding: FragmentTicketListBinding
     private lateinit var adapter: FlightAdapter
-    lateinit var sharedPref: SharedPreferences
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var sharedPrefFlight: SharedPreferences
+    var userId: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentTicketListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -34,22 +36,24 @@ class FlightListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
-        val token =  sharedPref.getString("token", "-")
+        sharedPrefFlight = requireActivity().getSharedPreferences("flightInfo", Context.MODE_PRIVATE)
+        val token = sharedPref.getString("token", "")
+        userId = sharedPref.getInt("userId", 0)
 
         //getting arguments passed from home fragment
-        val fligtMode = arguments?.getString("flightMode")
-        val fromAirportId = arguments?.getInt("fromId")
-        val toAirportId = arguments?.getInt("toId")
-        val fromAirportCity = arguments?.getString("fromCity")
-        val toAirportCity = arguments?.getString("toCity")
-        val departDate = arguments?.getString("departDate")
-        val returnDate = arguments?.getString("returnDate")
-        val adultCount = arguments?.getString("adult")
-        val childrenCount = arguments?.getString("child")
+        val fligtMode = sharedPrefFlight.getString("flightMode", "")
+        val fromAirportId = sharedPrefFlight.getInt("fromId", 0)
+        val toAirportId = sharedPrefFlight.getInt("toId", 0)
+        val departDate = sharedPrefFlight.getString("departDate", "")
+        val returnDate = sharedPrefFlight.getString("returnDate", "")
+        val fromAirportCity = sharedPrefFlight.getString("fromAirport", "")
+        val toAirportCity = sharedPrefFlight.getString("toAirport", "")
+        val adultCount = sharedPrefFlight.getString("adultCount", "")
+        val childrenCount = sharedPrefFlight.getString("childCount", "")
 
-        if(fligtMode == "oneWay"){
+        if (fligtMode == "oneWay") {
             binding.returnDateCard.visibility = View.GONE
-        }else{
+        } else {
             binding.returnDateCard.visibility = View.VISIBLE
         }
 
@@ -57,69 +61,72 @@ class FlightListFragment : Fragment() {
         binding.toCity.text = toAirportCity
         binding.departureDateText.text = departDate
         binding.returnDateText.text = returnDate
-        if(adultCount!!.toInt() > 1){
-            binding.adultTotalCount.text = adultCount+" Adults"
-        }else{
-            binding.adultTotalCount.text = adultCount+" Adult"
+        if (adultCount!!.toInt() > 1) {
+            binding.adultTotalCount.text = adultCount + " Adults"
+        } else if (adultCount.toInt() == 1) {
+            binding.adultTotalCount.text = adultCount + " Adult"
+        } else {
+            binding.adultTotalCount.text = "- 0 Adult"
         }
-        if (childrenCount!!.toInt()>1){
-            binding.childTotalCount.text = childrenCount+" Children"
-        }else{
-            binding.childTotalCount.text = childrenCount+" Child"
+        if (childrenCount!!.toInt() > 1) {
+            binding.childTotalCount.text = "- " + childrenCount + " Children"
+        } else if (childrenCount.toInt() == 1) {
+            binding.childTotalCount.text = "- " + childrenCount + " Child"
+        } else {
+            binding.childTotalCount.text = "- 0 Child"
         }
 
-        getFlight(token!!, fromAirportId!!, toAirportId!!)
+        val countTotal = adultCount.toInt()+childrenCount.toInt()
+
+        getFlight(token!!, fromAirportId, toAirportId, countTotal)
 
         binding.ticketListArrowBack.setOnClickListener {
             findNavController().navigate(R.id.action_flightListFragment_to_homeFragment)
         }
+
     }
 
-    private fun getFlight(token : String, fromAirportId : Int, toAirportId : Int) {
+    private fun getFlight(token: String, fromAirportId: Int, toAirportId: Int, countTotal : Int) {
         val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
 
-        viewModel.getFlightListData().observe(viewLifecycleOwner) {
+        viewModel.getFlightListData().observe(viewLifecycleOwner) { it ->
             if (it != null) {
                 binding.rvTicketList.layoutManager = LinearLayoutManager(
                     context, LinearLayoutManager.VERTICAL, false
                 )
 
-                val filterTicket : MutableList<Flight> = ArrayList()
-                for(i in it.data.flights){
-                    if(i.fromAirportId==fromAirportId && i.toAirportId==toAirportId){
+                val filterTicket: MutableList<Flight> = ArrayList()
+                for (i in it.data.flights) {
+                    if (i.fromAirportId == fromAirportId && i.toAirportId == toAirportId) {
                         filterTicket.add(i)
                     }
                 }
-
+                Log.d("Id", fromAirportId.toString() + toAirportId.toString())
                 adapter = FlightAdapter(filterTicket)
                 binding.rvTicketList.adapter = adapter
 
-//                adapter.onAddFavorites = { it ->
-////                    Toast.makeText(requireActivity(), it.toString(), Toast.LENGTH_SHORT).show()
-//                    binding.homeProgressBar.visibility = View.VISIBLE
-//                    val favViewModel =
-//                        ViewModelProvider(requireActivity())[FavoritesViewModel::class.java]
-//                    favViewModel.callPostFavMovie(
-//                        it.posterPath,
-//                        it.originalTitle,
-//                        it.voteAverage.toString(),
-//                        it.releaseDate,
-//                        it.originalLanguage,
-//                        it.overview
-//                    )
-//                    favViewModel.postFavMovie().observe(viewLifecycleOwner) {
-//                        if (it != null) {
-//                            binding.homeProgressBar.visibility = View.GONE
-//                            Toast.makeText(
-//                                requireActivity(),
-//                                context?.getString(R.string.tambah_film_fav),
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                        binding.homeProgressBar.visibility = View.GONE
-//                    }
-//                }
-
+                adapter.onOrderClick = {
+                    val orderInfo = Bundle()
+                    if (userId != 0) {
+                        orderInfo.putInt("userId", userId)
+                        orderInfo.putInt("flightId", it.id)
+                        orderInfo.putInt("flightPrice", it.price)
+                        orderInfo.putString("planeName", it.plane.name)
+                        orderInfo.putString("fromAirport", it.fromAirport.city)
+                        orderInfo.putString("toAirport", it.toAirport.city)
+                        orderInfo.putString("departureTime", it.departureTime)
+                        orderInfo.putString("arrivalTime", it.arrivalTime)
+                        orderInfo.putInt("availableSeat", it.availableSeats)
+                        orderInfo.putInt("totalSeat", countTotal)
+                        findNavController().navigate(
+                            R.id.action_flightListFragment_to_bookingFragment,
+                            orderInfo
+                        )
+                    } else {
+                        Toast.makeText(context, "Error : Cannot Read User Id", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
             } else {
                 Toast.makeText(
                     requireActivity(),

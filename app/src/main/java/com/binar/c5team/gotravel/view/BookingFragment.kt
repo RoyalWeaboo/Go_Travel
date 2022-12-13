@@ -6,25 +6,37 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentBookingBinding
+import com.binar.c5team.gotravel.model.Flight
+import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import com.binar.c5team.gotravel.viewmodel.UserViewModel
 
 
 class BookingFragment: Fragment() {
-    lateinit var binding : FragmentBookingBinding
+    private lateinit var binding : FragmentBookingBinding
+    private lateinit var sharedPref: SharedPreferences
+    private lateinit var sharedPrefFlight: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentBookingBinding.inflate(inflater, container, false)
         return binding.root
@@ -33,52 +45,63 @@ class BookingFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btnBack.setOnClickListener {
+        sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
+        sharedPrefFlight = requireActivity().getSharedPreferences("flightInfo", Context.MODE_PRIVATE)
+        val token = sharedPref.getString("token", "-")
 
+        //getting arguments passed from home fragment
+        val flightId = arguments?.getInt("flightId")
+        val userId = arguments?.getInt("userId")
+        val availableSeat = arguments?.getInt("availableSeat")
+        val flightPrice = arguments?.getInt("flightPrice")
+        val planeName = arguments?.getString("planeName")
+        val fromAirport = arguments?.getString("fromAirport")
+        val toAirport = arguments?.getString("toAirport")
+        val departureTime = arguments?.getString("departureTime")
+        val arrivalTime = arguments?.getString("arrivalTime")
+        val seatCount = arguments?.getInt("totalSeat")
+
+        // for dropdown food option
+        val items = listOf("Yes", "No")
+        val adapterFood = ArrayAdapter(requireContext(), R.layout.list_item, items)
+        (binding.inputFood.editText as? AutoCompleteTextView)?.setAdapter(adapterFood)
+
+        // for dropdown seat option
+        val seatNumber : MutableList<Int> = ArrayList()
+        var num = 1
+        for (element in 1..availableSeat!!){
+            seatNumber.add(num)
+            num++
+        }
+        val adapterSeatNum = ArrayAdapter(requireContext(), R.layout.list_item, seatNumber)
+        (binding.inputChair.editText as? AutoCompleteTextView)?.setAdapter(adapterSeatNum)
+
+        binding.tvTicketPrice.text = flightPrice.toString()
+        binding.tvAircraftName.text = planeName
+        binding.tvFromCity.text = fromAirport
+        binding.tvArrivalCity.text = toAirport
+        binding.tvTimeFrom.text = departureTime
+        binding.tvTimeTo.text = arrivalTime
+        binding.tvSeatTotal.text = seatCount.toString()
+
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(R.id.action_bookingFragment_to_flightListFragment)
         }
 
         binding.btnToPayment.setOnClickListener {
-//            createNotificationChannel()
-//            notifySuccessBooking()
-            notification()
+            val name = binding.inputFullname.editText?.text.toString()
+            val seat = binding.inputChair.editText?.text.toString().toInt()
+            val baggage = binding.inputBaggage.editText?.text.toString().toInt()
+            val food: Boolean
+            val foodOpt = binding.inputFood.editText?.text.toString()
+            food = foodOpt == "Yes"
+            val homePhone = binding.inputEmail.editText?.text.toString()
+            val mobilePhone = binding.inputMobileNumber.editText?.text.toString()
+            
+            bookTicket(token!!, flightId!!, userId!!, seat, baggage, food, name, homePhone, mobilePhone, flightPrice!!)
         }
 
     }
-
-//    private fun createNotificationChannel() {
-//        // Create the NotificationChannel, but only on API 26+ because
-//        // the NotificationChannel class is new and not in the support library
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val name = "Success Booking Notification"
-//            val descriptionText = "Booking Success"
-//            val importance = NotificationManager.IMPORTANCE_DEFAULT
-//            val channel = NotificationChannel("1", name, importance).apply {
-//                description = descriptionText
-//            }
-//            // Register the channel with the system
-//            val notificationManager: NotificationManager =
-//                context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//            notificationManager.createNotificationChannel(channel)
-//        }
-//    }
-//
-//    private fun notifySuccessBooking(){
-//        // Create an explicit intent for an Activity in your app
-//        val intent = Intent(requireActivity(), MainActivity::class.java).apply {
-//            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//        }
-//        intent.putExtra("redirect", "historyFragment")
-//        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-//
-//        val builder = NotificationCompat.Builder(requireContext(), "1")
-//            .setSmallIcon(R.drawable.ic_baseline_notifications)
-//            .setContentTitle("Booking Succesful !")
-//            .setContentText("Success booking a new ticket, Open History or click this notification to check your history !")
-//            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//            // Set the intent that will fire when the user taps the notification
-//            .setContentIntent(pendingIntent)
-//            .setAutoCancel(true)
-//    }
 
     private fun notification(){
         val mBuilder = NotificationCompat.Builder(requireContext().applicationContext, "1")
@@ -100,17 +123,32 @@ class BookingFragment: Fragment() {
         val mNotificationManager : NotificationManager  =
             requireContext().applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channelId = "1"
-            val channel = NotificationChannel(
-                channelId,
-                "Success Booking Notification",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            mNotificationManager.createNotificationChannel(channel)
-            mBuilder.setChannelId(channelId)
-        }
+        val channelId = "1"
+        val channel = NotificationChannel(
+            channelId,
+            "Success Booking Notification",
+            NotificationManager.IMPORTANCE_HIGH
+        )
+        mNotificationManager.createNotificationChannel(channel)
+        mBuilder.setChannelId(channelId)
 
         mNotificationManager.notify(0, mBuilder.build())
+    }
+
+    private fun bookTicket(token : String, id_flight : Int, id_user : Int, seat : Int, baggage : Int, food : Boolean, name : String, homephone : String, mobilephone : String, totalprice : Int){
+        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        viewModel.getBookingLD().observe(viewLifecycleOwner) {
+            if (it != null) {
+                Log.d("Booking Response :", it.toString())
+                notification()
+            } else {
+                Toast.makeText(
+                    requireActivity(),
+                    "Booking Failed !",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        viewModel.postBookingApi(token, id_flight, id_user, seat, baggage, food, name, homephone, mobilephone, totalprice)
     }
 }

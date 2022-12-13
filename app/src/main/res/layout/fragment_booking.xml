@@ -7,7 +7,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/btnBack"
@@ -47,7 +47,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_height="210dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
@@ -67,34 +67,68 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="14dp"
-                    android:fontFamily="@font/inter"
+                    android:fontFamily="@font/inter_bold"
+                    style="@style/normalText20"
                     android:text="Garuda Airlines"
                     android:textColor="#000000"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tv_destination"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/linearDestionation"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="4dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:fontFamily="@font/inter"
-                    android:text="Jakarta (JKT) - Bali (DPS)"
-                    android:textColor="#000000"
+                    android:orientation="horizontal"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_aircraftName" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_aircraftName">
+                    <TextView
+                        android:id="@+id/tv_fromCity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:fontFamily="@font/inter"
+                        android:text="Jakarta (JKT)"
+                        android:textColor="#000000" />
+                    <TextView
+                        android:id="@+id/tv_arrivalCity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:fontFamily="@font/inter"
+                        android:text="- Bali (DPS)"
+                        android:textColor="#000000" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_time"
-                    android:layout_width="wrap_content"
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/linearTime"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/inter"
-                    android:text="15.30 WIB - 18.00 WIB"
-                    android:textColor="#000000"
+                    android:orientation="horizontal"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_destination" />
+                    app:layout_constraintTop_toBottomOf="@+id/linearDestionation">
+                    <TextView
+                        android:id="@+id/tv_timeFrom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/inter"
+                        android:text="15.30 WIB"
+                        android:textColor="#000000"/>
+                    <TextView
+                        android:id="@+id/tv_timeTo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/inter"
+                        android:text="- 18.00 WIB"
+                        android:textColor="#000000"/>
+
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/tv_totalTime"
@@ -102,10 +136,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:fontFamily="@font/inter"
+                    android:layout_marginTop="4dp"
                     android:text="2 hours 30 minutes"
                     android:textColor="#000000"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_time" />
+                    app:layout_constraintTop_toBottomOf="@+id/linearTime" />
 
                 <TextView
                     android:id="@+id/textView29"
@@ -114,34 +149,37 @@
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="8dp"
                     android:fontFamily="@font/inter"
-                    android:text="Ticket"
+                    android:text="Passenger Count :"
                     android:textColor="#000000"
+                    android:layout_marginBottom="14dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_totalTime" />
+
+                <TextView
+                    android:id="@+id/tv_seatTotal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="@font/inter"
+                    android:text="1 Passenger"
+                    android:textColor="#000000"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView29"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView29" />
 
                 <TextView
                     android:id="@+id/textView30"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/inter"
-                    android:text="Service"
-                    android:textColor="#000000"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView29" />
-
-                <TextView
-                    android:id="@+id/textView31"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:fontFamily="@font/inter"
                     android:text="Total"
                     android:textColor="#000000"
+                    android:layout_marginBottom="14dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView30" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView29" />
 
                 <TextView
                     android:id="@+id/tv_ticketPrice"
@@ -151,31 +189,9 @@
                     android:fontFamily="@font/inter"
                     android:text="Rp. 850.000"
                     android:textColor="#000000"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView29"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView30"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView29" />
-
-                <TextView
-                    android:id="@+id/tv_service"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/inter"
-                    android:text="Rp. 250.000"
-                    android:textColor="#000000"
-                    app:layout_constraintEnd_toEndOf="@+id/tv_ticketPrice"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_ticketPrice" />
-
-                <TextView
-                    android:id="@+id/tv_totalPay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/inter"
-                    android:text="Rp. 1.150.000"
-                    android:textColor="#000000"
-                    app:layout_constraintEnd_toEndOf="@+id/tv_service"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_service" />
+                    app:layout_constraintTop_toTopOf="@+id/textView30" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
@@ -224,7 +240,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/inter"
-            android:text="Baggage Capacity"
+            android:text="Baggage Capacity (in Kg)"
             android:textColor="#000000"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -237,7 +253,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/inter"
-            android:text="Email"
+            android:text="Home Phone"
             android:textColor="#000000"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -269,6 +285,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
+                android:inputType="text"
                 android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -278,7 +295,6 @@
             android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:hint="Seat Number"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView19"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
@@ -296,7 +312,6 @@
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
-            android:hint="Food Package"
             app:layout_constraintBottom_toBottomOf="@+id/input_chair"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/input_chair">
@@ -321,7 +336,8 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -338,7 +354,8 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -355,7 +372,8 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -366,11 +384,10 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="64dp"
             android:backgroundTint="@color/black"
             android:fontFamily="@font/inter_bold"
             android:text="Continue Payment"
-            android:textSize="12sp"
             android:textStyle="bold"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"

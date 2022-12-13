@@ -8,6 +8,8 @@ data class Booking(
     val baggage: Int,
     @SerializedName("createdAt")
     val createdAt: String,
+    @SerializedName("Flight")
+    val flight: Flight,
     @SerializedName("food")
     val food: Boolean,
     @SerializedName("homephone")
@@ -25,7 +27,7 @@ data class Booking(
     @SerializedName("seat")
     val seat: Int,
     @SerializedName("Ticket")
-    val ticket: Ticket,
+    val ticket: Any,
     @SerializedName("totalprice")
     val totalprice: Int,
     @SerializedName("updatedAt")

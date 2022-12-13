@@ -38,6 +38,8 @@ class RegisterFragment : Fragment() {
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
 
+        binding.registerProgressBar.visibility = View.GONE
+
         // for dropdown menu gender
         val items = listOf("Male", "Female")
         val adapter = ArrayAdapter(requireContext(), R.layout.list_item, items)

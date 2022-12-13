@@ -13,7 +13,7 @@ import java.time.LocalDate
 import java.util.*
 
 class FlightAdapter (private var listFlight : List<Flight>): RecyclerView.Adapter<FlightAdapter.ViewHolder>() {
-    var onAddFavorites : ((Flight)->Unit)? = null
+    var onOrderClick : ((Flight)->Unit)? = null
     class ViewHolder(var binding : ItemFlightBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,37 +26,21 @@ class FlightAdapter (private var listFlight : List<Flight>): RecyclerView.Adapte
         val dt = listFlight[position].departureTime
         val at = listFlight[position].arrivalTime
 
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-        var dtDate = sdf.parse(dt)
-        var atDate = sdf.parse(at)
+//        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+//        var dtDate = sdf.parse(dt)
+//        var atDate = sdf.parse(at)
+//
+//        val timeFormat = SimpleDateFormat("HH:mm")
+//        val parsedDt = timeFormat.format(dtDate)
+//        val parsedAt = timeFormat.format(atDate)
 
-        val timeFormat = SimpleDateFormat("HH:mm")
-        val parsedDt = timeFormat.format(dtDate)
-        val parsedAt = timeFormat.format(atDate)
-
-        holder.binding.timeFrom.text = parsedDt
-        holder.binding.timeTo.text = parsedAt
+        holder.binding.timeFrom.text = dt
+        holder.binding.timeTo.text = at
         holder.binding.planeName.text = listFlight[position].plane.name
         holder.binding.price.text = "Rp."+ listFlight[position].price.toString()
         holder.binding.btnOrder.setOnClickListener {
-            //go booking
+            onOrderClick?.invoke(listFlight[position])
         }
-
-//        holder.binding.cardMovie.setOnClickListener{
-//            val arg = Bundle()
-//            arg.putString("gambar", listMovie[position].posterPath)
-//            arg.putString("judul", listMovie[position].originalTitle)
-//            arg.putString("rating", listMovie[position].voteAverage.toString())
-//            arg.putString("tanggal", listMovie[position].releaseDate)
-//            arg.putString("bahasa", listMovie[position].originalLanguage)
-//            arg.putString("detail", listMovie[position].overview)
-//
-//            Navigation.findNavController(holder.itemView).navigate(R.id.action_homeFragment_to_detailFragment,arg)
-//        }
-//
-//        holder.binding.addFav.setOnClickListener {
-//            onAddFavorites?.invoke(listMovie[position])
-//        }
 
     }
 
