@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -26,10 +27,17 @@ import java.util.*
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
+
+    //Shared Preferences
     private lateinit var sharedPref: SharedPreferences
-    private lateinit var sharedPrefFlight : SharedPreferences
+    private lateinit var sharedPrefFlight: SharedPreferences
+    private lateinit var sharedPrefBooking: SharedPreferences
+
     private val listSpinner: MutableList<String> = ArrayList()
     private val listCity: MutableList<String> = ArrayList()
+
+    private var defaultDepartDate : String = ""
+    private var defaultReturnDate : String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,11 +49,26 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true ) {
+                override fun handleOnBackPressed() {
+                    //do nothing
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
+
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.VISIBLE
 
+        //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
-        sharedPrefFlight = requireActivity().getSharedPreferences("flightInfo", Context.MODE_PRIVATE)
+        //SharedPref for FlightData
+        sharedPrefFlight =
+            requireActivity().getSharedPreferences("flightInfo", Context.MODE_PRIVATE)
+        //SharedPref for booking data
+        sharedPrefBooking =
+            requireActivity().getSharedPreferences("bookingInfo", Context.MODE_PRIVATE)
 
         binding.tvUsername.text = sharedPref.getString("username", "User")
 
@@ -119,9 +142,21 @@ class HomeFragment : Fragment() {
             val toCity = listCity[to.toInt()]
             val fromCityId = from.toInt()+1
             val toCityId = to.toInt()+1
+            val depDate = binding.departDateText.text.toString()
+            val retDate = binding.returnDateText.text.toString()
 
+            //setting date to default
             val departDate = binding.departDateText.text.toString()
             val returnDate = binding.returnDateText.text.toString()
+
+            val parseToDate = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+            val pickedDepartDate = parseToDate.parse(departDate)
+            val pickedReturnDate = parseToDate.parse(returnDate)
+
+            val sdfDefault = SimpleDateFormat("YYYY-MM-dd", Locale.getDefault())
+            defaultDepartDate = sdfDefault.format(pickedDepartDate)
+            defaultReturnDate = sdfDefault.format(pickedReturnDate)
+
             var flightMode = ""
             flightMode = if (binding.lineOptionOneWay.visibility == View.VISIBLE){
                 "oneWay"
@@ -139,10 +174,16 @@ class HomeFragment : Fragment() {
             saveFlightInfo.putString("toAirport", toCity)
             saveFlightInfo.putString("adultCount", adultCountTotal)
             saveFlightInfo.putString("childCount", childCountTotal)
-            saveFlightInfo.putString("departDate", departDate)
-            saveFlightInfo.putString("returnDate", returnDate)
+            saveFlightInfo.putString("departDate", depDate)
+            saveFlightInfo.putString("returnDate", retDate)
             saveFlightInfo.putString("flightMode", flightMode)
             saveFlightInfo.apply()
+
+            //save default date to sharedpref booking
+            val saveBookingInfo = sharedPrefBooking.edit()
+            saveBookingInfo.putString("unparsedDepartDate", defaultDepartDate)
+            saveBookingInfo.putString("unparsedReturnDate", defaultDepartDate)
+            saveBookingInfo.apply()
 
             findNavController().navigate(R.id.action_homeFragment_to_flightListFragment)
         }
@@ -179,7 +220,6 @@ class HomeFragment : Fragment() {
                 val sdf = SimpleDateFormat("MMM")
                 val monthName = sdf.format(c.time)
                 binding.departDateText.text = "" + monthName + " " + dayOfMonth + ", " + year
-
             },
             year,
             month,
@@ -216,21 +256,23 @@ class HomeFragment : Fragment() {
 //                Log.d("Airport Data", it.toString())
 
                 //set json to arraylist
+                if(listSpinner.isEmpty()){
+                    for (element in it.data.airports) {
+                        listSpinner.add(element.name)
+                        listCity.add(element.city)
+                    }
+                    // Set result to spinner
+                    val adapter = context?.let { it1 ->
+                        ArrayAdapter(
+                            it1,
+                            R.layout.custom_airport_spinner_item, listSpinner
+                        )
+                    }
+                    adapter?.setDropDownViewResource(R.layout.simple_spinner_item)
+                    binding.spinnerFrom.adapter = adapter
+                    binding.spinnerTo.adapter = adapter
+                }
 
-                for (element in it.data.airports) {
-                    listSpinner.add(element.name)
-                    listCity.add(element.city)
-                }
-                // Set result to spinner
-                val adapter = context?.let { it1 ->
-                    ArrayAdapter(
-                        it1,
-                        R.layout.custom_airport_spinner_item, listSpinner
-                    )
-                }
-                adapter?.setDropDownViewResource(R.layout.simple_spinner_item)
-                binding.spinnerFrom.adapter = adapter
-                binding.spinnerTo.adapter = adapter
             } else {
                 Toast.makeText(
                     requireActivity(),

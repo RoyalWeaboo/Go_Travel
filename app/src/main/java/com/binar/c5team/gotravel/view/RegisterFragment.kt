@@ -54,7 +54,8 @@ class RegisterFragment : Fragment() {
         }
 
         binding.btnRegister.setOnClickListener {
-            validateInput()
+            //validateInput()
+            Toast.makeText(context, binding.inputAddr.editText?.text.toString(), Toast.LENGTH_SHORT).show()
         }
 
     }

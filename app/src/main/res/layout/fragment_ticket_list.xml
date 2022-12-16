@@ -134,11 +134,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearPassenger"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_below="@id/flight_information_2"
-        android:id="@+id/linearPassenger">
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/passenger_info"
             style="@style/normalText16"
@@ -147,33 +148,31 @@
             android:layout_below="@id/flight_information_2"
             android:layout_marginStart="20dp"
             android:layout_marginTop="16dp"
-            android:fontFamily="@font/inter_bold"
+            android:fontFamily="@font/inter"
             android:text="Passenger :" />
 
         <TextView
-            style="@style/normalText16"
             android:id="@+id/adultTotalCount"
+            style="@style/normalText16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/flight_information_2"
             android:layout_marginStart="4dp"
             android:layout_marginTop="16dp"
-            android:fontFamily="@font/inter_bold"
-            android:text="1 Adult"/>
+            android:fontFamily="@font/inter"
+            android:text="1 Adult" />
 
         <TextView
-            style="@style/normalText16"
             android:id="@+id/childTotalCount"
+            style="@style/normalText16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/flight_information_2"
             android:layout_marginStart="4dp"
             android:layout_marginTop="16dp"
-            android:fontFamily="@font/inter_bold"
-            android:text="0 Children"/>
+            android:fontFamily="@font/inter"
+            android:text="0 Children" />
     </LinearLayout>
-
-
 
     <LinearLayout
         android:visibility="gone"

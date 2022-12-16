@@ -42,8 +42,8 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun postBookingApi(token : String, id_flight : Int, id_user : Int, seat : Int, baggage : Int, food : Boolean, name : String, homePhone : String, mobilePhone : String, totalPrice : Int) {
-        RetrofitClient.apiWithToken(token).postBooking(BookingData(id_flight, id_user, seat, baggage, food, name, homePhone, mobilePhone, totalPrice))
+    fun postBookingApi(token : String, id_flight : Int, id_user : Int, baggage : Int, food : Boolean, name : String, homePhone : String, mobilePhone : String, totalPrice : Int, bookingDate : String) {
+        RetrofitClient.apiWithToken(token).postBooking(BookingData(id_flight, id_user, baggage, food, name, homePhone, mobilePhone, totalPrice, bookingDate))
             .enqueue(object : Callback<BookingResponse> {
                 override fun onResponse(
                     call: Call<BookingResponse>,

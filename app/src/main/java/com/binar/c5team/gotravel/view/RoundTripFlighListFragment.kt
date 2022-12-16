@@ -3,7 +3,6 @@ package com.binar.c5team.gotravel.view
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,11 +18,10 @@ import com.binar.c5team.gotravel.model.Flight
 import com.binar.c5team.gotravel.view.adapter.FlightAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 
-class FlightListFragment : Fragment() {
+class RoundTripFlightListFragment : Fragment() {
     lateinit var binding: FragmentTicketListBinding
     private lateinit var adapter: FlightAdapter
 
-    //Shared Preferences
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sharedPrefFlight: SharedPreferences
     private lateinit var sharedPrefBooking: SharedPreferences
@@ -35,8 +33,6 @@ class FlightListFragment : Fragment() {
     private var adultCount: Int = 0
     private var fligtMode: String = ""
 
-    private var departDate : String = ""
-    private var returnDate : String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +62,9 @@ class FlightListFragment : Fragment() {
         sharedPrefBooking =
             requireActivity().getSharedPreferences("bookingInfo", Context.MODE_PRIVATE)
 
+        //letting user know that this is for return ticket
+        Toast.makeText(context, "Choose Return Ticket", Toast.LENGTH_LONG).show()
+
         //getting user data
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
@@ -89,10 +88,10 @@ class FlightListFragment : Fragment() {
         toAirportId = sharedPrefFlight.getInt("toId", 0)
         adultCount = sharedPrefFlight.getString("adultCount", "")!!.toInt()
 
-        val fromAirportCity = sharedPrefFlight.getString("fromAirport", "")
-        val toAirportCity = sharedPrefFlight.getString("toAirport", "")
-        departDate = sharedPrefFlight.getString("departDate", "")!!
-        returnDate = sharedPrefFlight.getString("returnDate", "")!!
+        val fromAirportCity = sharedPrefFlight.getString("toAirport", "")
+        val toAirportCity = sharedPrefFlight.getString("fromAirport", "")
+        val departDate = sharedPrefFlight.getString("departDate", "")
+        val returnDate = sharedPrefFlight.getString("returnDate", "")
         val childrenCount = sharedPrefFlight.getString("childCount", "")
 
         //checking flight mode
@@ -121,10 +120,11 @@ class FlightListFragment : Fragment() {
             binding.childTotalCount.text = "- " + childrenCount + " Child"
         } else if (childrenCount.toInt() == 0){
             binding.childTotalCount.text = "- 0 Child"
-        } else {
+        }else {
             Toast.makeText(context, "Error : Cannot read passenger count !", Toast.LENGTH_SHORT)
                 .show()
             findNavController().navigate(R.id.action_flightListFragment_to_homeFragment)
+
         }
 
         binding.fromCity.text = fromAirportCity
@@ -148,7 +148,7 @@ class FlightListFragment : Fragment() {
                         filterTicket.add(i)
                     }
                 }
-                Log.d("Id", fromAirportId.toString() + toAirportId.toString())
+
                 adapter = FlightAdapter(filterTicket)
                 binding.rvTicketList.adapter = adapter
 
@@ -157,37 +157,23 @@ class FlightListFragment : Fragment() {
                         //saving departure flight data to shared pref
                         val departureBookingData = sharedPrefBooking.edit()
 
-                        departureBookingData.putInt("userId", userId)
-                        departureBookingData.putInt("flightId", it.id)
-                        departureBookingData.putInt("flightPrice", it.price)
-                        departureBookingData.putInt("availableSeat", it.availableSeats)
-                        departureBookingData.putInt("totalSeat", adultCount)
-                        departureBookingData.putString("planeName", it.plane.name)
-                        departureBookingData.putString("fromAirport", it.fromAirport.city)
-                        departureBookingData.putString("toAirport", it.toAirport.city)
-                        departureBookingData.putString("departureTime", it.departureTime)
-                        departureBookingData.putString("arrivalTime", it.arrivalTime)
-                        departureBookingData.putString("departureDate", departDate)
-                        departureBookingData.putString("returnDate", returnDate)
+                        departureBookingData.putInt("roundFlightId", it.id)
+                        departureBookingData.putInt("roundFlightPrice", it.price)
+                        departureBookingData.putInt("roundAvailableSeat", it.availableSeats)
+
+                        departureBookingData.putString("roundPlaneName", it.plane.name)
+                        departureBookingData.putString("roundFromAirport", it.fromAirport.city)
+                        departureBookingData.putString("roundToAirport", it.toAirport.city)
+                        departureBookingData.putString("roundDepartureTime", it.departureTime)
+                        departureBookingData.putString("roundArrivalTime", it.arrivalTime)
 
                         departureBookingData.apply()
 
-                        if (fligtMode == "oneWay") {
-                            findNavController().navigate(
-                                R.id.action_flightListFragment_to_bookingFragment
-                            )
-                        } else if (fligtMode == "roundTrip") {
-                            //open the flight list again for return ticket
-                            findNavController().navigate(
-                                R.id.action_flightListFragment_to_roundTripFlightListFragment
-                            )
-                        }
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Error : Cannot Read User Id",
-                            Toast.LENGTH_SHORT
+                        findNavController().navigate(
+                            R.id.action_roundTripFlightListFragment_to_bookingFragment
                         )
+                    } else {
+                        Toast.makeText(context, "Error : Cannot Read User Id", Toast.LENGTH_SHORT)
                             .show()
                     }
                 }
@@ -201,6 +187,5 @@ class FlightListFragment : Fragment() {
         }
         viewModel.callFlightApi(token)
     }
-
 
 }

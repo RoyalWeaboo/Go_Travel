@@ -24,8 +24,7 @@ import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentBookingBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 
-
-class BookingFragment : Fragment() {
+class RoundBookingFragment : Fragment() {
     private lateinit var binding: FragmentBookingBinding
 
     //Shared Preferences
@@ -38,11 +37,11 @@ class BookingFragment : Fragment() {
     private var fligtMode: String = ""
     private var seatCount: Int = 0
 
-    //departure data
-    private var flightId: Int = 0
-    private var flightPrice: Int = 0
+    //return data
+    private var roundFlightId: Int = 0
+    private var roundFlightPrice: Int = 0
 
-    private var departDate : String = ""
+    private var returnDate : String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +77,7 @@ class BookingFragment : Fragment() {
         userId = sharedPref.getInt("userId", 0)
 
         //getting date
-        departDate = sharedPrefBooking.getString("unparsedDepartDate", "null")!!
+        returnDate = sharedPrefBooking.getString("unparsedReturnDate", "null")!!
 
         //getting trip mode
         fligtMode = sharedPrefFlight.getString("flightMode", "").toString()
@@ -86,50 +85,29 @@ class BookingFragment : Fragment() {
         getSetData()
 
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_bookingFragment_to_flightListFragment)
+            findNavController().navigate(R.id.action_roundBookingFragment_to_bookingFragment)
         }
 
-        if (fligtMode == "oneWay") {
-            if (seatCount > 1) {
-                binding.passengerNumber.visibility = View.VISIBLE
-                var oneWaytempDataCount = 1
-                binding.btnToPayment.setOnClickListener {
-                    oneWaytempDataCount++
-                    binding.passengerNumber.text = "Passenger - " + oneWaytempDataCount.toString()
-                    bookNewTicket()
-                    clearInput()
-                    if (oneWaytempDataCount > seatCount) {
-                        findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
-                    }
-                }
-            } else {
-                binding.btnToPayment.setOnClickListener {
-                    bookNewTicket()
-                    findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
-                }
-            }
-        } else if (fligtMode == "roundTrip") {
-            if (seatCount > 1) {
-                binding.passengerNumber.visibility = View.VISIBLE
-                var departuretempDataCount = 1
-                binding.btnToPayment.setOnClickListener {
-                    departuretempDataCount++
-                    binding.passengerNumber.text = "Passenger - " + departuretempDataCount.toString()
-                    bookNewTicket()
-                    clearInput()
-                    if (departuretempDataCount > seatCount) {
-                        findNavController().navigate(
-                            R.id.action_bookingFragment_to_roundBookingFragment
-                        )
-                    }
-                }
-            } else {
-                binding.btnToPayment.setOnClickListener {
-                    bookNewTicket()
+        if (seatCount > 1) {
+            binding.passengerNumber.visibility = View.VISIBLE
+            var returnTempDataCount = 1
+            binding.btnToPayment.setOnClickListener {
+                returnTempDataCount++
+                binding.passengerNumber.text =
+                    "Passenger - " + returnTempDataCount.toString()
+                bookNewTicket()
+                clearInput()
+                if (returnTempDataCount > seatCount) {
                     findNavController().navigate(
-                        R.id.action_bookingFragment_to_roundBookingFragment
+                        R.id.action_roundBookingFragment_to_homeFragment
                     )
                 }
+            }
+        } else if (seatCount == 1) {
+            binding.btnToPayment.setOnClickListener {
+                bookNewTicket()
+                clearInput()
+                findNavController().navigate(R.id.action_roundBookingFragment_to_homeFragment)
             }
         }
 
@@ -147,6 +125,7 @@ class BookingFragment : Fragment() {
 
     private fun bookNewTicket() {
         val name = binding.inputFullname.editText?.text.toString()
+        val seat = binding.inputChair.editText?.text.toString().toInt()
         val baggage = binding.inputBaggage.editText?.text.toString().toInt()
         val food: Boolean
         val foodOpt = binding.inputFood.editText?.text.toString()
@@ -154,33 +133,33 @@ class BookingFragment : Fragment() {
         val homePhone = binding.inputEmail.editText?.text.toString()
         val mobilePhone = binding.inputMobileNumber.editText?.text.toString()
 
-//        Log.d("data", flightId.toString() + userId.toString() + baggage.toString() + food + name + homePhone + mobilePhone + flightPrice + departDate)
+//        Log.d("data", roundFlightId.toString() + userId.toString() + baggage.toString() + food + name + homePhone + mobilePhone + roundFlightPrice + returnDate)
 
         bookTicket(
             token,
-            flightId,
+            roundFlightId,
             userId,
             baggage,
             food,
             name,
             homePhone,
             mobilePhone,
-            flightPrice,
-            departDate
+            roundFlightPrice,
+            returnDate
         )
     }
 
     private fun getSetData() {
         //getting flight data
         seatCount = sharedPrefBooking.getInt("totalSeat", 0)
-        flightId = sharedPrefBooking.getInt("flightId", 0)
-        flightPrice = sharedPrefBooking.getInt("flightPrice", 0)
-        val availableSeat = sharedPrefBooking.getInt("availableSeat", 0)
-        val planeName = sharedPrefBooking.getString("planeName", "Error")
-        val fromAirport = sharedPrefBooking.getString("fromAirport", "Error")
-        val toAirport = sharedPrefBooking.getString("toAirport", "Error")
-        val departureTime = sharedPrefBooking.getString("departureTime", "00:00")
-        val arrivalTime = sharedPrefBooking.getString("arrivalTime", "00:00")
+        roundFlightId = sharedPrefBooking.getInt("roundFlightId", 0)
+        roundFlightPrice = sharedPrefBooking.getInt("roundFlightPrice", 0)
+        val availableSeat = sharedPrefBooking.getInt("roundAvailableSeat", 0)
+        val planeName = sharedPrefBooking.getString("roundPlaneName", "Error")
+        val fromAirport = sharedPrefBooking.getString("roundFromAirport", "Error")
+        val toAirport = sharedPrefBooking.getString("roundToAirport", "Error")
+        val departureTime = sharedPrefBooking.getString("roundDepartureTime", "00:00")
+        val arrivalTime = sharedPrefBooking.getString("roundArrivalTime", "00:00")
 
         // for dropdown food option
         val items = listOf("Yes", "No")
@@ -198,10 +177,10 @@ class BookingFragment : Fragment() {
         (binding.inputChair.editText as? AutoCompleteTextView)?.setAdapter(adapterSeatNum)
 
         //total flight price
-        val total = seatCount * flightPrice
+        val roundTotal = seatCount * roundFlightPrice
 
         //setting the textview
-        binding.tvTicketPrice.text = total.toString()
+        binding.tvTicketPrice.text = roundTotal.toString()
         binding.tvAircraftName.text = planeName
         binding.tvFromCity.text = fromAirport
         binding.tvArrivalCity.text = toAirport
@@ -210,12 +189,12 @@ class BookingFragment : Fragment() {
         binding.tvSeatTotal.text = seatCount.toString()
     }
 
+
     private fun notification() {
         val mBuilder = NotificationCompat.Builder(requireContext().applicationContext, "1")
         val ii = Intent(requireContext().applicationContext, MainActivity::class.java)
         ii.putExtra("redirect", "historyFragment")
-        val pendingIntent =
-            PendingIntent.getActivity(requireContext().applicationContext, 0, ii, 0)
+        val pendingIntent = PendingIntent.getActivity(requireContext().applicationContext, 0, ii, 0)
 
         val bigText = NotificationCompat.BigTextStyle()
         bigText.setBigContentTitle("Booking Succesful !")
@@ -253,7 +232,7 @@ class BookingFragment : Fragment() {
         homephone: String,
         mobilephone: String,
         totalprice: Int,
-        departDate : String
+        returnDate : String
     ) {
         val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
         viewModel.getBookingLD().observe(viewLifecycleOwner) {
@@ -278,8 +257,8 @@ class BookingFragment : Fragment() {
             homephone,
             mobilephone,
             totalprice,
-            departDate
+            returnDate
         )
     }
-
 }
+

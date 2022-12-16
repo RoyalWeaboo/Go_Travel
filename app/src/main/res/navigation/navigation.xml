@@ -92,6 +92,15 @@
         <action
             android:id="@+id/action_bookingFragment_to_flightListFragment"
             app:destination="@id/flightListFragment" />
+        <action
+            android:id="@+id/action_bookingFragment_to_roundTripFlightListFragment"
+            app:destination="@id/roundTripFlightListFragment" />
+        <action
+            android:id="@+id/action_bookingFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_bookingFragment_to_roundBookingFragment"
+            app:destination="@id/roundBookingFragment" />
     </fragment>
     <fragment
         android:id="@+id/flightListFragment"
@@ -102,7 +111,31 @@
             app:destination="@id/homeFragment" />
         <argument android:name="arguments" />
         <action
+            android:id="@+id/action_flightListFragment_to_roundTripFlightListFragment"
+            app:destination="@id/roundTripFlightListFragment" />
+        <action
             android:id="@+id/action_flightListFragment_to_bookingFragment"
             app:destination="@id/bookingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/roundTripFlightListFragment"
+        android:name="com.binar.c5team.gotravel.view.RoundTripFlightListFragment"
+        android:label="RoundTripFlightListFragment" >
+        <argument android:name="arguments" />
+        <action
+            android:id="@+id/action_roundTripFlightListFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/roundBookingFragment"
+        android:name="com.binar.c5team.gotravel.view.RoundBookingFragment"
+        android:label="fragment_round_booking"
+        tools:layout="@layout/fragment_round_booking" >
+        <action
+            android:id="@+id/action_roundBookingFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment" />
+        <action
+            android:id="@+id/action_roundBookingFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 </navigation>

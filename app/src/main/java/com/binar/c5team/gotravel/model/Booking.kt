@@ -6,10 +6,12 @@ import com.google.gson.annotations.SerializedName
 data class Booking(
     @SerializedName("baggage")
     val baggage: Int,
+    @SerializedName("booking_date")
+    val bookingDate: Any,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("Flight")
-    val flight: Flight,
+    val flight: FlightX,
     @SerializedName("food")
     val food: Boolean,
     @SerializedName("homephone")
@@ -24,14 +26,12 @@ data class Booking(
     val mobilephone: String,
     @SerializedName("name")
     val name: String,
-    @SerializedName("seat")
-    val seat: Int,
     @SerializedName("Ticket")
-    val ticket: Any,
+    val ticket: TicketX,
     @SerializedName("totalprice")
-    val totalprice: Int,
+    val totalprice: Any,
     @SerializedName("updatedAt")
     val updatedAt: String,
     @SerializedName("User")
-    val user: User
+    val user: UserX
 )
