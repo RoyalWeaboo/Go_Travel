@@ -2,9 +2,7 @@ package com.binar.c5team.gotravel.network
 
 import com.binar.c5team.gotravel.model.*
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface RestfulApi {
     //Airport Data
@@ -30,4 +28,16 @@ interface RestfulApi {
     //Ticket Booking
     @POST("booking")
     fun postBooking(@Body bookingData : BookingData) : Call<BookingResponse>
+
+    //Get Wishlist
+    @GET("whislist")
+    fun getWishlist() : Call<WishlistResponse>
+
+    //Add Wishlist
+    @POST("whislist")
+    fun postWishlist(@Body wishlistData : WishlistData) : Call <WishlistPostResponse>
+
+    //Delete Wishlist
+    @DELETE("whislist/{id}")
+    fun deleteWishlist(@Path("id") id : Int) : Call<Int>
 }

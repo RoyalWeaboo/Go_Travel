@@ -83,13 +83,28 @@
                 android:fontFamily="@font/inter_bold"
                 android:text="Rp.500.000" />
 
-            <Button
-                android:id="@+id/btnOrder"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:backgroundTint="@color/black"
-                android:text="order now" />
+                android:orientation="vertical"
+                android:layout_alignParentEnd="true">
+                <Button
+                    android:id="@+id/btnOrder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/black"
+                    android:text="ORDER NOW" />
+
+                <TextView
+                    android:id="@+id/addWishlist"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/black"
+                    android:fontFamily="@font/inter"
+                    android:text="+ Add To Wishlist"
+                    android:textColor="@color/black" />
+            </LinearLayout>
         </RelativeLayout>
 
 

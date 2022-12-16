@@ -76,6 +76,10 @@ class HomeFragment : Fragment() {
         getDate()
         callAirportList()
 
+        binding.wishlist.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_wishlistFragment)
+        }
+
         binding.menuOneWay.setOnClickListener {
             val mSlideRight = Slide()
             mSlideRight.slideEdge = Gravity.END

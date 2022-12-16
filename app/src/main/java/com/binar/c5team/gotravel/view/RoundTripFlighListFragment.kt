@@ -177,6 +177,18 @@ class RoundTripFlightListFragment : Fragment() {
                             .show()
                     }
                 }
+                adapter.onWishlistClick = {
+                    if (userId != 0) {
+                        addNewWishlist(token, userId, it.id)
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Error : Cannot Read User Id",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+                }
             } else {
                 Toast.makeText(
                     requireActivity(),
@@ -186,6 +198,28 @@ class RoundTripFlightListFragment : Fragment() {
             }
         }
         viewModel.callFlightApi(token)
+    }
+
+    private fun addNewWishlist(token: String, id_flight : Int, id_user : Int){
+        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+
+        viewModel.postWishlistLD().observe(viewLifecycleOwner) {
+            if (it != null) {
+                Toast.makeText(
+                    context,
+                    "Added to Wishlist !",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            }else{
+                Toast.makeText(
+                    requireActivity(),
+                    "Failed adding ticket to Wishlist",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        viewModel.postWishlistApi(token, id_flight, id_user)
     }
 
 }
