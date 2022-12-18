@@ -25,9 +25,13 @@ interface RestfulApi {
     @GET("flight")
     fun getFlight() : Call<FlightResponse>
 
+    //Get Booking (For History)
+    @GET("booking")
+    fun getBooking() : Call<BookingResponse>
+
     //Ticket Booking
     @POST("booking")
-    fun postBooking(@Body bookingData : BookingData) : Call<BookingResponse>
+    fun postBooking(@Body bookingData : BookingData) : Call<BookingPostResponse>
 
     //Get Wishlist
     @GET("whislist")
@@ -40,4 +44,5 @@ interface RestfulApi {
     //Delete Wishlist
     @DELETE("whislist/{id}")
     fun deleteWishlist(@Path("id") id : Int) : Call<Int>
+
 }

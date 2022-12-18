@@ -23,6 +23,8 @@ import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentBookingBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class BookingFragment : Fragment() {
@@ -86,7 +88,12 @@ class BookingFragment : Fragment() {
         getSetData()
 
         binding.btnBack.setOnClickListener {
+            if (fligtMode == "oneWay")
             findNavController().navigate(R.id.action_bookingFragment_to_flightListFragment)
+            else{
+                findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
+                Toast.makeText(context, "Booking Canceled", Toast.LENGTH_SHORT).show()
+            }
         }
 
         if (fligtMode == "oneWay") {
@@ -138,7 +145,6 @@ class BookingFragment : Fragment() {
 
     private fun clearInput() {
         binding.inputFullname.editText?.text?.clear()
-        binding.inputChair.editText?.text?.clear()
         binding.inputBaggage.editText?.text?.clear()
         binding.inputFood.editText?.text?.clear()
         binding.inputEmail.editText?.text?.clear()
@@ -175,27 +181,17 @@ class BookingFragment : Fragment() {
         seatCount = sharedPrefBooking.getInt("totalSeat", 0)
         flightId = sharedPrefBooking.getInt("flightId", 0)
         flightPrice = sharedPrefBooking.getInt("flightPrice", 0)
-        val availableSeat = sharedPrefBooking.getInt("availableSeat", 0)
         val planeName = sharedPrefBooking.getString("planeName", "Error")
         val fromAirport = sharedPrefBooking.getString("fromAirport", "Error")
         val toAirport = sharedPrefBooking.getString("toAirport", "Error")
         val departureTime = sharedPrefBooking.getString("departureTime", "00:00")
         val arrivalTime = sharedPrefBooking.getString("arrivalTime", "00:00")
+        countTime()
 
         // for dropdown food option
         val items = listOf("Yes", "No")
         val adapterFood = ArrayAdapter(requireContext(), R.layout.list_item, items)
         (binding.inputFood.editText as? AutoCompleteTextView)?.setAdapter(adapterFood)
-
-        // for dropdown seat option
-        val seatNumber: MutableList<Int> = ArrayList()
-        var num = 1
-        for (element in 1..availableSeat) {
-            seatNumber.add(num)
-            num++
-        }
-        val adapterSeatNum = ArrayAdapter(requireContext(), R.layout.list_item, seatNumber)
-        (binding.inputChair.editText as? AutoCompleteTextView)?.setAdapter(adapterSeatNum)
 
         //total flight price
         val total = seatCount * flightPrice
@@ -206,7 +202,7 @@ class BookingFragment : Fragment() {
         binding.tvFromCity.text = fromAirport
         binding.tvArrivalCity.text = toAirport
         binding.tvTimeFrom.text = departureTime
-        binding.tvTimeTo.text = arrivalTime
+        binding.tvTimeTo.text = "- "+arrivalTime
         binding.tvSeatTotal.text = seatCount.toString()
     }
 
@@ -280,6 +276,23 @@ class BookingFragment : Fragment() {
             totalprice,
             departDate
         )
+    }
+
+    private fun countTime(){
+        //getting booking date and time
+        val flightTime = sharedPrefBooking.getString("departureTime", "00:00")
+        val flightArrivalTime = sharedPrefBooking.getString("arrivalTime", "00:00")
+
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+        val timeDepart = flightTime?.let { timeFormat.parse(it) }
+        val timeArrival = flightArrivalTime?.let { timeFormat.parse(it) }
+
+        val diff = timeDepart!!.time - timeArrival!!.time
+        val timeCount = "( ${(diff / (1000 * 60 * 60) * -1)} Hours ${(diff % (1000 * 60 * 60) * -1)} Minutes )"
+
+        binding.tvTotalTime.text = timeCount
+
     }
 
 }

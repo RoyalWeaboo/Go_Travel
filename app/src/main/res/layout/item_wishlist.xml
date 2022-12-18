@@ -1,45 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardWishlist"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/cardWishlist"
-    app:cardCornerRadius="8dp"
-    app:strokeColor="#AAAAAA"
     android:layout_margin="8dp"
-    app:strokeWidth="1dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:cardCornerRadius="10dp"
+    app:strokeColor="#AAAAAA"
+    android:elevation="16dp"
+    app:strokeWidth="1dp">
+
+    <ImageView
+        android:id="@+id/delWishlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="@font/inter"
+        android:gravity="center"
+        android:src="@drawable/ic_baseline_delete_24" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:padding="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="8dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/timeFrom"
                     style="@style/normalText28"
-                    android:fontFamily="@font/inter_bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
                     android:text="18 : 30" />
             </LinearLayout>
 
             <ImageView
                 android:layout_width="96dp"
+                android:layout_height="32dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:layout_height="32dp"
                 android:src="@drawable/plane_trip" />
 
             <LinearLayout
@@ -50,9 +65,9 @@
                 <TextView
                     android:id="@+id/timeTo"
                     style="@style/normalText28"
-                    android:fontFamily="@font/inter_bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
                     android:text="20 : 30" />
 
 
@@ -65,59 +80,51 @@
             android:layout_height="1dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:background="#26000000"/>
+            android:background="#26000000" />
 
         <RelativeLayout
-            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="16dp">
 
             <LinearLayout
-                android:layout_marginLeft="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/planeName"
                     style="@style/normalText20"
-                    android:fontFamily="@font/inter_bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
                     android:text="Garuda Airlines" />
 
                 <TextView
                     android:id="@+id/price"
                     style="@style/normalText20"
-                    android:fontFamily="@font/inter_bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
                     android:text="Rp.500.000" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_alignParentEnd="true">
+                android:layout_alignParentEnd="true"
+                android:orientation="horizontal">
+
                 <Button
                     android:id="@+id/btnOrder"
-                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:backgroundTint="@color/black"
                     android:text="ORDER NOW" />
 
-                <TextView
-                    android:id="@+id/delWishlist"
-                    android:gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/black"
-                    android:fontFamily="@font/inter"
-                    android:text="Delete From Wishlist"
-                    android:textColor="#CA1111" />
             </LinearLayout>
         </RelativeLayout>
 

@@ -23,6 +23,8 @@ import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentBookingBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RoundBookingFragment : Fragment() {
     private lateinit var binding: FragmentBookingBinding
@@ -41,7 +43,7 @@ class RoundBookingFragment : Fragment() {
     private var roundFlightId: Int = 0
     private var roundFlightPrice: Int = 0
 
-    private var returnDate : String = ""
+    private var returnDate: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,6 +74,8 @@ class RoundBookingFragment : Fragment() {
         sharedPrefBooking =
             requireActivity().getSharedPreferences("bookingInfo", Context.MODE_PRIVATE)
 
+        binding.flightModeStatus.text = "Return :"
+
         //getting user data
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
@@ -85,7 +89,8 @@ class RoundBookingFragment : Fragment() {
         getSetData()
 
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_roundBookingFragment_to_bookingFragment)
+            findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
+            Toast.makeText(context, "Booking Canceled", Toast.LENGTH_SHORT).show()
         }
 
         if (seatCount > 1) {
@@ -116,7 +121,6 @@ class RoundBookingFragment : Fragment() {
 
     private fun clearInput() {
         binding.inputFullname.editText?.text?.clear()
-        binding.inputChair.editText?.text?.clear()
         binding.inputBaggage.editText?.text?.clear()
         binding.inputFood.editText?.text?.clear()
         binding.inputEmail.editText?.text?.clear()
@@ -125,7 +129,6 @@ class RoundBookingFragment : Fragment() {
 
     private fun bookNewTicket() {
         val name = binding.inputFullname.editText?.text.toString()
-        val seat = binding.inputChair.editText?.text.toString().toInt()
         val baggage = binding.inputBaggage.editText?.text.toString().toInt()
         val food: Boolean
         val foodOpt = binding.inputFood.editText?.text.toString()
@@ -160,21 +163,12 @@ class RoundBookingFragment : Fragment() {
         val toAirport = sharedPrefBooking.getString("roundToAirport", "Error")
         val departureTime = sharedPrefBooking.getString("roundDepartureTime", "00:00")
         val arrivalTime = sharedPrefBooking.getString("roundArrivalTime", "00:00")
+        countTime()
 
         // for dropdown food option
         val items = listOf("Yes", "No")
         val adapterFood = ArrayAdapter(requireContext(), R.layout.list_item, items)
         (binding.inputFood.editText as? AutoCompleteTextView)?.setAdapter(adapterFood)
-
-        // for dropdown seat option
-        val seatNumber: MutableList<Int> = ArrayList()
-        var num = 1
-        for (element in 1..availableSeat) {
-            seatNumber.add(num)
-            num++
-        }
-        val adapterSeatNum = ArrayAdapter(requireContext(), R.layout.list_item, seatNumber)
-        (binding.inputChair.editText as? AutoCompleteTextView)?.setAdapter(adapterSeatNum)
 
         //total flight price
         val roundTotal = seatCount * roundFlightPrice
@@ -185,7 +179,7 @@ class RoundBookingFragment : Fragment() {
         binding.tvFromCity.text = fromAirport
         binding.tvArrivalCity.text = toAirport
         binding.tvTimeFrom.text = departureTime
-        binding.tvTimeTo.text = arrivalTime
+        binding.tvTimeTo.text = "- "+arrivalTime
         binding.tvSeatTotal.text = seatCount.toString()
     }
 
@@ -232,7 +226,7 @@ class RoundBookingFragment : Fragment() {
         homephone: String,
         mobilephone: String,
         totalprice: Int,
-        returnDate : String
+        returnDate: String
     ) {
         val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
         viewModel.getBookingLD().observe(viewLifecycleOwner) {
@@ -259,6 +253,23 @@ class RoundBookingFragment : Fragment() {
             totalprice,
             returnDate
         )
+    }
+
+    private fun countTime() {
+        //getting booking date and time
+        val flightTime = sharedPrefBooking.getString("roundDepartureTime", "00:00")
+        val flightArrivalTime = sharedPrefBooking.getString("roundArrivalTime", "00:00")
+
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+        val timeDepart = flightTime?.let { timeFormat.parse(it) }
+        val timeArrival = flightArrivalTime?.let { timeFormat.parse(it) }
+
+        val diff = timeDepart!!.time - timeArrival!!.time
+        val timeCount = "( ${(diff / (1000 * 60 * 60) * -1)} Hours ${(diff % (1000 * 60 * 60) * -1)} Minutes )"
+
+        binding.tvTotalTime.text = timeCount
+
     }
 }
 

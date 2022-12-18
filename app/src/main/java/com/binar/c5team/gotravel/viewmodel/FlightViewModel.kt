@@ -12,6 +12,7 @@ import retrofit2.Response
 class FlightViewModel : ViewModel() {
     var flightLiveData : MutableLiveData<FlightResponse> = MutableLiveData()
     var bookingLiveData : MutableLiveData<BookingResponse> = MutableLiveData()
+    var postBookingLiveData : MutableLiveData<BookingPostResponse> = MutableLiveData()
     var wishlistLiveData : MutableLiveData<WishlistResponse> = MutableLiveData()
     var postWishlistLiveData : MutableLiveData<WishlistPostResponse> = MutableLiveData()
     var delWishlistLiveData : MutableLiveData<Int> = MutableLiveData()
@@ -22,6 +23,10 @@ class FlightViewModel : ViewModel() {
 
     fun getBookingLD():MutableLiveData<BookingResponse> {
         return bookingLiveData
+    }
+
+    fun getPostBookingLD():MutableLiveData<BookingPostResponse> {
+        return postBookingLiveData
     }
 
     fun getWishlistLD():MutableLiveData<WishlistResponse> {
@@ -78,21 +83,43 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun postBookingApi(token : String, id_flight : Int, id_user : Int, baggage : Int, food : Boolean, name : String, homePhone : String, mobilePhone : String, totalPrice : Int, bookingDate : String) {
-        RetrofitClient.apiWithToken(token).postBooking(BookingData(id_flight, id_user, baggage, food, name, homePhone, mobilePhone, totalPrice, bookingDate))
-            .enqueue(object : Callback<BookingResponse> {
+    fun callBookingApi(token: String){
+        RetrofitClient.apiWithToken(token).getBooking()
+            .enqueue(object : Callback<BookingResponse>{
                 override fun onResponse(
                     call: Call<BookingResponse>,
                     response: Response<BookingResponse>
                 ) {
-                    if (response.isSuccessful) {
+                    if(response.isSuccessful){
                         bookingLiveData.postValue(response.body())
+                    }else{
+                        Log.d("Fetch Booking Failed", response.body().toString())
+                    }
+                }
+
+                override fun onFailure(call: Call<BookingResponse>, t: Throwable) {
+                    Log.d("Fetch Booking Error", call.toString())
+                }
+
+            }
+            )
+    }
+
+    fun postBookingApi(token : String, id_flight : Int, id_user : Int, baggage : Int, food : Boolean, name : String, homePhone : String, mobilePhone : String, totalPrice : Int, bookingDate : String) {
+        RetrofitClient.apiWithToken(token).postBooking(BookingData(id_flight, id_user, baggage, food, name, homePhone, mobilePhone, totalPrice, bookingDate))
+            .enqueue(object : Callback<BookingPostResponse> {
+                override fun onResponse(
+                    call: Call<BookingPostResponse>,
+                    response: Response<BookingPostResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        postBookingLiveData.postValue(response.body())
                     } else {
                         Log.d("Booking Failed", response.body().toString())
                     }
                 }
 
-                override fun onFailure(call: Call<BookingResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BookingPostResponse>, t: Throwable) {
                     Log.d("Booking Error", call.toString())
                 }
 
@@ -141,5 +168,7 @@ class FlightViewModel : ViewModel() {
                 }
             })
     }
+
+
 
 }
