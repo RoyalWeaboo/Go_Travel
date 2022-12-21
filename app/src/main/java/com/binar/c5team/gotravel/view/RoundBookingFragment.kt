@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentBookingBinding
+import com.binar.c5team.gotravel.view.dialog.PaymentDialog
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -283,7 +284,9 @@ class RoundBookingFragment : Fragment() {
     }
 
     private fun openPaymentImageUploader() {
-
+        val dialogFragment = PaymentDialog()
+        val transaction = requireFragmentManager().beginTransaction()
+        dialogFragment.show(transaction, "Payment Fragment")
     }
 }
 
