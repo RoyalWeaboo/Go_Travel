@@ -1,5 +1,6 @@
 package com.binar.c5team.gotravel.view
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,8 @@ import java.lang.Exception
 class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
     lateinit var bottomNavigationView : BottomNavigationView
+    private lateinit var sharedPref: SharedPreferences
+    private var session: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +25,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        setUpNavigation()
+        if(session=="true"){
+            setUpNavigation()
+        }else{
+            setUpGuestNavigation()
+        }
+
         try {
             val value = intent.extras!!["redirect"].toString()
             val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
@@ -35,6 +43,16 @@ class MainActivity : AppCompatActivity() {
         }catch (e : Exception){
             Log.d("Error", e.toString())
         }
+    }
+
+    private fun setUpGuestNavigation() {
+        bottomNavigationView = binding.guestBottomNav
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.fragmentContainerView) as NavHostFragment?
+        setupWithNavController(
+            bottomNavigationView,
+            navHostFragment!!.navController
+        )
     }
 
 

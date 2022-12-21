@@ -40,6 +40,10 @@ class OpeningFragment : Fragment() {
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
 
+        binding.skipLogin.setOnClickListener {
+            Navigation.findNavController(view).navigate(R.id.action_openingFragment_to_guestHomeFragment)
+        }
+
         binding.toCreate.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_openingFragment_to_registerFragment)
         }

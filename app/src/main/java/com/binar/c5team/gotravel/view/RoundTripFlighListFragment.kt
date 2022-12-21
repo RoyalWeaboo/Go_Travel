@@ -26,6 +26,7 @@ class RoundTripFlightListFragment : Fragment() {
     private lateinit var sharedPrefFlight: SharedPreferences
     private lateinit var sharedPrefBooking: SharedPreferences
 
+    private var session: String = ""
     private var userId: Int = 0
     private var token: String = ""
     private var fromAirportId: Int = 0
@@ -66,6 +67,7 @@ class RoundTripFlightListFragment : Fragment() {
         Toast.makeText(context, "Choose Return Ticket", Toast.LENGTH_LONG).show()
 
         //getting user data
+        session = sharedPref.getString("session", "").toString()
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
 
@@ -153,42 +155,59 @@ class RoundTripFlightListFragment : Fragment() {
                 binding.rvTicketList.adapter = adapter
 
                 adapter.onOrderClick = {
-                    if (userId != 0) {
-                        //saving departure flight data to shared pref
-                        val departureBookingData = sharedPrefBooking.edit()
+                    if (session == "true") {
+                        if (userId != 0) {
+                            //saving departure flight data to shared pref
+                            val departureBookingData = sharedPrefBooking.edit()
 
-                        departureBookingData.putInt("roundFlightId", it.id)
-                        departureBookingData.putInt("roundFlightPrice", it.price)
-                        departureBookingData.putInt("roundAvailableSeat", it.availableSeats)
+                            departureBookingData.putInt("roundFlightId", it.id)
+                            departureBookingData.putInt("roundFlightPrice", it.price)
+                            departureBookingData.putInt("roundAvailableSeat", it.availableSeats)
 
-                        departureBookingData.putString("roundPlaneName", it.plane.name)
-                        departureBookingData.putString("roundFromAirport", it.fromAirport.city)
-                        departureBookingData.putString("roundToAirport", it.toAirport.city)
-                        departureBookingData.putString("roundDepartureTime", it.departureTime)
-                        departureBookingData.putString("roundArrivalTime", it.arrivalTime)
+                            departureBookingData.putString("roundPlaneName", it.plane.name)
+                            departureBookingData.putString("roundFromAirport", it.fromAirport.city)
+                            departureBookingData.putString("roundToAirport", it.toAirport.city)
+                            departureBookingData.putString("roundDepartureTime", it.departureTime)
+                            departureBookingData.putString("roundArrivalTime", it.arrivalTime)
 
-                        departureBookingData.apply()
+                            departureBookingData.apply()
 
+                            findNavController().navigate(
+                                R.id.action_roundTripFlightListFragment_to_bookingFragment
+                            )
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Error : Cannot Read User Id",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    }else{
                         findNavController().navigate(
-                            R.id.action_roundTripFlightListFragment_to_bookingFragment
+                            R.id.action_roundTripFlightListFragment_to_loginFragment
                         )
-                    } else {
-                        Toast.makeText(context, "Error : Cannot Read User Id", Toast.LENGTH_SHORT)
-                            .show()
                     }
                 }
                 adapter.onWishlistClick = {
-                    if (userId != 0) {
-                        addNewWishlist(token, userId, it.id)
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Error : Cannot Read User Id",
-                            Toast.LENGTH_SHORT
+                    if(session == "true"){
+                        if (userId != 0) {
+                            addNewWishlist(token, userId, it.id)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Error : Cannot Read User Id",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                    }else{
+                        findNavController().navigate(
+                            R.id.action_roundTripFlightListFragment_to_loginFragment
                         )
-                            .show()
                     }
                 }
+
             } else {
                 Toast.makeText(
                     requireActivity(),

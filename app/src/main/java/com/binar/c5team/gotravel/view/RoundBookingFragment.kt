@@ -1,9 +1,6 @@
 package com.binar.c5team.gotravel.view
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -103,16 +100,14 @@ class RoundBookingFragment : Fragment() {
                 bookNewTicket()
                 clearInput()
                 if (returnTempDataCount > seatCount) {
-                    findNavController().navigate(
-                        R.id.action_roundBookingFragment_to_homeFragment
-                    )
+                    openPaymentDialog()
                 }
             }
         } else if (seatCount == 1) {
             binding.btnToPayment.setOnClickListener {
                 bookNewTicket()
                 clearInput()
-                findNavController().navigate(R.id.action_roundBookingFragment_to_homeFragment)
+                openPaymentDialog()
             }
         }
 
@@ -269,6 +264,25 @@ class RoundBookingFragment : Fragment() {
         val timeCount = "( ${(diff / (1000 * 60 * 60) * -1)} Hours ${(diff % (1000 * 60 * 60) * -1)} Minutes )"
 
         binding.tvTotalTime.text = timeCount
+
+    }
+
+    private fun openPaymentDialog(){
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Booking Success !")
+        builder.setMessage("You've succesfully booked ticket, Please proceed to pay the ticket by clicking the Pay Now Button, or you can pay later within 2 Hours before the ticket become invalid")
+
+        builder.setPositiveButton("Pay Now") { dialog, which ->
+            openPaymentImageUploader()
+        }
+
+        builder.setNegativeButton("Later") { dialog, which ->
+            findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
+        }
+        builder.show()
+    }
+
+    private fun openPaymentImageUploader() {
 
     }
 }

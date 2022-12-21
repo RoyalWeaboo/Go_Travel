@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/guestHomeFragment"
+        android:title="Home"
+        android:icon="@drawable/home_nav" />
+    <item android:id="@+id/guestHistoryFragment"
+        android:title="History"
+        android:icon="@drawable/history_nav" />
+    <item android:id="@+id/guestProfileFragment"
+        android:title="Profile"
+        android:icon="@drawable/profile_nav" />
+</menu>

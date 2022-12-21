@@ -1,9 +1,6 @@
 package com.binar.c5team.gotravel.view
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -37,7 +34,7 @@ class BookingFragment : Fragment() {
 
     private var token: String = ""
     private var userId: Int = 0
-    private var fligtMode: String = ""
+    private var flightMode: String = ""
     private var seatCount: Int = 0
 
     //departure data
@@ -83,12 +80,12 @@ class BookingFragment : Fragment() {
         departDate = sharedPrefBooking.getString("unparsedDepartDate", "null")!!
 
         //getting trip mode
-        fligtMode = sharedPrefFlight.getString("flightMode", "").toString()
+        flightMode = sharedPrefFlight.getString("flightMode", "").toString()
 
         getSetData()
 
         binding.btnBack.setOnClickListener {
-            if (fligtMode == "oneWay")
+            if (flightMode == "oneWay")
             findNavController().navigate(R.id.action_bookingFragment_to_flightListFragment)
             else{
                 findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
@@ -96,7 +93,7 @@ class BookingFragment : Fragment() {
             }
         }
 
-        if (fligtMode == "oneWay") {
+        if (flightMode == "oneWay") {
             if (seatCount > 1) {
                 binding.passengerNumber.visibility = View.VISIBLE
                 var oneWaytempDataCount = 1
@@ -106,16 +103,16 @@ class BookingFragment : Fragment() {
                     bookNewTicket()
                     clearInput()
                     if (oneWaytempDataCount > seatCount) {
-                        findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
+                        openPaymentDialog()
                     }
                 }
             } else {
                 binding.btnToPayment.setOnClickListener {
                     bookNewTicket()
-                    findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
+                    openPaymentDialog()
                 }
             }
-        } else if (fligtMode == "roundTrip") {
+        } else if (flightMode == "roundTrip") {
             if (seatCount > 1) {
                 binding.passengerNumber.visibility = View.VISIBLE
                 var departuretempDataCount = 1
@@ -125,6 +122,7 @@ class BookingFragment : Fragment() {
                     bookNewTicket()
                     clearInput()
                     if (departuretempDataCount > seatCount) {
+
                         findNavController().navigate(
                             R.id.action_bookingFragment_to_roundBookingFragment
                         )
@@ -292,6 +290,25 @@ class BookingFragment : Fragment() {
         val timeCount = "( ${(diff / (1000 * 60 * 60) * -1)} Hours ${(diff % (1000 * 60 * 60) * -1)} Minutes )"
 
         binding.tvTotalTime.text = timeCount
+
+    }
+
+    private fun openPaymentDialog(){
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Booking Success !")
+        builder.setMessage("You've succesfully booked ticket, Please proceed to pay the ticket by clicking the Pay Now Button, or you can pay later within 2 Hours before the ticket become invalid")
+
+        builder.setPositiveButton("Pay Now") { dialog, which ->
+            openPaymentImageUploader()
+        }
+
+        builder.setNegativeButton("Later") { dialog, which ->
+            findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
+        }
+        builder.show()
+    }
+
+    private fun openPaymentImageUploader() {
 
     }
 

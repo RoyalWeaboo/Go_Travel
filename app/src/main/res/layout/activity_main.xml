@@ -23,7 +23,20 @@
         android:background="@color/white"
         android:elevation="16dp"
         app:itemIconTint="@color/bottom_nav_selector"
+        android:visibility="gone"
         app:itemTextColor="@color/bottom_nav_selector"
         app:menu="@menu/bottom_navigation_menu" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:id="@+id/guest_bottom_nav"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:elevation="16dp"
+        app:itemIconTint="@color/bottom_nav_selector"
+        app:itemTextColor="@color/bottom_nav_selector"
+        app:menu="@menu/guest_bottom_navigation_menu" />
 
 </RelativeLayout>
