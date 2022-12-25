@@ -1,4 +1,4 @@
-package com.binar.c5team.gotravel.view
+package com.binar.c5team.gotravel.view.fragment
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -31,6 +31,10 @@ class WishlistFragment : Fragment() {
 
     private lateinit var adapter: WishlistAdapter
 
+    //progressbar
+    var progressView: ViewGroup? = null
+    private var isProgressShowing = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,6 +65,14 @@ class WishlistFragment : Fragment() {
         //getting user data
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
+
+        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        viewModel.loading.observe(viewLifecycleOwner) {
+            when (it) {
+                true -> showProgressingView()
+                false -> hideProgressingView()
+            }
+        }
 
         //fetch wishlist data by user id with token
         getWishlist(token, userId)
@@ -151,5 +163,21 @@ class WishlistFragment : Fragment() {
         viewModel.callWishlistApi(token)
     }
 
+    private fun showProgressingView() {
+        if (!isProgressShowing) {
+            isProgressShowing = true
+            progressView = layoutInflater.inflate(R.layout.progress_bar, null) as ViewGroup
+            val v: View = requireView().rootView
+            val viewGroup = v as ViewGroup
+            viewGroup.addView(progressView)
+        }
+    }
+
+    private fun hideProgressingView() {
+        val v: View = requireView().rootView
+        val viewGroup = v as ViewGroup
+        viewGroup.removeView(progressView)
+        isProgressShowing = false
+    }
 
 }

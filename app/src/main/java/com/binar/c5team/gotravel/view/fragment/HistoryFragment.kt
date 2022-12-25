@@ -1,4 +1,4 @@
-package com.binar.c5team.gotravel.view
+package com.binar.c5team.gotravel.view.fragment
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -10,14 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHistoryBinding
 import com.binar.c5team.gotravel.model.Booking
-import com.binar.c5team.gotravel.model.Whislists
 import com.binar.c5team.gotravel.view.adapter.HistoryAdapter
-import com.binar.c5team.gotravel.view.adapter.WishlistAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -32,10 +29,14 @@ class HistoryFragment : Fragment() {
     private var userId: Int = 0
     private var token: String = ""
 
+    //progressbar
+    var progressView: ViewGroup? = null
+    private var isProgressShowing = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentHistoryBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -53,6 +54,17 @@ class HistoryFragment : Fragment() {
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.VISIBLE
 
+        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
+
+        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        viewModel.loading.observe(viewLifecycleOwner) {
+            when (it) {
+                true -> showProgressingView()
+                false -> hideProgressingView()
+            }
+        }
+
         getHistory(token, userId)
     }
 
@@ -60,6 +72,7 @@ class HistoryFragment : Fragment() {
         val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
         viewModel.getBookingLD().observe(viewLifecycleOwner) {
             if (it != null) {
+                Log.d("History Response :", it.toString())
                 binding.rvHistory.layoutManager = LinearLayoutManager(
                     context, LinearLayoutManager.VERTICAL, false
                 )
@@ -81,4 +94,20 @@ class HistoryFragment : Fragment() {
         viewModel.callBookingApi(token)
     }
 
+    private fun showProgressingView() {
+        if (!isProgressShowing) {
+            isProgressShowing = true
+            progressView = layoutInflater.inflate(R.layout.progress_bar, null) as ViewGroup
+            val v: View = requireView().rootView
+            val viewGroup = v as ViewGroup
+            viewGroup.addView(progressView)
+        }
+    }
+
+    private fun hideProgressingView() {
+        val v: View = requireView().rootView
+        val viewGroup = v as ViewGroup
+        viewGroup.removeView(progressView)
+        isProgressShowing = false
+    }
 }

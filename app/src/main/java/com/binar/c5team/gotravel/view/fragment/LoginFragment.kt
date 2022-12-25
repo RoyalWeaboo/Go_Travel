@@ -1,4 +1,4 @@
-package com.binar.c5team.gotravel.view
+package com.binar.c5team.gotravel.view.fragment
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
@@ -16,6 +17,8 @@ import com.binar.c5team.gotravel.databinding.FragmentLoginBinding
 import com.binar.c5team.gotravel.model.LoginData
 import com.binar.c5team.gotravel.model.LoginResponse
 import com.binar.c5team.gotravel.network.RetrofitClient
+import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import com.binar.c5team.gotravel.viewmodel.UserViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,11 +27,18 @@ import retrofit2.Response
 
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
+
+    //shared preferences
     lateinit var sharedPref: SharedPreferences
+
+    //progressbar
+    var progressView: ViewGroup? = null
+    private var isProgressShowing = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -37,7 +47,7 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
-        binding.loginProgressBar.visibility = View.GONE
+
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
 
         binding.btnBack.setOnClickListener {
@@ -58,7 +68,6 @@ class LoginFragment : Fragment() {
         val passwordinput = binding.inputPassword.editText?.text.toString()
 
         if (usernameInput.isNotEmpty() && passwordinput.isNotEmpty()) {
-            binding.loginProgressBar.visibility = View.VISIBLE
             validateLoginData(usernameInput, passwordinput)
         } else {
             Toast.makeText(context, "Username or Password can't be empty !", Toast.LENGTH_SHORT)
@@ -67,6 +76,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun validateLoginData(username: String, password: String) {
+        showProgressingView()
         RetrofitClient.apiInstance.login(LoginData(username, password))
             .enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(
@@ -82,31 +92,46 @@ class LoginFragment : Fragment() {
                             saveData.putString("username", response.body()?.username)
                             saveData.putString("token", response.body()?.token)
                             saveData.apply()
-                            binding.loginProgressBar.visibility = View.GONE
                             findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
                         }
                     } else {
                         Log.d("login response", response.body().toString())
-                        binding.loginProgressBar.visibility = View.GONE
                         Toast.makeText(
                             context,
                             "Wrong Username or Password",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+                    hideProgressingView()
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                     Log.d("Login Data Error", call.toString())
-                    binding.loginProgressBar.visibility = View.GONE
                     Toast.makeText(
                         context,
                         "Something Went Wrong",
                         Toast.LENGTH_SHORT
                     ).show()
+                    hideProgressingView()
                 }
 
             })
-        binding.loginProgressBar.visibility = View.GONE
+    }
+
+    private fun showProgressingView() {
+        if (!isProgressShowing) {
+            isProgressShowing = true
+            progressView = layoutInflater.inflate(R.layout.progress_bar, null) as ViewGroup
+            val v: View = requireView().rootView
+            val viewGroup = v as ViewGroup
+            viewGroup.addView(progressView)
+        }
+    }
+
+    private fun hideProgressingView() {
+        val v: View = requireView().rootView
+        val viewGroup = v as ViewGroup
+        viewGroup.removeView(progressView)
+        isProgressShowing = false
     }
 }

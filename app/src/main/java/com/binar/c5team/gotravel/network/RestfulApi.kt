@@ -1,6 +1,7 @@
 package com.binar.c5team.gotravel.network
 
 import com.binar.c5team.gotravel.model.*
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -20,6 +21,10 @@ interface RestfulApi {
     //Profile
     @GET("profile")
     fun getProfile() : Call<ProfileResponse>
+
+    //update profile
+    @PUT("updateUser")
+    fun putProfile(@Body profileData: ProfileData) : Call<PutProfileResponse>
 
     //Flight Data
     @GET("flight")
@@ -44,5 +49,15 @@ interface RestfulApi {
     //Delete Wishlist
     @DELETE("whislist/{id}")
     fun deleteWishlist(@Path("id") id : Int) : Call<Int>
+
+    //Post Payment Confirmation
+    @Multipart
+    @POST("confirmation")
+    fun postPaymentConfirmation(@Part file : MultipartBody.Part) : Call<ConfirmationPostResponse>
+
+    //Post Profile Image
+    @Multipart
+    @PUT("updateProfileUser")
+    fun putProfileImage(@Part file : MultipartBody.Part) : Call<ProfileImagePutResponse>
 
 }

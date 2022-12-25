@@ -1,4 +1,4 @@
-package com.binar.c5team.gotravel.view
+package com.binar.c5team.gotravel.view.guestfragment
 
 import android.app.DatePickerDialog
 import android.content.Context
@@ -8,30 +8,30 @@ import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.Gravity
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
-import com.binar.c5team.gotravel.databinding.FragmentHomeBinding
+import com.binar.c5team.gotravel.databinding.FragmentGuestHomeBinding
 import com.binar.c5team.gotravel.viewmodel.AirportViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-class HomeFragment : Fragment() {
-    private lateinit var binding: FragmentHomeBinding
+class GuestHomeFragment : Fragment() {
+    private lateinit var binding : FragmentGuestHomeBinding
 
     //Shared Preferences
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sharedPrefFlight: SharedPreferences
     private lateinit var sharedPrefBooking: SharedPreferences
+
+    private var token : String = ""
 
     private val listSpinner: MutableList<String> = ArrayList()
     private val listCity: MutableList<String> = ArrayList()
@@ -43,23 +43,18 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentGuestHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val callback: OnBackPressedCallback =
-            object : OnBackPressedCallback(true ) {
-                override fun handleOnBackPressed() {
-                    //do nothing
-                }
-            }
-        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
+        //SharedPref for user data
+        sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
 
-        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
-        navBar.visibility = View.VISIBLE
+        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.VISIBLE
 
         //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
@@ -77,7 +72,7 @@ class HomeFragment : Fragment() {
         callAirportList()
 
         binding.wishlist.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_wishlistFragment)
+            Toast.makeText(context, "Log in to use Wishlist Features", Toast.LENGTH_SHORT).show()
         }
 
         binding.menuOneWay.setOnClickListener {
@@ -189,7 +184,7 @@ class HomeFragment : Fragment() {
             saveBookingInfo.putString("unparsedReturnDate", defaultDepartDate)
             saveBookingInfo.apply()
 
-            findNavController().navigate(R.id.action_homeFragment_to_flightListFragment)
+            findNavController().navigate(R.id.action_guestHomeFragment_to_flightListFragment)
         }
 
     }

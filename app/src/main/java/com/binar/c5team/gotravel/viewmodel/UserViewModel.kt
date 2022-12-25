@@ -5,17 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.binar.c5team.gotravel.model.*
 import com.binar.c5team.gotravel.network.RetrofitClient
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 
 class UserViewModel : ViewModel() {
 
     var loading = MutableLiveData<Boolean>()
-    var loginLiveData: MutableLiveData<LoginResponse> = MutableLiveData()
     var registerLiveData : MutableLiveData<RegisterResponse> = MutableLiveData()
     var profileLiveData : MutableLiveData<ProfileResponse> = MutableLiveData()
+    var putProfileDataLiveData : MutableLiveData<PutProfileResponse> = MutableLiveData()
+    var profileImageLiveData : MutableLiveData<ProfileImagePutResponse> = MutableLiveData()
 
     fun getRegisterData(): MutableLiveData<RegisterResponse> {
         return registerLiveData
@@ -23,6 +24,14 @@ class UserViewModel : ViewModel() {
 
     fun getProfileData(): MutableLiveData<ProfileResponse> {
         return profileLiveData
+    }
+
+    fun putProfileData(): MutableLiveData<PutProfileResponse> {
+        return putProfileDataLiveData
+    }
+
+    fun putProfileImageData(): MutableLiveData<ProfileImagePutResponse> {
+        return profileImageLiveData
     }
 
     fun callRegisterApi(username : String, fullname : String, email : String, password:String, dateBirth : String, gender : String, address : String) {
@@ -51,7 +60,8 @@ class UserViewModel : ViewModel() {
 
 
     fun callProfileApi(token : String) {
-        RetrofitClient.apiProfile(token).getProfile()
+        loading.postValue(true)
+        RetrofitClient.apiWithToken(token).getProfile()
             .enqueue(object : Callback<ProfileResponse> {
                 override fun onResponse(
                     call: Call<ProfileResponse>,
@@ -63,12 +73,60 @@ class UserViewModel : ViewModel() {
                     } else {
                         Log.d("Fetch Profile Data Failed", response.body().toString())
                     }
+                    loading.postValue(false)
                 }
 
                 override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
                     Log.d("Fetch Profile Data Error", call.toString())
+                    loading.postValue(false)
                 }
 
+            })
+    }
+
+    fun putProfileData(token : String, no_ktp : String, gender : String, date_of_birth : String, address : String, email : String, name : String) {
+        loading.postValue(true)
+        RetrofitClient.apiWithToken(token).putProfile(ProfileData(no_ktp, gender, date_of_birth, address, email, name))
+            .enqueue(object : Callback<PutProfileResponse> {
+                override fun onResponse(
+                    call: Call<PutProfileResponse>,
+                    response: Response<PutProfileResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        putProfileDataLiveData.postValue(response.body())
+                    } else {
+                        Log.d("failed", response.body().toString())
+                    }
+                    loading.postValue(false)
+                }
+
+                override fun onFailure(call: Call<PutProfileResponse>, t: Throwable) {
+                    Log.d("on failure", call.toString())
+                    loading.postValue(false)
+                }
+            })
+    }
+
+    fun putProfileImage(token : String, file : MultipartBody.Part) {
+        loading.postValue(true)
+        RetrofitClient.apiWithToken(token).putProfileImage(file)
+            .enqueue(object : Callback<ProfileImagePutResponse> {
+                override fun onResponse(
+                    call: Call<ProfileImagePutResponse>,
+                    response: Response<ProfileImagePutResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        profileImageLiveData.postValue(response.body())
+                    } else {
+                        Log.d("failed", response.body().toString())
+                    }
+                    loading.postValue(false)
+                }
+
+                override fun onFailure(call: Call<ProfileImagePutResponse>, t: Throwable) {
+                    Log.d("on failure", call.toString())
+                    loading.postValue(false)
+                }
             })
     }
 

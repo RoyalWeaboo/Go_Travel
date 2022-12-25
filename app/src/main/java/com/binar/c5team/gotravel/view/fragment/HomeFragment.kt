@@ -1,4 +1,4 @@
-package com.binar.c5team.gotravel.view.guestview
+package com.binar.c5team.gotravel.view.fragment
 
 import android.app.DatePickerDialog
 import android.content.Context
@@ -7,29 +7,37 @@ import android.graphics.Color
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
-import com.binar.c5team.gotravel.databinding.FragmentGuestHomeBinding
+import com.binar.c5team.gotravel.databinding.FragmentHomeBinding
 import com.binar.c5team.gotravel.viewmodel.AirportViewModel
+import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import com.binar.c5team.gotravel.viewmodel.UserViewModel
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
-class GuestHomeFragment : Fragment() {
-    private lateinit var binding : FragmentGuestHomeBinding
+
+class HomeFragment : Fragment() {
+    private lateinit var binding: FragmentHomeBinding
 
     //Shared Preferences
     private lateinit var sharedPref: SharedPreferences
     private lateinit var sharedPrefFlight: SharedPreferences
     private lateinit var sharedPrefBooking: SharedPreferences
+
+    private var token : String = ""
 
     private val listSpinner: MutableList<String> = ArrayList()
     private val listCity: MutableList<String> = ArrayList()
@@ -37,11 +45,15 @@ class GuestHomeFragment : Fragment() {
     private var defaultDepartDate : String = ""
     private var defaultReturnDate : String = ""
 
+    //progressbar
+    var progressView: ViewGroup? = null
+    private var isProgressShowing = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentGuestHomeBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -49,10 +61,18 @@ class GuestHomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
-        navBar.visibility = View.GONE
+        navBar.visibility = View.VISIBLE
 
         val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
-        guestNavBar.visibility = View.VISIBLE
+        guestNavBar.visibility = View.GONE
+
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true ) {
+                override fun handleOnBackPressed() {
+                    //do nothing
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
 
         //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
@@ -63,14 +83,37 @@ class GuestHomeFragment : Fragment() {
         sharedPrefBooking =
             requireActivity().getSharedPreferences("bookingInfo", Context.MODE_PRIVATE)
 
+        token = sharedPref.getString("token", "").toString()
+
+        val viewModelUser = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        viewModelUser.loading.observe(viewLifecycleOwner) {
+            when (it) {
+                true -> showProgressingView()
+                false -> hideProgressingView()
+            }
+        }
+
+        val viewModelAirport = ViewModelProvider(requireActivity())[AirportViewModel::class.java]
+        viewModelAirport.loading.observe(viewLifecycleOwner) {
+            when (it) {
+                true -> showProgressingView()
+                false -> hideProgressingView()
+            }
+        }
+
         binding.tvUsername.text = sharedPref.getString("username", "User")
+        getProfileImage(token)
 
         disableReturnCard()
         getDate()
         callAirportList()
 
         binding.wishlist.setOnClickListener {
-            Toast.makeText(context, "Log in to use Wishlist Features", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_homeFragment_to_wishlistFragment)
+        }
+
+        binding.userImageProfile.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
         }
 
         binding.menuOneWay.setOnClickListener {
@@ -182,9 +225,26 @@ class GuestHomeFragment : Fragment() {
             saveBookingInfo.putString("unparsedReturnDate", defaultDepartDate)
             saveBookingInfo.apply()
 
-            findNavController().navigate(R.id.action_guestHomeFragment_to_flightListFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_flightListFragment)
         }
 
+    }
+
+    private fun getProfileImage(token : String){
+        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        viewModel.callProfileApi(token)
+        viewModel.getProfileData().observe(viewLifecycleOwner) {
+            if (it.image != "") {
+                Glide
+                    .with(requireContext())
+                    .load(it.image)
+                    .centerCrop()
+                    .into(binding.userImageProfile)
+            } else {
+                Toast.makeText(context, "No Profile Image Found", Toast.LENGTH_SHORT).show()
+                Log.d("Profile Image Response :", it.toString())
+            }
+        }
     }
 
 
@@ -250,7 +310,6 @@ class GuestHomeFragment : Fragment() {
         val viewModel = ViewModelProvider(requireActivity())[AirportViewModel::class.java]
         viewModel.getAirportListData().observe(viewLifecycleOwner) {
             if (it != null) {
-//                Log.d("Airport Data", it.toString())
 
                 //set json to arraylist
                 if(listSpinner.isEmpty()){
@@ -268,16 +327,36 @@ class GuestHomeFragment : Fragment() {
                     adapter?.setDropDownViewResource(R.layout.simple_spinner_item)
                     binding.spinnerFrom.adapter = adapter
                     binding.spinnerTo.adapter = adapter
+
+                    binding.spinnerFrom.setSelection(0)
+                    binding.spinnerTo.setSelection(1)
                 }
 
             } else {
                 Toast.makeText(
                     requireActivity(),
-                    "No Data",
+                    "No airport data found",
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
         viewModel.callAirportApi()
+    }
+
+    private fun showProgressingView() {
+        if (!isProgressShowing) {
+            isProgressShowing = true
+            progressView = layoutInflater.inflate(R.layout.progress_bar, null) as ViewGroup
+            val v: View = requireView().rootView
+            val viewGroup = v as ViewGroup
+            viewGroup.addView(progressView)
+        }
+    }
+
+    private fun hideProgressingView() {
+        val v: View = requireView().rootView
+        val viewGroup = v as ViewGroup
+        viewGroup.removeView(progressView)
+        isProgressShowing = false
     }
 }

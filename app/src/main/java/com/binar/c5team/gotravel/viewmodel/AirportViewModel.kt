@@ -10,6 +10,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class AirportViewModel : ViewModel() {
+    var loading = MutableLiveData<Boolean>()
     var airportList: MutableLiveData<AirportResponse> = MutableLiveData()
 
     fun getAirportListData(): MutableLiveData<AirportResponse> {
@@ -17,6 +18,7 @@ class AirportViewModel : ViewModel() {
     }
 
     fun callAirportApi() {
+        loading.postValue(true)
         RetrofitClient.airportInstance.getAirportData()
             .enqueue(object : Callback<AirportResponse> {
                 override fun onResponse(
@@ -30,10 +32,12 @@ class AirportViewModel : ViewModel() {
                         airportList.postValue(response.body())
 //                        Log.d("data", response.body().toString())
                     }
+                    loading.postValue(false)
                 }
 
                 override fun onFailure(call: Call<AirportResponse>, t: Throwable) {
                     Log.d("data error", call.toString())
+                    loading.postValue(false)
                 }
 
             })

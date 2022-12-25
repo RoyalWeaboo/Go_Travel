@@ -1,5 +1,6 @@
 package com.binar.c5team.gotravel.view
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +16,8 @@ import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
-    lateinit var bottomNavigationView : BottomNavigationView
+    private lateinit var bottomNavigationView : BottomNavigationView
+    private lateinit var guestBottomNavigationView : BottomNavigationView
     private lateinit var sharedPref: SharedPreferences
     private var session: String = ""
 
@@ -25,6 +27,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        sharedPref = this.getSharedPreferences("data", Context.MODE_PRIVATE)
+
+        session = sharedPref.getString("session", "false").toString()
+
         if(session=="true"){
             setUpNavigation()
         }else{
@@ -46,17 +53,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpGuestNavigation() {
-        bottomNavigationView = binding.guestBottomNav
+        guestBottomNavigationView = binding.guestBottomNav
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment?
         setupWithNavController(
-            bottomNavigationView,
+            guestBottomNavigationView,
             navHostFragment!!.navController
         )
     }
 
 
-    fun setUpNavigation() {
+    private fun setUpNavigation() {
         bottomNavigationView = binding.bottomNav
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment?

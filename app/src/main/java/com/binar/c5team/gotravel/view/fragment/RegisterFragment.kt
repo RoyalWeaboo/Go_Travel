@@ -1,4 +1,4 @@
-package com.binar.c5team.gotravel.view
+package com.binar.c5team.gotravel.view.fragment
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -11,22 +11,25 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentRegisterBinding
+import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.binar.c5team.gotravel.viewmodel.UserViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.text.SimpleDateFormat
 import java.util.*
 
 class RegisterFragment : Fragment() {
     lateinit var binding : FragmentRegisterBinding
 
+    //progressbar
+    var progressView: ViewGroup? = null
+    private var isProgressShowing = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
         return binding.root
@@ -38,7 +41,13 @@ class RegisterFragment : Fragment() {
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
 
-        binding.registerProgressBar.visibility = View.GONE
+        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        viewModel.loading.observe(viewLifecycleOwner) {
+            when (it) {
+                true -> showProgressingView()
+                false -> hideProgressingView()
+            }
+        }
 
         // for dropdown menu gender
         val items = listOf("Male", "Female")
@@ -92,14 +101,12 @@ class RegisterFragment : Fragment() {
         gender: String,
         address: String
     ) {
-        binding.registerProgressBar.visibility = View.VISIBLE
         val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
         viewModel.getRegisterData().observe(viewLifecycleOwner) {
             if (it!=null) {
                 Log.d("Register Response :", it.toString())
                 Toast.makeText(context, "Registration Success", Toast.LENGTH_SHORT)
                     .show()
-                binding.registerProgressBar.visibility = View.GONE
                findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
             } else {
                 Toast.makeText(
@@ -107,11 +114,9 @@ class RegisterFragment : Fragment() {
                     "Registration Failed",
                     Toast.LENGTH_SHORT
                 ).show()
-                binding.registerProgressBar.visibility = View.GONE
             }
         }
         viewModel.callRegisterApi(username, fullname, email, password, birthDate, gender, address)
-        binding.registerProgressBar.visibility = View.GONE
     }
 
 
@@ -126,6 +131,23 @@ class RegisterFragment : Fragment() {
 
         }, year, month, day)
         dpd.show()
+    }
+
+    private fun showProgressingView() {
+        if (!isProgressShowing) {
+            isProgressShowing = true
+            progressView = layoutInflater.inflate(R.layout.progress_bar, null) as ViewGroup
+            val v: View = requireView().rootView
+            val viewGroup = v as ViewGroup
+            viewGroup.addView(progressView)
+        }
+    }
+
+    private fun hideProgressingView() {
+        val v: View = requireView().rootView
+        val viewGroup = v as ViewGroup
+        viewGroup.removeView(progressView)
+        isProgressShowing = false
     }
 
 }

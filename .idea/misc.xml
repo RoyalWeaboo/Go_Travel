@@ -4,11 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/drawable/bottom_nav_selector.xml" value="0.1305" />
+        <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/drawable/ic_baseline_keyboard_arrow_right_24.xml" value="0.1" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/font/inter.xml" value="0.19270833333333334" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/activity_main.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/custom_airport_spinner_item.xml" value="0.1625" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_booking.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_change_password.xml" value="0.16354166666666667" />
+        <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_edit_profile.xml" value="0.22" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_guest_history.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_guest_home.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_guest_profile.xml" value="0.16354166666666667" />
@@ -17,9 +19,11 @@
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_login.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_login_or_register.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_payment.xml" value="0.16354166666666667" />
-        <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_profile.xml" value="0.22" />
+        <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_profile.xml" value="0.14666666666666667" />
+        <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_profile_2.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_register.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_round_booking.xml" value="0.1" />
+        <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_round_trip_flight_list.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_ticket_list.xml" value="0.22" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_upload_payment.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/fragment_wishlist.xml" value="0.22" />
@@ -32,6 +36,7 @@
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/item_ticket_round.xml" value="0.10666666666666667" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/item_wishlist.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/list_item.xml" value="0.16354166666666667" />
+        <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/progress_bar.xml" value="0.18697916666666667" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/layout/simple_spinner_item.xml" value="0.16354166666666667" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.1625" />
         <entry key="..\:/Users/ricki/AndroidStudioProjects/GoTravel/app/src/main/res/menu/guest_bottom_navigation_menu.xml" value="0.16354166666666667" />
@@ -61,7 +66,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17_PREVIEW" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

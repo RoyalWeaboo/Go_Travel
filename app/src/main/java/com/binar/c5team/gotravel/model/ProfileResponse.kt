@@ -12,18 +12,20 @@ data class ProfileResponse(
     val dateOfBirth: String,
     @SerializedName("email")
     val email: String,
+    @SerializedName("gender")
+    val gender: String,
     @SerializedName("id")
     val id: Int,
     @SerializedName("image")
-    val image: Any,
+    val image: String,
     @SerializedName("name")
     val name: String,
     @SerializedName("no_ktp")
     val noKtp: String,
     @SerializedName("password")
     val password: String,
-    @SerializedName("sex")
-    val sex: String,
+    @SerializedName("role")
+    val role: String,
     @SerializedName("updatedAt")
     val updatedAt: String,
     @SerializedName("username")

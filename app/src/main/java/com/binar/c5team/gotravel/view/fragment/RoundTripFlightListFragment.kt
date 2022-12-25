@@ -1,4 +1,4 @@
-package com.binar.c5team.gotravel.view
+package com.binar.c5team.gotravel.view.fragment
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -18,7 +18,9 @@ import com.binar.c5team.gotravel.model.Flight
 import com.binar.c5team.gotravel.view.adapter.FlightAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 
+
 class RoundTripFlightListFragment : Fragment() {
+
     lateinit var binding: FragmentTicketListBinding
     private lateinit var adapter: FlightAdapter
 
@@ -33,6 +35,10 @@ class RoundTripFlightListFragment : Fragment() {
     private var toAirportId: Int = 0
     private var adultCount: Int = 0
     private var fligtMode: String = ""
+
+    //progressbar
+    var progressView: ViewGroup? = null
+    private var isProgressShowing = false
 
 
     override fun onCreateView(
@@ -70,6 +76,14 @@ class RoundTripFlightListFragment : Fragment() {
         session = sharedPref.getString("session", "").toString()
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
+
+        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        viewModel.loading.observe(viewLifecycleOwner) {
+            when (it) {
+                true -> showProgressingView()
+                false -> hideProgressingView()
+            }
+        }
 
         //getting flight data then set the data to layout
         getSetData()
@@ -239,6 +253,23 @@ class RoundTripFlightListFragment : Fragment() {
             }
         }
         viewModel.postWishlistApi(token, id_flight, id_user)
+    }
+
+    private fun showProgressingView() {
+        if (!isProgressShowing) {
+            isProgressShowing = true
+            progressView = layoutInflater.inflate(R.layout.progress_bar, null) as ViewGroup
+            val v: View = requireView().rootView
+            val viewGroup = v as ViewGroup
+            viewGroup.addView(progressView)
+        }
+    }
+
+    private fun hideProgressingView() {
+        val v: View = requireView().rootView
+        val viewGroup = v as ViewGroup
+        viewGroup.removeView(progressView)
+        isProgressShowing = false
     }
 
 }

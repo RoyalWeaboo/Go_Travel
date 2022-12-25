@@ -1,11 +1,10 @@
-package com.binar.c5team.gotravel.view
+package com.binar.c5team.gotravel.view.fragment
 
 import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +18,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentBookingBinding
-import com.binar.c5team.gotravel.view.dialog.PaymentDialog
+import com.binar.c5team.gotravel.view.MainActivity
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import com.binar.c5team.gotravel.viewmodel.UserViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RoundBookingFragment : Fragment() {
+
+class BookingFragment : Fragment() {
     private lateinit var binding: FragmentBookingBinding
 
     //Shared Preferences
@@ -34,14 +35,17 @@ class RoundBookingFragment : Fragment() {
 
     private var token: String = ""
     private var userId: Int = 0
-    private var fligtMode: String = ""
+    private var flightMode: String = ""
     private var seatCount: Int = 0
 
-    //return data
-    private var roundFlightId: Int = 0
-    private var roundFlightPrice: Int = 0
+    //departure data
+    private var flightId: Int = 0
+    private var flightPrice: Int = 0
 
-    private var returnDate: String = ""
+    private var departDate : String = ""
+
+    var progressView: ViewGroup? = null
+    private var isProgressShowing = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,47 +76,79 @@ class RoundBookingFragment : Fragment() {
         sharedPrefBooking =
             requireActivity().getSharedPreferences("bookingInfo", Context.MODE_PRIVATE)
 
-        binding.flightModeStatus.text = "Return :"
-
         //getting user data
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
 
+        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        viewModel.loading.observe(viewLifecycleOwner) {
+            when (it) {
+                true -> showProgressingView()
+                false -> hideProgressingView()
+            }
+        }
+
         //getting date
-        returnDate = sharedPrefBooking.getString("unparsedReturnDate", "null")!!
+        departDate = sharedPrefBooking.getString("unparsedDepartDate", "null")!!
 
         //getting trip mode
-        fligtMode = sharedPrefFlight.getString("flightMode", "").toString()
+        flightMode = sharedPrefFlight.getString("flightMode", "").toString()
 
         getSetData()
 
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
-            Toast.makeText(context, "Booking Canceled", Toast.LENGTH_SHORT).show()
+            if (flightMode == "oneWay")
+            findNavController().navigate(R.id.action_bookingFragment_to_flightListFragment)
+            else{
+                findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
+                Toast.makeText(context, "Booking Canceled", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        if (seatCount > 1) {
-            binding.passengerNumber.visibility = View.VISIBLE
-            var returnTempDataCount = 1
-            binding.btnToPayment.setOnClickListener {
-                returnTempDataCount++
-                binding.passengerNumber.text =
-                    "Passenger - " + returnTempDataCount.toString()
-                bookNewTicket()
-                clearInput()
-                if (returnTempDataCount > seatCount) {
+        if (flightMode == "oneWay") {
+            if (seatCount > 1) {
+                binding.passengerNumber.visibility = View.VISIBLE
+                var oneWaytempDataCount = 1
+                binding.btnToPayment.setOnClickListener {
+                    oneWaytempDataCount++
+                    binding.passengerNumber.text = "Passenger - " + oneWaytempDataCount.toString()
+                    bookNewTicket()
+                    clearInput()
+                    if (oneWaytempDataCount > seatCount) {
+                        openPaymentDialog()
+                    }
+                }
+            } else {
+                binding.btnToPayment.setOnClickListener {
+                    bookNewTicket()
                     openPaymentDialog()
                 }
             }
-        } else if (seatCount == 1) {
-            binding.btnToPayment.setOnClickListener {
-                bookNewTicket()
-                clearInput()
-                openPaymentDialog()
+        } else if (flightMode == "roundTrip") {
+            if (seatCount > 1) {
+                binding.passengerNumber.visibility = View.VISIBLE
+                var departuretempDataCount = 1
+                binding.btnToPayment.setOnClickListener {
+                    departuretempDataCount++
+                    binding.passengerNumber.text = "Passenger - " + departuretempDataCount.toString()
+                    bookNewTicket()
+                    clearInput()
+                    if (departuretempDataCount > seatCount) {
+
+                        findNavController().navigate(
+                            R.id.action_bookingFragment_to_roundBookingFragment
+                        )
+                    }
+                }
+            } else {
+                binding.btnToPayment.setOnClickListener {
+                    bookNewTicket()
+                    findNavController().navigate(
+                        R.id.action_bookingFragment_to_roundBookingFragment
+                    )
+                }
             }
         }
-
-
     }
 
     private fun clearInput() {
@@ -132,33 +168,32 @@ class RoundBookingFragment : Fragment() {
         val homePhone = binding.inputEmail.editText?.text.toString()
         val mobilePhone = binding.inputMobileNumber.editText?.text.toString()
 
-//        Log.d("data", roundFlightId.toString() + userId.toString() + baggage.toString() + food + name + homePhone + mobilePhone + roundFlightPrice + returnDate)
+//        Log.d("data", flightId.toString() + userId.toString() + baggage.toString() + food + name + homePhone + mobilePhone + flightPrice + departDate)
 
         bookTicket(
             token,
-            roundFlightId,
+            flightId,
             userId,
             baggage,
             food,
             name,
             homePhone,
             mobilePhone,
-            roundFlightPrice,
-            returnDate
+            flightPrice,
+            departDate
         )
     }
 
     private fun getSetData() {
         //getting flight data
         seatCount = sharedPrefBooking.getInt("totalSeat", 0)
-        roundFlightId = sharedPrefBooking.getInt("roundFlightId", 0)
-        roundFlightPrice = sharedPrefBooking.getInt("roundFlightPrice", 0)
-        val availableSeat = sharedPrefBooking.getInt("roundAvailableSeat", 0)
-        val planeName = sharedPrefBooking.getString("roundPlaneName", "Error")
-        val fromAirport = sharedPrefBooking.getString("roundFromAirport", "Error")
-        val toAirport = sharedPrefBooking.getString("roundToAirport", "Error")
-        val departureTime = sharedPrefBooking.getString("roundDepartureTime", "00:00")
-        val arrivalTime = sharedPrefBooking.getString("roundArrivalTime", "00:00")
+        flightId = sharedPrefBooking.getInt("flightId", 0)
+        flightPrice = sharedPrefBooking.getInt("flightPrice", 0)
+        val planeName = sharedPrefBooking.getString("planeName", "Error")
+        val fromAirport = sharedPrefBooking.getString("fromAirport", "Error")
+        val toAirport = sharedPrefBooking.getString("toAirport", "Error")
+        val departureTime = sharedPrefBooking.getString("departureTime", "00:00")
+        val arrivalTime = sharedPrefBooking.getString("arrivalTime", "00:00")
         countTime()
 
         // for dropdown food option
@@ -167,10 +202,10 @@ class RoundBookingFragment : Fragment() {
         (binding.inputFood.editText as? AutoCompleteTextView)?.setAdapter(adapterFood)
 
         //total flight price
-        val roundTotal = seatCount * roundFlightPrice
+        val total = seatCount * flightPrice
 
         //setting the textview
-        binding.tvTicketPrice.text = roundTotal.toString()
+        binding.tvTicketPrice.text = total.toString()
         binding.tvAircraftName.text = planeName
         binding.tvFromCity.text = fromAirport
         binding.tvArrivalCity.text = toAirport
@@ -179,12 +214,12 @@ class RoundBookingFragment : Fragment() {
         binding.tvSeatTotal.text = seatCount.toString()
     }
 
-
     private fun notification() {
         val mBuilder = NotificationCompat.Builder(requireContext().applicationContext, "1")
         val ii = Intent(requireContext().applicationContext, MainActivity::class.java)
         ii.putExtra("redirect", "historyFragment")
-        val pendingIntent = PendingIntent.getActivity(requireContext().applicationContext, 0, ii, 0)
+        val pendingIntent =
+            PendingIntent.getActivity(requireContext().applicationContext, 0, ii, 0)
 
         val bigText = NotificationCompat.BigTextStyle()
         bigText.setBigContentTitle("Booking Succesful !")
@@ -222,12 +257,12 @@ class RoundBookingFragment : Fragment() {
         homephone: String,
         mobilephone: String,
         totalprice: Int,
-        returnDate: String
+        departDate : String
     ) {
         val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
-        viewModel.getBookingLD().observe(viewLifecycleOwner) {
+        viewModel.getPostBookingLD().observe(viewLifecycleOwner) {
             if (it != null) {
-                Log.d("Booking Response :", it.toString())
+
                 notification()
             } else {
                 Toast.makeText(
@@ -247,14 +282,14 @@ class RoundBookingFragment : Fragment() {
             homephone,
             mobilephone,
             totalprice,
-            returnDate
+            departDate
         )
     }
 
-    private fun countTime() {
+    private fun countTime(){
         //getting booking date and time
-        val flightTime = sharedPrefBooking.getString("roundDepartureTime", "00:00")
-        val flightArrivalTime = sharedPrefBooking.getString("roundArrivalTime", "00:00")
+        val flightTime = sharedPrefBooking.getString("departureTime", "00:00")
+        val flightArrivalTime = sharedPrefBooking.getString("arrivalTime", "00:00")
 
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
@@ -274,7 +309,7 @@ class RoundBookingFragment : Fragment() {
         builder.setMessage("You've succesfully booked ticket, Please proceed to pay the ticket by clicking the Pay Now Button, or you can pay later within 2 Hours before the ticket become invalid")
 
         builder.setPositiveButton("Pay Now") { dialog, which ->
-            openPaymentImageUploader()
+            findNavController().navigate(R.id.action_bookingFragment_to_paymentDialog)
         }
 
         builder.setNegativeButton("Later") { dialog, which ->
@@ -283,10 +318,21 @@ class RoundBookingFragment : Fragment() {
         builder.show()
     }
 
-    private fun openPaymentImageUploader() {
-        val dialogFragment = PaymentDialog()
-        val transaction = requireFragmentManager().beginTransaction()
-        dialogFragment.show(transaction, "Payment Fragment")
+    fun showProgressingView() {
+        if (!isProgressShowing) {
+            isProgressShowing = true
+            progressView = layoutInflater.inflate(R.layout.progress_bar, null) as ViewGroup
+            val v: View = requireView().rootView
+            val viewGroup = v as ViewGroup
+            viewGroup.addView(progressView)
+        }
     }
-}
 
+    fun hideProgressingView() {
+        val v: View = requireView().rootView
+        val viewGroup = v as ViewGroup
+        viewGroup.removeView(progressView)
+        isProgressShowing = false
+    }
+
+}
