@@ -76,7 +76,7 @@ class ProfileFragment : Fragment() {
         //getting token
         token = sharedPref.getString("token", "").toString()
 
-        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -104,7 +104,7 @@ class ProfileFragment : Fragment() {
             bun.putString("address", address)
             bun.putString("fullName", fullName)
 
-            findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment, bun)
+            Navigation.findNavController(view).navigate(R.id.action_profileFragment_to_editProfileFragment, bun)
         }
 
         binding.csCard.setOnClickListener {
@@ -133,7 +133,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun profileData() {
-        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
         viewModel.callProfileApi(token)
         viewModel.getProfileData().observe(viewLifecycleOwner) {
             if (it != null) {
@@ -173,7 +173,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getProfileImage(token : String){
-        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
         viewModel.callProfileApi(token)
         viewModel.getProfileData().observe(viewLifecycleOwner) {
             if (it.image != "") {
@@ -204,7 +204,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun postProfileImage(token : String, imageMultiPart: MultipartBody.Part) {
-        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
         viewModel.putProfileImageData().observe(viewLifecycleOwner) {
             if (it != null){
                 Toast.makeText(context, "Profile Picture Successfully Changed !", Toast.LENGTH_SHORT).show()

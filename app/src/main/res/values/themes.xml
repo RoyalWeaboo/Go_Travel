@@ -50,6 +50,26 @@
         <item name="android:textSize">24sp</item>
     </style>
 
+    <style name="lightText12">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="normalText12">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="lightText14">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="lightText16">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
     <style name="lightText18">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">18sp</item>

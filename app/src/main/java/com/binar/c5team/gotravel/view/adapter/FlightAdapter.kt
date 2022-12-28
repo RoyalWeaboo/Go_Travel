@@ -22,6 +22,7 @@ class FlightAdapter (private var listFlight : List<Flight>): RecyclerView.Adapte
         val dt = listFlight[position].departureTime
         val at = listFlight[position].arrivalTime
 
+        holder.binding.planeClass.text = listFlight[position].kelas
         holder.binding.timeFrom.text = dt
         holder.binding.timeTo.text = at
         holder.binding.planeName.text = listFlight[position].plane.name

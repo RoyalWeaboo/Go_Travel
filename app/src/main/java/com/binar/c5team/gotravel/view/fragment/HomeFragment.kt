@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHomeBinding
@@ -85,7 +86,7 @@ class HomeFragment : Fragment() {
 
         token = sharedPref.getString("token", "").toString()
 
-        val viewModelUser = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        val viewModelUser = ViewModelProvider(this)[UserViewModel::class.java]
         viewModelUser.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -93,7 +94,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        val viewModelAirport = ViewModelProvider(requireActivity())[AirportViewModel::class.java]
+        val viewModelAirport = ViewModelProvider(this)[AirportViewModel::class.java]
         viewModelAirport.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -109,11 +110,11 @@ class HomeFragment : Fragment() {
         callAirportList()
 
         binding.wishlist.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_wishlistFragment)
+            Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_wishlistFragment)
         }
 
         binding.userImageProfile.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
+            Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_profileFragment)
         }
 
         binding.menuOneWay.setOnClickListener {
@@ -225,13 +226,13 @@ class HomeFragment : Fragment() {
             saveBookingInfo.putString("unparsedReturnDate", defaultDepartDate)
             saveBookingInfo.apply()
 
-            findNavController().navigate(R.id.action_homeFragment_to_flightListFragment)
+            Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_flightListFragment)
         }
 
     }
 
     private fun getProfileImage(token : String){
-        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
         viewModel.callProfileApi(token)
         viewModel.getProfileData().observe(viewLifecycleOwner) {
             if (it.image != "") {
@@ -307,7 +308,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun callAirportList() {
-        val viewModel = ViewModelProvider(requireActivity())[AirportViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[AirportViewModel::class.java]
         viewModel.getAirportListData().observe(viewLifecycleOwner) {
             if (it != null) {
 

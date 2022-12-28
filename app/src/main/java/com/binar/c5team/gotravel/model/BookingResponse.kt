@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 
 data class BookingResponse(
     @SerializedName("data")
-    val `data`: DataXX,
+    val `data`: DataXXXXXX,
     @SerializedName("meta")
-    val meta: MetaXX,
+    val meta: MetaXXXX,
     @SerializedName("status")
     val status: String
 )

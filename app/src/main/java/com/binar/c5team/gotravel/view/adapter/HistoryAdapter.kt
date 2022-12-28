@@ -1,6 +1,5 @@
 package com.binar.c5team.gotravel.view.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import java.util.*
 class HistoryAdapter(private var listBooking: List<Booking>) :
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
     var onTicketClick: ((Booking) -> Unit)? = null
+    var onStatusClick: ((Booking) -> Unit)? = null
 
     class ViewHolder(var binding: ItemHistoryBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -67,55 +67,73 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
         val todaysHour = hour.format(currDate).toInt()
         val todaysMinute = minute.format(currDate).toInt()
 
-        //if the flight is today
-        if (bookYearInt > todaysYear) {
-            holder.binding.cvStatusActive.visibility = View.VISIBLE
-        }else{
-            if (bookMonthInt >= todaysMonth) {
-                holder.binding.cvStatusActive.visibility = View.VISIBLE
-                if (bookDayInt >= todaysDay) {
-                    holder.binding.cvStatusActive.visibility = View.VISIBLE
-                    if (bookHourInt <= todaysHour) {
-                        holder.binding.cvStatusActive.visibility = View.VISIBLE
-                        if (bookMinuteInt < todaysMinute) {
-                            holder.binding.cvStatusActive.visibility = View.VISIBLE
+        //first of all, check whether the ticket has been paid or not
+        //if its not paid yet
+        if (listBooking[position].confirmation.isNullOrEmpty()) {
+            holder.binding.cvStatusNotPaid.visibility = View.VISIBLE
+            holder.binding.cvStatusNotPaid.setOnClickListener {
+                onStatusClick?.invoke(listBooking[position])
+            }
+        }
+        //if its paid
+        else {
+            holder.binding.cvStatusNotPaid.setOnClickListener {
+                //do nothing
+            }
+            holder.binding.cardHistory.setOnClickListener {
+                onTicketClick?.invoke(listBooking[position])
+            }
+            //check if its approved yet
+            if (listBooking[position].approved) {
+                //check the time to change status between active, on board, or boarded
+                //check year first
+                if (bookYearInt > todaysYear) {
+                    //then check the month
+                    if (bookMonthInt >= todaysMonth) {
+                        //then check the day
+                        if (bookDayInt >= todaysDay) {
+                            //then check the hour
+                            if (bookHourInt <= todaysHour) {
+                                ///finally check the minute
+                                //check with range more than or less than
+                                if (bookMinuteInt < todaysMinute) {
+                                    holder.binding.cvStatusActive.visibility = View.VISIBLE
+                                } else {
+                                    holder.binding.cvStatusBoarded.visibility = View.VISIBLE
+                                }
+                                //now if its within the ticket departure and arrival time
+                            } else if (todaysHour in bookHourArrivalInt..bookHourInt) {
+                                if (todaysMinute in bookMinuteArrivalInt..bookMinuteInt) {
+                                    holder.binding.cvStatusOnBoard.visibility = View.VISIBLE
+                                }
+                            } else {
+                                //if the flight is on after today's day
+                                holder.binding.cvStatusBoarded.visibility = View.VISIBLE
+                            }
                         } else {
+                            //if the flight is on after today's month
                             holder.binding.cvStatusBoarded.visibility = View.VISIBLE
-                        }
-                    } else if (todaysHour in bookHourArrivalInt..bookHourInt) {
-                        if (todaysMinute in bookMinuteArrivalInt..bookMinuteInt) {
-                            holder.binding.cvStatusBoarded.visibility = View.VISIBLE
-                        } else if (bookMinuteInt > todaysMinute) {
-                            holder.binding.cvStatusOnBoard.visibility = View.VISIBLE
-                        } else if (bookMinuteInt < todaysMinute) {
-                            holder.binding.cvStatusActive.visibility = View.VISIBLE
                         }
                     } else {
-                        //if the flight is on after today's day
                         holder.binding.cvStatusBoarded.visibility = View.VISIBLE
                     }
                 } else {
-                    //if the flight is on after today's month
                     holder.binding.cvStatusBoarded.visibility = View.VISIBLE
                 }
             } else {
-                //if the flight is on after today's year
-                holder.binding.cvStatusBoarded.visibility = View.VISIBLE
+                holder.binding.cvStatusWaiting.visibility = View.VISIBLE
             }
         }
-
-        //date
-
-
 
 
         //setting time
         val dt = listBooking[position].flight.departureTime
         val at = listBooking[position].flight.arrivalTime
 
+        holder.binding.planeName.text = listBooking[position].flight.plane.name
+        holder.binding.codeText.text = "Code : "+ listBooking[position].id.toString()
         holder.binding.timeFrom.text = dt
         holder.binding.timeTo.text = at
-        holder.binding.planeName.text = listBooking[position].flight.plane.name
         holder.binding.date.text = bDateFormatted
         holder.binding.cardHistory.setOnClickListener {
             onTicketClick?.invoke(listBooking[position])

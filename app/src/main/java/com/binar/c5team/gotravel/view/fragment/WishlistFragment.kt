@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.binar.c5team.gotravel.R
@@ -17,6 +18,7 @@ import com.binar.c5team.gotravel.databinding.FragmentWishlistBinding
 import com.binar.c5team.gotravel.model.Whislists
 import com.binar.c5team.gotravel.view.adapter.WishlistAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class WishlistFragment : Fragment() {
     lateinit var binding: FragmentWishlistBinding
@@ -66,7 +68,12 @@ class WishlistFragment : Fragment() {
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
 
-        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.GONE
+        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
+
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -75,17 +82,17 @@ class WishlistFragment : Fragment() {
         }
 
         //fetch wishlist data by user id with token
-        getWishlist(token, userId)
+        getWishlist(view, token, userId)
 
         binding.wishlistArrowBack.setOnClickListener {
-            findNavController().navigate(R.id.action_wishlistFragment_to_homeFragment)
+            Navigation.findNavController(view).navigate(R.id.action_wishlistFragment_to_homeFragment)
         }
 
 
     }
 
-    private fun getWishlist(token: String, userId: Int) {
-        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+    private fun getWishlist(view : View, token: String, userId: Int) {
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.getWishlistLD().observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.rvWishlist.layoutManager = LinearLayoutManager(
@@ -125,7 +132,7 @@ class WishlistFragment : Fragment() {
                         wishlistBook.putString("departureDate", it.flight.flightDate)
 
                         wishlistBook.apply()
-                        findNavController().navigate(
+                        Navigation.findNavController(view).navigate(
                             R.id.action_wishlistFragment_to_bookingFragment
                         )
                     } else {
@@ -139,7 +146,7 @@ class WishlistFragment : Fragment() {
                 }
 
                 adapter.onDeleteClick = { ids ->
-                    val delViewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+                    val delViewModel = ViewModelProvider(this)[FlightViewModel::class.java]
                     delViewModel.deleteWishlistLD().observe(viewLifecycleOwner) { its ->
                         if (its != null) {
                             Toast.makeText(

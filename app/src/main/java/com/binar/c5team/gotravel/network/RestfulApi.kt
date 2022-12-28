@@ -52,12 +52,12 @@ interface RestfulApi {
 
     //Post Payment Confirmation
     @Multipart
-    @POST("confirmation")
-    fun postPaymentConfirmation(@Part file : MultipartBody.Part) : Call<ConfirmationPostResponse>
+    @PUT("confirmation/{id}")
+    fun postPaymentConfirmation(@Path("id") id: Int, @Part file : MultipartBody.Part) : Call<ConfirmationPostResponse>
 
     //Post Profile Image
     @Multipart
     @PUT("updateProfileUser")
-    fun putProfileImage(@Part file : MultipartBody.Part) : Call<ProfileImagePutResponse>
+    fun putProfileImage(@Part confirmation : MultipartBody.Part) : Call<ProfileImagePutResponse>
 
 }

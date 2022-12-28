@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentRegisterBinding
@@ -41,7 +42,7 @@ class RegisterFragment : Fragment() {
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
 
-        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -55,7 +56,7 @@ class RegisterFragment : Fragment() {
         (binding.inputGender.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_registerFragment_to_openingFragment)
+            Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_openingFragment)
         }
 
         binding.pickDate.setOnClickListener {
@@ -63,13 +64,13 @@ class RegisterFragment : Fragment() {
         }
 
         binding.btnRegister.setOnClickListener {
-            //validateInput()
+            validateInput(view)
             Toast.makeText(context, binding.inputAddr.editText?.text.toString(), Toast.LENGTH_SHORT).show()
         }
 
     }
 
-    private fun validateInput() {
+    private fun validateInput(view : View) {
         val username = binding.inputUsername.editText?.text.toString()
         val fullname = binding.inputFullname.editText?.text.toString()
         val email = binding.inputEmail.editText?.text.toString()
@@ -81,7 +82,7 @@ class RegisterFragment : Fragment() {
 
         if (conPassword == password){
             if (username.isNotBlank()&&fullname.isNotBlank()&&email.isNotBlank()&&password.isNotBlank()&&birthDate.isNotBlank()&&gender.isNotBlank()&&address.isNotBlank()){
-                register(username, fullname, email, password, birthDate, gender, address)
+                register(view, username, fullname, email, password, birthDate, gender, address)
             }else{
                 Toast.makeText(context, "You must fill all data required !", Toast.LENGTH_SHORT)
                     .show()
@@ -93,6 +94,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun register(
+        view : View,
         username: String,
         fullname: String,
         email: String,
@@ -101,13 +103,13 @@ class RegisterFragment : Fragment() {
         gender: String,
         address: String
     ) {
-        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
         viewModel.getRegisterData().observe(viewLifecycleOwner) {
             if (it!=null) {
                 Log.d("Register Response :", it.toString())
                 Toast.makeText(context, "Registration Success", Toast.LENGTH_SHORT)
                     .show()
-               findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+                Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_loginFragment)
             } else {
                 Toast.makeText(
                     requireActivity(),

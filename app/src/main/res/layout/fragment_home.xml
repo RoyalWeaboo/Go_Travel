@@ -112,10 +112,10 @@
                         android:text="One-Way Trip" />
 
                     <ImageView
-                        android:layout_marginStart="-4dp"
                         android:id="@+id/line_option_one_way"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="-4dp"
                         android:src="@drawable/line_option" />
                 </LinearLayout>
 
@@ -135,12 +135,12 @@
                         android:text="Round Trip" />
 
                     <ImageView
-                        android:visibility="gone"
-                        android:layout_marginStart="-4dp"
                         android:id="@+id/line_option_round"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/line_option"/>
+                        android:layout_marginStart="-4dp"
+                        android:src="@drawable/line_option"
+                        android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
 

@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.binar.c5team.gotravel.R
@@ -17,6 +18,7 @@ import com.binar.c5team.gotravel.databinding.FragmentTicketListBinding
 import com.binar.c5team.gotravel.model.Flight
 import com.binar.c5team.gotravel.view.adapter.FlightAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class RoundTripFlightListFragment : Fragment() {
@@ -77,7 +79,12 @@ class RoundTripFlightListFragment : Fragment() {
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
 
-        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.GONE
+        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
+
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -86,36 +93,28 @@ class RoundTripFlightListFragment : Fragment() {
         }
 
         //getting flight data then set the data to layout
-        getSetData()
+        getSetData(view)
 
         //fetch flight data by airport id with token
-        getFlight(token, fromAirportId, toAirportId)
+        getFlight(view, token, fromAirportId, toAirportId)
 
         binding.ticketListArrowBack.setOnClickListener {
-            findNavController().navigate(R.id.action_flightListFragment_to_homeFragment)
+            Navigation.findNavController(view).navigate(R.id.action_flightListFragment_to_homeFragment)
         }
 
     }
 
-    private fun getSetData() {
+    private fun getSetData(view : View) {
         //getting flight data
         fligtMode = sharedPrefFlight.getString("flightMode", " ").toString()
-        fromAirportId = sharedPrefFlight.getInt("fromId", 0)
-        toAirportId = sharedPrefFlight.getInt("toId", 0)
+        fromAirportId = sharedPrefFlight.getInt("toId", 0)
+        toAirportId = sharedPrefFlight.getInt("fromId", 0)
         adultCount = sharedPrefFlight.getString("adultCount", "")!!.toInt()
 
         val fromAirportCity = sharedPrefFlight.getString("toAirport", "")
         val toAirportCity = sharedPrefFlight.getString("fromAirport", "")
         val departDate = sharedPrefFlight.getString("departDate", "")
-        val returnDate = sharedPrefFlight.getString("returnDate", "")
         val childrenCount = sharedPrefFlight.getString("childCount", "")
-
-        //checking flight mode
-        if (fligtMode == "oneWay") {
-            binding.returnDateCard.visibility = View.GONE
-        } else {
-            binding.returnDateCard.visibility = View.VISIBLE
-        }
 
         //checking passenger count
         //adult count
@@ -127,7 +126,7 @@ class RoundTripFlightListFragment : Fragment() {
             binding.adultTotalCount.text = "- 0 Adult"
             Toast.makeText(context, "Error : Cannot read passenger count !", Toast.LENGTH_SHORT)
                 .show()
-            findNavController().navigate(R.id.action_flightListFragment_to_homeFragment)
+            Navigation.findNavController(view).navigate(R.id.action_flightListFragment_to_homeFragment)
         }
         //child count
         if (childrenCount!!.toInt() > 1) {
@@ -139,18 +138,17 @@ class RoundTripFlightListFragment : Fragment() {
         }else {
             Toast.makeText(context, "Error : Cannot read passenger count !", Toast.LENGTH_SHORT)
                 .show()
-            findNavController().navigate(R.id.action_flightListFragment_to_homeFragment)
+            Navigation.findNavController(view).navigate(R.id.action_flightListFragment_to_homeFragment)
 
         }
 
         binding.fromCity.text = fromAirportCity
         binding.toCity.text = toAirportCity
         binding.departureDateText.text = departDate
-        binding.returnDateText.text = returnDate
     }
 
-    private fun getFlight(token: String, fromAirportId: Int, toAirportId: Int) {
-        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+    private fun getFlight(view: View, token: String, fromAirportId: Int, toAirportId: Int) {
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
 
         viewModel.getFlightListData().observe(viewLifecycleOwner) { it ->
             if (it != null) {
@@ -186,7 +184,7 @@ class RoundTripFlightListFragment : Fragment() {
 
                             departureBookingData.apply()
 
-                            findNavController().navigate(
+                            Navigation.findNavController(view).navigate(
                                 R.id.action_roundTripFlightListFragment_to_bookingFragment
                             )
                         } else {
@@ -197,10 +195,6 @@ class RoundTripFlightListFragment : Fragment() {
                             )
                                 .show()
                         }
-                    }else{
-                        findNavController().navigate(
-                            R.id.action_roundTripFlightListFragment_to_loginFragment
-                        )
                     }
                 }
                 adapter.onWishlistClick = {
@@ -215,10 +209,6 @@ class RoundTripFlightListFragment : Fragment() {
                             )
                                 .show()
                         }
-                    }else{
-                        findNavController().navigate(
-                            R.id.action_roundTripFlightListFragment_to_loginFragment
-                        )
                     }
                 }
 
@@ -234,7 +224,7 @@ class RoundTripFlightListFragment : Fragment() {
     }
 
     private fun addNewWishlist(token: String, id_flight : Int, id_user : Int){
-        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
 
         viewModel.postWishlistLD().observe(viewLifecycleOwner) {
             if (it != null) {

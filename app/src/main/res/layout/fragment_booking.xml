@@ -155,6 +155,7 @@
                     android:layout_marginBottom="14dp"
                     android:fontFamily="@font/inter_bold"
                     android:text="Passenger Count"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     android:textColor="#000000"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_totalTime" />
@@ -171,31 +172,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textView29" />
 
-                <TextView
-                    android:id="@+id/textView30"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="14dp"
-                    android:fontFamily="@font/inter_bold"
-                    android:text="Total"
-                    android:textColor="#000000"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView29" />
 
-                <TextView
-                    android:id="@+id/tv_ticketPrice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="24dp"
-                    android:fontFamily="@font/inter"
-                    android:text="Rp. 850.000"
-                    android:textColor="#000000"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView30"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView30" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 

@@ -1,8 +1,7 @@
 package com.binar.c5team.gotravel.view.fragment
 
-import android.app.*
+import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -13,14 +12,14 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.core.app.NotificationCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentBookingBinding
-import com.binar.c5team.gotravel.view.MainActivity
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,6 +45,13 @@ class RoundBookingFragment : Fragment() {
     //progressbar
     var progressView: ViewGroup? = null
     private var isProgressShowing = false
+
+    private var bookingIds = ArrayList<Int>()
+
+    private var delayHandler = false
+
+    //viewmodel
+    private lateinit var viewModel: FlightViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,13 +88,13 @@ class RoundBookingFragment : Fragment() {
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
 
-        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
-        viewModel.loading.observe(viewLifecycleOwner) {
-            when (it) {
-                true -> showProgressingView()
-                false -> hideProgressingView()
-            }
-        }
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.GONE
+        val guestNavBar =
+            requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
 
         //getting date
         returnDate = sharedPrefBooking.getString("unparsedReturnDate", "null")!!
@@ -96,44 +102,79 @@ class RoundBookingFragment : Fragment() {
         //getting trip mode
         fligtMode = sharedPrefFlight.getString("flightMode", "").toString()
 
+        bookingIds = arguments?.getIntegerArrayList("bookingIds") as ArrayList<Int>
+
         getSetData()
 
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
-            Toast.makeText(context, "Booking Canceled", Toast.LENGTH_SHORT).show()
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Cancel Round Trip Booking ?")
+            builder.setMessage("You need to rebook from start again")
+
+            builder.setPositiveButton("Confirm") { _, _ ->
+                Navigation.findNavController(view).navigate(R.id.action_roundBookingFragment_to_homeFragment)
+                Toast.makeText(context, "Booking Canceled", Toast.LENGTH_SHORT).show()
+            }
+            builder.setNegativeButton("Back") { _, _ ->
+                //do nothing
+            }
+            builder.show()
         }
 
+        var tempCount = 0
         if (seatCount > 1) {
             binding.passengerNumber.visibility = View.VISIBLE
-            var returnTempDataCount = 1
+
+            //var oneWayTempDataCount = sharedPrefBooking.getInt("tempSeatCount", 1)
+
             binding.btnToPayment.setOnClickListener {
-                returnTempDataCount++
-                binding.passengerNumber.text =
-                    "Passenger - " + returnTempDataCount.toString()
+                showProgressingView()
+                tempCount++
+
+                binding.passengerNumber.text = "Passenger - " + tempCount.toString()
+
                 bookNewTicket()
                 clearInput()
-                if (returnTempDataCount > seatCount) {
-                    openPaymentDialog()
+                hideProgressingView()
+
+                if (tempCount == seatCount) {
+                    viewModel.getPostBookingLD().observe(viewLifecycleOwner) {
+                        if (it != null) {
+                            bookingIds.add(bookingIds.size, it.data.id)
+                            hideProgressingView()
+
+                            val bundle = Bundle()
+                            bundle.putIntegerArrayList("bookingIds", bookingIds)
+                            Navigation.findNavController(view).navigate(
+                                R.id.action_bookingFragment_to_paymentFragment,
+                                bundle
+                            )
+                        }
+                    }
                 }
             }
-        } else if (seatCount == 1) {
+        } else {
             binding.btnToPayment.setOnClickListener {
+                showProgressingView()
                 bookNewTicket()
-                clearInput()
-                openPaymentDialog()
+                viewModel.getPostBookingLD().observe(viewLifecycleOwner) {
+                    if (it != null) {
+                        bookingIds.add(bookingIds.size, it.data.id)
+                        hideProgressingView()
+
+                        val bundle = Bundle()
+                        bundle.putIntegerArrayList("bookingIds", bookingIds)
+
+                        Navigation.findNavController(view).navigate(
+                            R.id.action_roundBookingFragment_to_paymentFragment,
+                            bundle
+                        )
+                    }
+                }
             }
         }
-
-
     }
 
-    private fun clearInput() {
-        binding.inputFullname.editText?.text?.clear()
-        binding.inputBaggage.editText?.text?.clear()
-        binding.inputFood.editText?.text?.clear()
-        binding.inputEmail.editText?.text?.clear()
-        binding.inputMobileNumber.editText?.text?.clear()
-    }
 
     private fun bookNewTicket() {
         val name = binding.inputFullname.editText?.text.toString()
@@ -143,8 +184,6 @@ class RoundBookingFragment : Fragment() {
         food = foodOpt == "Yes"
         val homePhone = binding.inputEmail.editText?.text.toString()
         val mobilePhone = binding.inputMobileNumber.editText?.text.toString()
-
-//        Log.d("data", roundFlightId.toString() + userId.toString() + baggage.toString() + food + name + homePhone + mobilePhone + roundFlightPrice + returnDate)
 
         bookTicket(
             token,
@@ -165,7 +204,6 @@ class RoundBookingFragment : Fragment() {
         seatCount = sharedPrefBooking.getInt("totalSeat", 0)
         roundFlightId = sharedPrefBooking.getInt("roundFlightId", 0)
         roundFlightPrice = sharedPrefBooking.getInt("roundFlightPrice", 0)
-        val availableSeat = sharedPrefBooking.getInt("roundAvailableSeat", 0)
         val planeName = sharedPrefBooking.getString("roundPlaneName", "Error")
         val fromAirport = sharedPrefBooking.getString("roundFromAirport", "Error")
         val toAirport = sharedPrefBooking.getString("roundToAirport", "Error")
@@ -178,51 +216,14 @@ class RoundBookingFragment : Fragment() {
         val adapterFood = ArrayAdapter(requireContext(), R.layout.list_item, items)
         (binding.inputFood.editText as? AutoCompleteTextView)?.setAdapter(adapterFood)
 
-        //total flight price
-        val roundTotal = seatCount * roundFlightPrice
-
-        //setting the textview
-        binding.tvTicketPrice.text = roundTotal.toString()
         binding.tvAircraftName.text = planeName
         binding.tvFromCity.text = fromAirport
         binding.tvArrivalCity.text = toAirport
         binding.tvTimeFrom.text = departureTime
-        binding.tvTimeTo.text = "- "+arrivalTime
+        binding.tvTimeTo.text = "- " + arrivalTime
         binding.tvSeatTotal.text = seatCount.toString()
     }
 
-
-    private fun notification() {
-        val mBuilder = NotificationCompat.Builder(requireContext().applicationContext, "1")
-        val ii = Intent(requireContext().applicationContext, MainActivity::class.java)
-        ii.putExtra("redirect", "historyFragment")
-        val pendingIntent = PendingIntent.getActivity(requireContext().applicationContext, 0, ii, 0)
-
-        val bigText = NotificationCompat.BigTextStyle()
-        bigText.setBigContentTitle("Booking Succesful !")
-        bigText.setSummaryText("Successful Booking")
-
-        mBuilder.setContentIntent(pendingIntent)
-        mBuilder.setSmallIcon(R.drawable.airplane_icon)
-        mBuilder.setContentTitle("Booking Succesful !")
-        mBuilder.setContentText("Success booking a new ticket, Open History to check your ticket !")
-        mBuilder.setStyle(bigText)
-        mBuilder.setDefaults(Notification.DEFAULT_ALL)
-
-        val mNotificationManager: NotificationManager =
-            requireContext().applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val channelId = "1"
-        val channel = NotificationChannel(
-            channelId,
-            "Success Booking Notification",
-            NotificationManager.IMPORTANCE_HIGH
-        )
-        mNotificationManager.createNotificationChannel(channel)
-        mBuilder.setChannelId(channelId)
-
-        mNotificationManager.notify(0, mBuilder.build())
-    }
 
     private fun bookTicket(
         token: String,
@@ -234,21 +235,8 @@ class RoundBookingFragment : Fragment() {
         homephone: String,
         mobilephone: String,
         totalprice: Int,
-        returnDate: String
+        departDate: String
     ) {
-        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
-        viewModel.getBookingLD().observe(viewLifecycleOwner) {
-            if (it != null) {
-                Log.d("Booking Response :", it.toString())
-                notification()
-            } else {
-                Toast.makeText(
-                    requireActivity(),
-                    "Booking Failed !",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
         viewModel.postBookingApi(
             token,
             id_flight,
@@ -259,9 +247,10 @@ class RoundBookingFragment : Fragment() {
             homephone,
             mobilephone,
             totalprice,
-            returnDate
+            departDate
         )
     }
+
 
     private fun countTime() {
         //getting booking date and time
@@ -274,26 +263,21 @@ class RoundBookingFragment : Fragment() {
         val timeArrival = flightArrivalTime?.let { timeFormat.parse(it) }
 
         val diff = timeDepart!!.time - timeArrival!!.time
-        val timeCount = "( ${(diff / (1000 * 60 * 60) * -1)} Hours ${(diff % (1000 * 60 * 60) * -1)} Minutes )"
+        val timeCount =
+            "( ${(diff / (1000 * 60 * 60) * -1)} Hours ${(diff % (1000 * 60 * 60) * -1)} Minutes )"
 
         binding.tvTotalTime.text = timeCount
 
     }
 
-    private fun openPaymentDialog(){
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle("Booking Success !")
-        builder.setMessage("You've succesfully booked ticket, Please proceed to pay the ticket by clicking the Pay Now Button, or you can pay later within 2 Hours before the ticket become invalid")
-
-        builder.setPositiveButton("Pay Now") { dialog, which ->
-            findNavController().navigate(R.id.action_roundBookingFragment_to_paymentDialog)
-        }
-
-        builder.setNegativeButton("Later") { dialog, which ->
-            findNavController().navigate(R.id.action_bookingFragment_to_homeFragment)
-        }
-        builder.show()
+    private fun clearInput() {
+        binding.inputFullname.editText?.text?.clear()
+        binding.inputBaggage.editText?.text?.clear()
+        binding.inputFood.editText?.text?.clear()
+        binding.inputEmail.editText?.text?.clear()
+        binding.inputMobileNumber.editText?.text?.clear()
     }
+
 
     private fun showProgressingView() {
         if (!isProgressShowing) {

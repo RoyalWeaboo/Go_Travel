@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_marginStart="8dp"
-    android:layout_marginBottom="16dp"
-    android:layout_marginEnd="8dp"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="16dp"
     android:elevation="16dp"
     app:cardCornerRadius="10dp">
 
@@ -13,39 +13,50 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <RelativeLayout
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp">
+
+            <TextView
+                android:id="@+id/planeName"
+                style="@style/normalText24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Garuda Airlines" />
 
 
-                <TextView
-                    android:id="@+id/timeFrom"
-                    style="@style/normalText24"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_bold"
-                    android:text="15:30" />
-
+            <TextView
+                android:id="@+id/timeFrom"
+                style="@style/normalText24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/planeName"
+                android:fontFamily="@font/inter_bold"
+                android:text="15:30" />
 
 
             <ImageView
                 android:layout_width="128dp"
                 android:layout_height="32dp"
-                android:layout_centerHorizontal="true"
+                android:layout_below="@id/planeName"
+                android:layout_centerInParent="true"
                 android:src="@drawable/plane_trip" />
 
-                <TextView
-                    android:layout_alignParentEnd="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_bold"
-                    android:text="18:30"
-                    style="@style/normalText24"
-                    android:id="@+id/timeTo"/>
-
+            <TextView
+                android:id="@+id/timeTo"
+                style="@style/normalText24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/planeName"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/inter_bold"
+                android:text="18:30" />
 
 
         </RelativeLayout>
@@ -54,40 +65,50 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="#19000000"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="#19000000" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_marginEnd="32dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginBottom="16dp"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/planeName"
-                style="@style/normalText18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_bold"
-                android:text="Garuda Airlines" />
-
-            <TextView
-                android:id="@+id/price"
-                style="@style/normalText16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/planeName"
-                android:fontFamily="@font/inter_bold"
-                android:text="Rp.500.000" />
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_alignParentEnd="true">
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/planeClass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-4dp"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Economy Class"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/price"
+                    style="@style/normalText20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/planeClass"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Rp.500.000" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:orientation="vertical">
+
                 <Button
                     android:id="@+id/btnOrder"
                     android:layout_width="wrap_content"
@@ -97,11 +118,11 @@
 
                 <TextView
                     android:id="@+id/addWishlist"
-                    android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/black"
                     android:fontFamily="@font/inter"
+                    android:gravity="center"
                     android:text="+ Add To Wishlist"
                     android:textColor="@color/black" />
             </LinearLayout>

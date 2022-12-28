@@ -103,11 +103,23 @@
                     android:text="Garuda Airlines" />
 
                 <TextView
+                    android:id="@+id/planeClass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/planeName"
+                    android:layout_marginTop="-4dp"
+                    android:fontFamily="@font/inter"
+                    android:text="Economy Class"
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
+
+                <TextView
                     android:id="@+id/price"
                     style="@style/normalText20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_bold"
+                    android:layout_marginTop="4dp"
                     android:text="Rp.500.000" />
             </LinearLayout>
 
@@ -115,13 +127,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btnOrder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:backgroundTint="@color/black"
                     android:text="ORDER NOW" />
 

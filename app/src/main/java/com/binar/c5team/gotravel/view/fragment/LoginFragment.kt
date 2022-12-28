@@ -47,15 +47,17 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
+        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
 
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
 
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_openingFragment)
+            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_openingFragment)
         }
 
         binding.btnLogin.setOnClickListener {
-            validateLoginInput()
+            validateLoginInput(view)
         }
         binding.tvRegister.setOnClickListener {
             Navigation.findNavController(view)
@@ -63,19 +65,19 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun validateLoginInput() {
+    private fun validateLoginInput(view : View) {
         val usernameInput = binding.inputUsername.editText?.text.toString()
         val passwordinput = binding.inputPassword.editText?.text.toString()
 
         if (usernameInput.isNotEmpty() && passwordinput.isNotEmpty()) {
-            validateLoginData(usernameInput, passwordinput)
+            validateLoginData(view, usernameInput, passwordinput)
         } else {
             Toast.makeText(context, "Username or Password can't be empty !", Toast.LENGTH_SHORT)
                 .show()
         }
     }
 
-    private fun validateLoginData(username: String, password: String) {
+    private fun validateLoginData(view : View, username: String, password: String) {
         showProgressingView()
         RetrofitClient.apiInstance.login(LoginData(username, password))
             .enqueue(object : Callback<LoginResponse> {
@@ -92,7 +94,7 @@ class LoginFragment : Fragment() {
                             saveData.putString("username", response.body()?.username)
                             saveData.putString("token", response.body()?.token)
                             saveData.apply()
-                            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
                         }
                     } else {
                         Log.d("login response", response.body().toString())

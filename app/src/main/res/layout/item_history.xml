@@ -1,74 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardHistory"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="10dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="16dp"
     android:elevation="16dp"
-    app:strokeColor="#AAAAAA"
-    app:strokeWidth="1dp">
+    app:cardCornerRadius="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="8dp">
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/planeName"
+                style="@style/normalText24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:orientation="vertical">
+                android:fontFamily="@font/inter_bold"
+                android:text="Garuda Airlines" />
 
                 <TextView
-                    android:id="@+id/timeFrom"
-                    style="@style/normalText28"
+                    android:id="@+id/codeText"
+                    android:textSize="12sp"
+                    android:padding="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
                     android:fontFamily="@font/inter_bold"
-                    android:text="18 : 30" />
-            </LinearLayout>
+                    android:text="Code :" />
+
+
+            <TextView
+                android:id="@+id/timeFrom"
+                style="@style/normalText24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/codeText"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="15:30" />
+
 
             <ImageView
-                android:layout_width="96dp"
+                android:layout_width="128dp"
                 android:layout_height="32dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
+                android:layout_below="@id/codeText"
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"
                 android:src="@drawable/plane_trip" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/timeTo"
+                style="@style/normalText24"
+                android:layout_marginTop="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/timeTo"
-                    style="@style/normalText28"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_bold"
-                    android:text="20 : 30" />
+                android:layout_below="@id/codeText"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/inter_bold"
+                android:text="18:30" />
 
 
-            </LinearLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:background="#26000000" />
+            android:background="#19000000" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -80,15 +93,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
+                android:layout_centerVertical="true"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/planeName"
-                    style="@style/normalText20"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/inter_bold"
-                    android:text="Garuda Airlines" />
 
                 <TextView
                     android:id="@+id/date"
@@ -122,7 +129,7 @@
 
                         <TextView
                             android:id="@+id/tvStatus"
-                            style="@style/lightText18"
+                            style="@style/lightText14"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/inter_bold"
@@ -146,7 +153,7 @@
                         android:padding="8dp">
 
                         <TextView
-                            style="@style/lightText18"
+                            style="@style/lightText14"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/inter_bold"
@@ -170,11 +177,83 @@
                         android:padding="8dp">
 
                         <TextView
-                            style="@style/lightText18"
+                            style="@style/lightText14"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/inter_bold"
                             android:text="On Board" />
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvStatusWaiting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginEnd="8dp"
+                    app:cardBackgroundColor="#F98C4B"
+                    app:cardCornerRadius="8dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:padding="8dp">
+
+                        <TextView
+                            style="@style/lightText14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_bold"
+                            android:text="Waiting for Approval" />
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvStatusNotPaid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginEnd="8dp"
+                    app:cardBackgroundColor="#CC0000"
+                    app:cardCornerRadius="8dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:padding="8dp">
+
+                        <TextView
+                            style="@style/lightText14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_bold"
+                            android:text="Waiting for Payment" />
+                    </RelativeLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvStatusInactive"
+                    android:layout_width="128dp"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:cardBackgroundColor="#C50101"
+                    app:cardCornerRadius="8dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:padding="8dp">
+
+                        <TextView
+                            style="@style/lightText18"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/inter_bold"
+                            android:text="Inactive" />
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
             </RelativeLayout>
@@ -182,4 +261,4 @@
 
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</androidx.cardview.widget.CardView>

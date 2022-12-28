@@ -4,14 +4,18 @@ package com.binar.c5team.gotravel.model
 import com.google.gson.annotations.SerializedName
 
 data class Booking(
+    @SerializedName("approved")
+    val approved: Boolean,
     @SerializedName("baggage")
     val baggage: Int,
     @SerializedName("booking_date")
     val bookingDate: Any,
+    @SerializedName("confirmation")
+    val confirmation: String,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("Flight")
-    val flight: FlightX,
+    val flight: FlightXXX,
     @SerializedName("food")
     val food: Boolean,
     @SerializedName("homephone")
@@ -27,11 +31,11 @@ data class Booking(
     @SerializedName("name")
     val name: String,
     @SerializedName("Ticket")
-    val ticket: TicketX,
+    val ticket: Any,
     @SerializedName("totalprice")
-    val totalprice: Any,
+    val totalprice: Int,
     @SerializedName("updatedAt")
     val updatedAt: String,
     @SerializedName("User")
-    val user: UserX
+    val user: UserXXX
 )

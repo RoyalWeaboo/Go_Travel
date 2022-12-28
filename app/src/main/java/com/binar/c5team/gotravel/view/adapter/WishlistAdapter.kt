@@ -22,6 +22,7 @@ class WishlistAdapter (private var wishlist : List<Whislists>): RecyclerView.Ada
         val dt = wishlist[position].flight.departureTime
         val at = wishlist[position].flight.arrivalTime
 
+        holder.binding.planeClass.text = wishlist[position].flight.kelas
         holder.binding.timeFrom.text = dt
         holder.binding.timeTo.text = at
         holder.binding.planeName.text = wishlist[position].flight.plane.name

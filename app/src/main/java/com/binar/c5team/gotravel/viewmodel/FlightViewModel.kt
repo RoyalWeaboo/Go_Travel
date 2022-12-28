@@ -1,6 +1,7 @@
 package com.binar.c5team.gotravel.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.binar.c5team.gotravel.model.*
@@ -19,6 +20,11 @@ class FlightViewModel : ViewModel() {
     var postWishlistLiveData : MutableLiveData<WishlistPostResponse> = MutableLiveData()
     var delWishlistLiveData : MutableLiveData<Int> = MutableLiveData()
     var postConfirmationLiveData : MutableLiveData<ConfirmationPostResponse> = MutableLiveData()
+
+    fun resetLoading(): MutableLiveData<Boolean>{
+        loading.value = false
+        return loading
+    }
 
     fun getFlightListData(): MutableLiveData<FlightResponse> {
         return flightLiveData
@@ -105,7 +111,7 @@ class FlightViewModel : ViewModel() {
                     response: Response<BookingResponse>
                 ) {
                     if(response.isSuccessful){
-                        bookingLiveData.postValue(response.body())
+                        bookingLiveData.value = response.body()
                     }else{
                         Log.d("Fetch Booking Failed", response.body().toString())
                     }
@@ -117,8 +123,7 @@ class FlightViewModel : ViewModel() {
                     loading.postValue(false)
                 }
 
-            }
-            )
+            })
     }
 
     fun postBookingApi(token : String, id_flight : Int, id_user : Int, baggage : Int, food : Boolean, name : String, homePhone : String, mobilePhone : String, totalPrice : Int, bookingDate : String) {
@@ -129,12 +134,12 @@ class FlightViewModel : ViewModel() {
                     call: Call<BookingPostResponse>,
                     response: Response<BookingPostResponse>
                 ) {
-                    loading.postValue(false)
                     if (response.isSuccessful) {
-                        postBookingLiveData.postValue(response.body())
+                        postBookingLiveData.value = response.body()
                     } else {
                         Log.d("Booking Failed", response.body().toString())
                     }
+                    loading.postValue(false)
                 }
 
                 override fun onFailure(call: Call<BookingPostResponse>, t: Throwable) {
@@ -194,9 +199,9 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun postConfirmationPaymentImage(token :String, file : MultipartBody.Part) {
+    fun postConfirmationPaymentImage(token :String, id : Int, file : MultipartBody.Part) {
         loading.postValue(true)
-        RetrofitClient.baseApiWithToken(token).postPaymentConfirmation(file)
+        RetrofitClient.apiWithToken(token).postPaymentConfirmation(id, file)
             .enqueue(object : Callback<ConfirmationPostResponse> {
                 override fun onResponse(
                     call: Call<ConfirmationPostResponse>,

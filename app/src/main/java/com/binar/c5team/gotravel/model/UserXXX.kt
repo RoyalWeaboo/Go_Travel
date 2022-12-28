@@ -3,11 +3,9 @@ package com.binar.c5team.gotravel.model
 
 import com.google.gson.annotations.SerializedName
 
-data class UserXX(
+data class UserXXX(
     @SerializedName("address")
     val address: String,
-    @SerializedName("Bookings")
-    val bookings: List<Booking>,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("date_of_birth")
@@ -19,7 +17,7 @@ data class UserXX(
     @SerializedName("id")
     val id: Int,
     @SerializedName("image")
-    val image: Any,
+    val image: String,
     @SerializedName("name")
     val name: String,
     @SerializedName("no_ktp")
@@ -33,5 +31,7 @@ data class UserXX(
     @SerializedName("updatedAt")
     val updatedAt: String,
     @SerializedName("username")
-    val username: String
+    val username: String,
+    @SerializedName("Whislists")
+    val whislists: List<WhislistsX>
 )

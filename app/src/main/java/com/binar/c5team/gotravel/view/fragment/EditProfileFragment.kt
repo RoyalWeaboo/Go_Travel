@@ -13,12 +13,14 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentEditProfileBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.binar.c5team.gotravel.viewmodel.UserViewModel
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,7 +51,7 @@ class EditProfileFragment : Fragment() {
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true ) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+                    Navigation.findNavController(view).navigate(R.id.action_editProfileFragment_to_profileFragment)
                 }
             }
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
@@ -58,7 +60,12 @@ class EditProfileFragment : Fragment() {
         //getting token
         token = sharedPref.getString("token", "").toString()
 
-        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.GONE
+        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
+
+        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -80,13 +87,13 @@ class EditProfileFragment : Fragment() {
 
         val gend = arguments?.getString("gender")
         if (gend == "Male"){
-            (binding.inputGender.editText as? AutoCompleteTextView)?.setSelection(0)
+            (binding.inputGender.editText as? AutoCompleteTextView)?.setText("Male")
         }else{
-            (binding.inputGender.editText as? AutoCompleteTextView)?.setSelection(1)
+            (binding.inputGender.editText as? AutoCompleteTextView)?.setText("Female")
         }
 
         binding.arrowBackEditProfile.setOnClickListener {
-            findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
+            Navigation.findNavController(view).navigate(R.id.action_editProfileFragment_to_profileFragment)
         }
 
         binding.pickDate.setOnClickListener {
@@ -102,22 +109,23 @@ class EditProfileFragment : Fragment() {
             val name = binding.inputFullname.editText?.text.toString()
 
             var formatGender = ""
-            if (gender == "Male"){
-                formatGender = "L"
+            formatGender = if (gender == "Male"){
+                "L"
             }else{
-                formatGender = "P"
+                "P"
             }
 
-            putProfileData(token, noKtp, formatGender, dateofBirth, address, email, name)
+            putProfileData(view, token, noKtp, formatGender, dateofBirth, address, email, name)
         }
 
     }
 
-    private fun putProfileData(token: String, no_ktp : String, gender : String, date_of_birth : String, address : String, email : String, name : String) {
-        val viewModel = ViewModelProvider(requireActivity())[UserViewModel::class.java]
+    private fun putProfileData(view : View, token: String, no_ktp : String, gender : String, date_of_birth : String, address : String, email : String, name : String) {
+        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
         viewModel.putProfileData().observe(viewLifecycleOwner) {
             if (it != null) {
                 Toast.makeText(context, "Profile updated !", Toast.LENGTH_SHORT).show()
+                Navigation.findNavController(view).navigate(R.id.action_editProfileFragment_to_profileFragment)
             } else {
                 Toast.makeText(context, "Failed to read profile data", Toast.LENGTH_SHORT).show()
             }

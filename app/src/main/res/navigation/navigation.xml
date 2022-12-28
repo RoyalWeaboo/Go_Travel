@@ -96,6 +96,10 @@
         <action
             android:id="@+id/action_historyFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <argument android:name="args" />
+        <action
+            android:id="@+id/action_historyFragment_to_paymentDialog"
+            app:destination="@id/paymentDialog" />
     </fragment>
     <fragment
         android:id="@+id/bookingFragment"
@@ -117,6 +121,9 @@
         <action
             android:id="@+id/action_bookingFragment_to_paymentDialog"
             app:destination="@id/paymentDialog" />
+        <action
+            android:id="@+id/action_bookingFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
     </fragment>
     <fragment
         android:id="@+id/flightListFragment"
@@ -162,6 +169,10 @@
         <action
             android:id="@+id/action_roundBookingFragment_to_paymentDialog"
             app:destination="@id/paymentDialog" />
+        <action
+            android:id="@+id/action_roundBookingFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment" />
+        <argument android:name="args" />
     </fragment>
     <fragment
         android:id="@+id/wishlistFragment"
@@ -214,6 +225,10 @@
         <action
             android:id="@+id/action_paymentDialog_to_historyFragment"
             app:destination="@id/historyFragment" />
+        <argument android:name="args" />
+        <action
+            android:id="@+id/action_paymentDialog_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </dialog>
     <fragment
         android:id="@+id/editProfileFragment"
@@ -223,5 +238,22 @@
             android:id="@+id/action_editProfileFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
         <argument android:name="args" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="com.binar.c5team.gotravel.view.fragment.PaymentFragment"
+        android:label="PaymentFragment" >
+        <action
+            android:id="@+id/action_paymentFragment_to_bookingFragment"
+            app:destination="@id/bookingFragment" />
+        <action
+            android:id="@+id/action_paymentFragment_to_roundBookingFragment"
+            app:destination="@id/roundBookingFragment" />
+        <action
+            android:id="@+id/action_paymentFragment_to_paymentDialog"
+            app:destination="@id/paymentDialog" />
+        <action
+            android:id="@+id/action_paymentFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
     </fragment>
 </navigation>

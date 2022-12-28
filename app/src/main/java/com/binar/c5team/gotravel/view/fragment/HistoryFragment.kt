@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHistoryBinding
@@ -57,7 +59,7 @@ class HistoryFragment : Fragment() {
         val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
         guestNavBar.visibility = View.GONE
 
-        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -65,14 +67,13 @@ class HistoryFragment : Fragment() {
             }
         }
 
-        getHistory(token, userId)
+        getHistory(view, token, userId)
     }
 
-    private fun getHistory(token: String, userId: Int) {
-        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+    private fun getHistory(view : View, token: String, userId: Int) {
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.getBookingLD().observe(viewLifecycleOwner) {
             if (it != null) {
-                Log.d("History Response :", it.toString())
                 binding.rvHistory.layoutManager = LinearLayoutManager(
                     context, LinearLayoutManager.VERTICAL, false
                 )
@@ -87,6 +88,15 @@ class HistoryFragment : Fragment() {
                 }
                 adapter = HistoryAdapter(filterHistory)
                 binding.rvHistory.adapter = adapter
+
+                adapter.onStatusClick = { bookingData->
+                    val ticketId = ArrayList<Int>()
+                    ticketId.add(0, bookingData.id)
+
+                    val bund = Bundle()
+                    bund.putIntegerArrayList("bookingIds", ticketId)
+                    Navigation.findNavController(view).navigate(R.id.action_historyFragment_to_paymentDialog, bund)
+                }
             }else{
                 Toast.makeText(context, "No History Found !", Toast.LENGTH_SHORT).show()
             }
@@ -110,4 +120,5 @@ class HistoryFragment : Fragment() {
         viewGroup.removeView(progressView)
         isProgressShowing = false
     }
+
 }

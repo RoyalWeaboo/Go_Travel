@@ -19,58 +19,87 @@
         android:src="@drawable/arrow_back" />
 
 
-
     <LinearLayout
         android:id="@+id/flight_information_1"
-        android:layout_below="@id/ticket_list_arrow_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/ticket_list_arrow_back"
         android:orientation="horizontal">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_weight="1"
             android:backgroundTint="@color/white"
             app:cardCornerRadius="8dp"
             app:strokeColor="#AAAAAA"
             app:strokeWidth="1dp">
 
-            <TextView
-                android:id="@+id/fromCity"
-                style="@style/normalText18"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:fontFamily="@font/inter_bold"
-                android:text="Jakarta" />
+                android:orientation="vertical">
+                <TextView
+                    android:textSize="12sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="From" />
+
+                <TextView
+                    android:id="@+id/fromCity"
+                    style="@style/normalText18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Jakarta" />
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_weight="1"
             android:backgroundTint="@color/white"
             app:cardCornerRadius="8dp"
             app:strokeColor="#AAAAAA"
             app:strokeWidth="1dp">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <TextView
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="To" />
+
             <TextView
                 android:id="@+id/toCity"
-                android:paddingStart="8dp"
-                android:layout_margin="8dp"
                 style="@style/normalText18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/inter_bold"
                 android:text="Bali" />
+
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -78,59 +107,55 @@
 
     <LinearLayout
         android:id="@+id/flight_information_2"
-        android:layout_below="@id/flight_information_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/flight_information_1"
         android:orientation="horizontal">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/departureDateCard"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="48dp"
+            android:layout_weight="1"
             android:backgroundTint="@color/white"
             app:cardCornerRadius="8dp"
             app:strokeColor="#AAAAAA"
             app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <TextView
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="Date" />
 
             <TextView
                 android:id="@+id/departureDateText"
-                android:layout_margin="8dp"
                 style="@style/normalText18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/inter_bold"
                 android:text="Nov 23, 2022" />
 
+            </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/returnDateCard"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="@color/white"
-            app:cardCornerRadius="8dp"
-            app:strokeColor="#AAAAAA"
-            app:strokeWidth="1dp">
-
-            <TextView
-                android:id="@+id/returnDateText"
-                android:layout_margin="8dp"
-                style="@style/normalText18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_bold"
-                android:text="Nov 30, 2022" />
-
-        </com.google.android.material.card.MaterialCardView>
-
+            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -175,14 +200,14 @@
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/round_flight_opt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/linearPassenger"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             style="@style/normalText16"

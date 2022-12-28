@@ -69,7 +69,6 @@ class UserViewModel : ViewModel() {
                 ) {
                     if (response.isSuccessful) {
                         profileLiveData.postValue(response.body())
-                        Log.d("Fetch Profile Data Success", response.body().toString())
                     } else {
                         Log.d("Fetch Profile Data Failed", response.body().toString())
                     }
