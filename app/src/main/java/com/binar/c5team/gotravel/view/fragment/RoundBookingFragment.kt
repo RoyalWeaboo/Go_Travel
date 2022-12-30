@@ -15,7 +15,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentBookingBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
@@ -33,7 +32,7 @@ class RoundBookingFragment : Fragment() {
 
     private var token: String = ""
     private var userId: Int = 0
-    private var fligtMode: String = ""
+    private var flightMode: String = ""
     private var seatCount: Int = 0
 
     //return data
@@ -46,9 +45,7 @@ class RoundBookingFragment : Fragment() {
     var progressView: ViewGroup? = null
     private var isProgressShowing = false
 
-    private var bookingIds = ArrayList<Int>()
-
-    private var delayHandler = false
+    var bookingIds = ArrayList<Int>()
 
     //viewmodel
     private lateinit var viewModel: FlightViewModel
@@ -58,6 +55,7 @@ class RoundBookingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         binding = FragmentBookingBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -88,8 +86,6 @@ class RoundBookingFragment : Fragment() {
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
 
-        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
-
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
         val guestNavBar =
@@ -100,9 +96,10 @@ class RoundBookingFragment : Fragment() {
         returnDate = sharedPrefBooking.getString("unparsedReturnDate", "null")!!
 
         //getting trip mode
-        fligtMode = sharedPrefFlight.getString("flightMode", "").toString()
+        flightMode = sharedPrefFlight.getString("flightMode", "").toString()
 
         bookingIds = arguments?.getIntegerArrayList("bookingIds") as ArrayList<Int>
+        Log.d("Booking ids from args ", bookingIds.toString())
 
         getSetData()
 
@@ -112,7 +109,8 @@ class RoundBookingFragment : Fragment() {
             builder.setMessage("You need to rebook from start again")
 
             builder.setPositiveButton("Confirm") { _, _ ->
-                Navigation.findNavController(view).navigate(R.id.action_roundBookingFragment_to_homeFragment)
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_roundBookingFragment_to_homeFragment)
                 Toast.makeText(context, "Booking Canceled", Toast.LENGTH_SHORT).show()
             }
             builder.setNegativeButton("Back") { _, _ ->
@@ -125,8 +123,6 @@ class RoundBookingFragment : Fragment() {
         if (seatCount > 1) {
             binding.passengerNumber.visibility = View.VISIBLE
 
-            //var oneWayTempDataCount = sharedPrefBooking.getInt("tempSeatCount", 1)
-
             binding.btnToPayment.setOnClickListener {
                 showProgressingView()
                 tempCount++
@@ -134,22 +130,20 @@ class RoundBookingFragment : Fragment() {
                 binding.passengerNumber.text = "Passenger - " + tempCount.toString()
 
                 bookNewTicket()
-                clearInput()
-                hideProgressingView()
+                viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
+                    clearInput()
+                    hideProgressingView()
+                }
 
                 if (tempCount == seatCount) {
-                    viewModel.getPostBookingLD().observe(viewLifecycleOwner) {
-                        if (it != null) {
-                            bookingIds.add(bookingIds.size, it.data.id)
-                            hideProgressingView()
-
-                            val bundle = Bundle()
-                            bundle.putIntegerArrayList("bookingIds", bookingIds)
-                            Navigation.findNavController(view).navigate(
-                                R.id.action_bookingFragment_to_paymentFragment,
-                                bundle
-                            )
-                        }
+                    viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
+                        val bundle = Bundle()
+                        bundle.putIntegerArrayList("bookingIds", bookingIds)
+                        Log.d("Current booking id array is", bookingIds.toString())
+                        Navigation.findNavController(view).navigate(
+                            R.id.action_roundBookingFragment_to_paymentFragment,
+                            bundle
+                        )
                     }
                 }
             }
@@ -157,19 +151,17 @@ class RoundBookingFragment : Fragment() {
             binding.btnToPayment.setOnClickListener {
                 showProgressingView()
                 bookNewTicket()
-                viewModel.getPostBookingLD().observe(viewLifecycleOwner) {
-                    if (it != null) {
-                        bookingIds.add(bookingIds.size, it.data.id)
-                        hideProgressingView()
+                viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
+                    Log.d("and the current booking id array is", bookingIds.toString())
+                    hideProgressingView()
 
-                        val bundle = Bundle()
-                        bundle.putIntegerArrayList("bookingIds", bookingIds)
+                    val bundle = Bundle()
+                    bundle.putIntegerArrayList("bookingIds", bookingIds)
 
-                        Navigation.findNavController(view).navigate(
-                            R.id.action_roundBookingFragment_to_paymentFragment,
-                            bundle
-                        )
-                    }
+                    Navigation.findNavController(view).navigate(
+                        R.id.action_roundBookingFragment_to_paymentFragment,
+                        bundle
+                    )
                 }
             }
         }
@@ -184,6 +176,12 @@ class RoundBookingFragment : Fragment() {
         food = foodOpt == "Yes"
         val homePhone = binding.inputEmail.editText?.text.toString()
         val mobilePhone = binding.inputMobileNumber.editText?.text.toString()
+        var tripType = ""
+        if (flightMode == "oneWay") {
+            tripType = "One Way"
+        } else if (flightMode == "roundTrip") {
+            tripType = "Round Trip"
+        }
 
         bookTicket(
             token,
@@ -195,7 +193,8 @@ class RoundBookingFragment : Fragment() {
             homePhone,
             mobilePhone,
             roundFlightPrice,
-            returnDate
+            returnDate,
+            tripType
         )
     }
 
@@ -218,7 +217,7 @@ class RoundBookingFragment : Fragment() {
 
         binding.tvAircraftName.text = planeName
         binding.tvFromCity.text = fromAirport
-        binding.tvArrivalCity.text = toAirport
+        binding.tvArrivalCity.text = "- " + toAirport
         binding.tvTimeFrom.text = departureTime
         binding.tvTimeTo.text = "- " + arrivalTime
         binding.tvSeatTotal.text = seatCount.toString()
@@ -235,9 +234,11 @@ class RoundBookingFragment : Fragment() {
         homephone: String,
         mobilephone: String,
         totalprice: Int,
-        departDate: String
+        departDate: String,
+        tripType: String
     ) {
-        viewModel.postBookingApi(
+        viewModel.postRoundBookingApi(
+            this,
             token,
             id_flight,
             id_user,
@@ -247,7 +248,8 @@ class RoundBookingFragment : Fragment() {
             homephone,
             mobilephone,
             totalprice,
-            departDate
+            departDate,
+            tripType
         )
     }
 

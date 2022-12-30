@@ -6,19 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.binar.c5team.gotravel.R
+import com.binar.c5team.gotravel.databinding.FragmentNotificationBinding
 
-
-class ChangePasswordFragment : Fragment() {
-
+class NotificationFragment : Fragment() {
+    lateinit var binding : FragmentNotificationBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_profile, container, false)
+        binding = FragmentNotificationBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
     }
+
 }

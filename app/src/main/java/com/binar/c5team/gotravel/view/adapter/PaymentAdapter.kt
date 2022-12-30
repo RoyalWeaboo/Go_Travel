@@ -1,5 +1,6 @@
 package com.binar.c5team.gotravel.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,7 @@ class PaymentAdapter (private var listBooking : List<Booking>): RecyclerView.Ada
         return ViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.tvDate.text = listBooking[position].bookingDate.toString()
 
@@ -31,12 +33,12 @@ class PaymentAdapter (private var listBooking : List<Booking>): RecyclerView.Ada
         val timeDepart = flightTime.let { timeFormat.parse(it) }
         val timeArrival = flightArrivalTime.let { timeFormat.parse(it) }
 
-        val timeDepartString = timeFormat.format(timeDepart)
-        val timeArrivalString = timeFormat.format(timeArrival)
+        val timeDepartString = timeDepart?.let { timeFormat.format(it) }
+        val timeArrivalString = timeArrival?.let { timeFormat.format(it) }
 
         val diff = timeDepart!!.time - timeArrival!!.time
         val timeCount = "( ${(diff / (1000 * 60 * 60) * -1)} Hours ${(diff % (1000 * 60 * 60) * -1)} Minutes )"
-        holder.binding.tvTime.text = timeDepartString + " - "+ timeArrivalString + timeCount
+        holder.binding.tvTime.text = "$timeDepartString - $timeArrivalString$timeCount"
 
         holder.binding.tvTrip.text = listBooking[position].flight.fromAirport.city + "-" + listBooking[position].flight.toAirport.city
         holder.binding.tvPassenger.text = listBooking[position].name

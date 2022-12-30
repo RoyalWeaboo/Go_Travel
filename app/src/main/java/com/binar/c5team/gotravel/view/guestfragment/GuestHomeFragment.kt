@@ -1,5 +1,6 @@
 package com.binar.c5team.gotravel.view.guestfragment
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -15,11 +16,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentGuestHomeBinding
-import com.binar.c5team.gotravel.viewmodel.AirportViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.binar.c5team.gotravel.view.MainActivity
+import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -31,19 +34,22 @@ class GuestHomeFragment : Fragment() {
     private lateinit var sharedPrefFlight: SharedPreferences
     private lateinit var sharedPrefBooking: SharedPreferences
 
-    private var token : String = ""
-
     private val listSpinner: MutableList<String> = ArrayList()
     private val listCity: MutableList<String> = ArrayList()
 
     private var defaultDepartDate : String = ""
     private var defaultReturnDate : String = ""
 
+    private lateinit var viewModel: FlightViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentGuestHomeBinding.inflate(inflater, container, false)
+        //set bottom nav
+        (activity as MainActivity?)?.setUpGuestNavigation()
+        viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
         return binding.root
     }
 
@@ -52,9 +58,6 @@ class GuestHomeFragment : Fragment() {
 
         //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
-
-        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
-        guestNavBar.visibility = View.VISIBLE
 
         //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
@@ -71,8 +74,12 @@ class GuestHomeFragment : Fragment() {
         getDate()
         callAirportList()
 
-        binding.wishlist.setOnClickListener {
-            Toast.makeText(context, "Log in to use Wishlist Features", Toast.LENGTH_SHORT).show()
+        binding.guestLogin.setOnClickListener {
+            Navigation.findNavController(view).navigate(R.id.action_guestHomeFragment_to_loginFragment)
+        }
+
+        binding.guestSignUp.setOnClickListener {
+            Navigation.findNavController(view).navigate(R.id.action_guestHomeFragment_to_registerFragment)
         }
 
         binding.menuOneWay.setOnClickListener {
@@ -152,12 +159,11 @@ class GuestHomeFragment : Fragment() {
             val pickedDepartDate = parseToDate.parse(departDate)
             val pickedReturnDate = parseToDate.parse(returnDate)
 
-            val sdfDefault = SimpleDateFormat("YYYY-MM-dd", Locale.getDefault())
-            defaultDepartDate = sdfDefault.format(pickedDepartDate)
-            defaultReturnDate = sdfDefault.format(pickedReturnDate)
+            val sdfDefault = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            defaultDepartDate = pickedDepartDate?.let { it1 -> sdfDefault.format(it1) }!!
+            defaultReturnDate = pickedReturnDate?.let { it1 -> sdfDefault.format(it1) }!!
 
-            var flightMode = ""
-            flightMode = if (binding.lineOptionOneWay.visibility == View.VISIBLE){
+            val flightMode: String = if (binding.lineOptionOneWay.visibility == View.VISIBLE){
                 "oneWay"
             }else{
                 "roundTrip"
@@ -205,6 +211,7 @@ class GuestHomeFragment : Fragment() {
 
     }
 
+    @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun openDatePickerDepart() {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -213,12 +220,12 @@ class GuestHomeFragment : Fragment() {
 
         val dpd = DatePickerDialog(
             requireActivity(),
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            { _, y, _, dayOfMonth ->
 
                 // Display Selected date in textbox
                 val sdf = SimpleDateFormat("MMM")
                 val monthName = sdf.format(c.time)
-                binding.departDateText.text = "" + monthName + " " + dayOfMonth + ", " + year
+                binding.departDateText.text = "$monthName $dayOfMonth, $y"
             },
             year,
             month,
@@ -227,6 +234,7 @@ class GuestHomeFragment : Fragment() {
         dpd.show()
     }
 
+    @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun openDatePickerReturn() {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -235,11 +243,12 @@ class GuestHomeFragment : Fragment() {
 
         val dpd = DatePickerDialog(
             requireActivity(),
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            { _, y, _, dayOfMonth ->
+
                 // Display Selected date in textbox
                 val sdf = SimpleDateFormat("MMM")
                 val monthName = sdf.format(c.time)
-                binding.returnDateText.text = "" + monthName + " " + dayOfMonth + ", " + year
+                binding.returnDateText.text = "$monthName $dayOfMonth, $y"
             },
             year,
             month,
@@ -249,7 +258,6 @@ class GuestHomeFragment : Fragment() {
     }
 
     private fun callAirportList() {
-        val viewModel = ViewModelProvider(requireActivity())[AirportViewModel::class.java]
         viewModel.getAirportListData().observe(viewLifecycleOwner) {
             if (it != null) {
 //                Log.d("Airport Data", it.toString())

@@ -9,21 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentLoginBinding
 import com.binar.c5team.gotravel.model.LoginData
 import com.binar.c5team.gotravel.model.LoginResponse
 import com.binar.c5team.gotravel.network.RetrofitClient
-import com.binar.c5team.gotravel.viewmodel.FlightViewModel
-import com.binar.c5team.gotravel.viewmodel.UserViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
 
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
@@ -79,7 +75,7 @@ class LoginFragment : Fragment() {
 
     private fun validateLoginData(view : View, username: String, password: String) {
         showProgressingView()
-        RetrofitClient.apiInstance.login(LoginData(username, password))
+        RetrofitClient.apiWithoutToken().login(LoginData(username, password))
             .enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(
                     call: Call<LoginResponse>,

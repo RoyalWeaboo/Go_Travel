@@ -12,12 +12,11 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentRegisterBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
-import com.binar.c5team.gotravel.viewmodel.UserViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 class RegisterFragment : Fragment() {
@@ -42,7 +41,7 @@ class RegisterFragment : Fragment() {
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
 
-        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -103,7 +102,7 @@ class RegisterFragment : Fragment() {
         gender: String,
         address: String
     ) {
-        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.getRegisterData().observe(viewLifecycleOwner) {
             if (it!=null) {
                 Log.d("Register Response :", it.toString())

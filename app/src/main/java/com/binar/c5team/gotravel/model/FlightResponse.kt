@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 
 data class FlightResponse(
     @SerializedName("data")
-    val `data`: Data,
+    val `data`: DataXXXXXXX,
     @SerializedName("meta")
-    val meta: Meta,
+    val meta: MetaXXXXX,
     @SerializedName("status")
     val status: String
 )

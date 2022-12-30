@@ -15,14 +15,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentBookingBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class BookingFragment : Fragment() {
     private lateinit var binding: FragmentBookingBinding
@@ -48,17 +46,17 @@ class BookingFragment : Fragment() {
     private var isProgressShowing = false
 
     //saving booking id
-    private var bookingIds = ArrayList<Int>()
+    var bookingIds = ArrayList<Int>()
 
     //viewmodel
-    private lateinit var viewModel: FlightViewModel
-
+    lateinit var viewModel: FlightViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         binding = FragmentBookingBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -87,8 +85,6 @@ class BookingFragment : Fragment() {
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
 
-        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
-
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
         val guestNavBar =
@@ -105,14 +101,27 @@ class BookingFragment : Fragment() {
 
         binding.btnBack.setOnClickListener {
             if (flightMode == "oneWay") {
-                Navigation.findNavController(view).navigate(R.id.action_bookingFragment_to_flightListFragment)
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("Cancel Booking ?")
+                builder.setMessage("You need to rebook from start again")
+
+                builder.setPositiveButton("Confirm") { _, _ ->
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_bookingFragment_to_homeFragment)
+                    Toast.makeText(context, "Booking Canceled", Toast.LENGTH_SHORT).show()
+                }
+                builder.setNegativeButton("Back") { _, _ ->
+                    //do nothing
+                }
+                builder.show()
             } else {
                 val builder = AlertDialog.Builder(context)
                 builder.setTitle("Cancel Round Trip Booking ?")
                 builder.setMessage("You need to rebook from start again")
 
                 builder.setPositiveButton("Confirm") { _, _ ->
-                    Navigation.findNavController(view).navigate(R.id.action_bookingFragment_to_homeFragment)
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_bookingFragment_to_homeFragment)
                     Toast.makeText(context, "Booking Canceled", Toast.LENGTH_SHORT).show()
                 }
                 builder.setNegativeButton("Back") { _, _ ->
@@ -131,25 +140,23 @@ class BookingFragment : Fragment() {
                     showProgressingView()
                     tempCount++
 
-                    binding.passengerNumber.text = "Passenger - " + tempCount.toString()
+                    binding.passengerNumber.text = "Passenger - " + (tempCount + 1).toString()
 
                     bookNewTicket()
-                    clearInput()
-                    hideProgressingView()
+                    viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
+                        clearInput()
+                        hideProgressingView()
+                    }
 
                     if (tempCount == seatCount) {
-                        viewModel.getPostBookingLD().observe(viewLifecycleOwner) {
-                            if (it != null) {
-                                bookingIds.add(bookingIds.size, it.data.id)
-                                hideProgressingView()
-
-                                val bundle = Bundle()
-                                bundle.putIntegerArrayList("bookingIds", bookingIds)
-                                Navigation.findNavController(view).navigate(
-                                    R.id.action_bookingFragment_to_paymentFragment,
-                                    bundle
-                                )
-                            }
+                        viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
+                            val bundle = Bundle()
+                            bundle.putIntegerArrayList("bookingIds", bookingIds)
+                            Log.d("Current booking id array is", bookingIds.toString())
+                            Navigation.findNavController(view).navigate(
+                                R.id.action_bookingFragment_to_roundBookingFragment,
+                                bundle
+                            )
                         }
                     }
                 }
@@ -158,19 +165,18 @@ class BookingFragment : Fragment() {
                     showProgressingView()
                     bookNewTicket()
 
-                    viewModel.getPostBookingLD().observe(viewLifecycleOwner) {
-                        if (it != null) {
-                            bookingIds.add(bookingIds.size, it.data.id)
-                            hideProgressingView()
+                    viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
+                        Log.d("Current booking id array is", bookingIds.toString())
+                        hideProgressingView()
 
-                            val bundle = Bundle()
-                            bundle.putIntegerArrayList("bookingIds", bookingIds)
+                        val bundle = Bundle()
+                        bundle.putIntegerArrayList("bookingIds", bookingIds)
 
-                            Navigation.findNavController(view).navigate(
-                                R.id.action_bookingFragment_to_paymentFragment,
-                                bundle
-                            )
-                        }
+                        Navigation.findNavController(view).navigate(
+                            R.id.action_bookingFragment_to_paymentFragment,
+                            bundle
+                        )
+
                     }
                 }
             }
@@ -186,23 +192,19 @@ class BookingFragment : Fragment() {
                     binding.passengerNumber.text = "Passenger - " + tempCount.toString()
 
                     bookNewTicket()
-                    clearInput()
-                    hideProgressingView()
+                    viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
+                        clearInput()
+                        hideProgressingView()
+                    }
 
                     if (tempCount == seatCount) {
-                        viewModel.getPostBookingLD().observe(viewLifecycleOwner) {
-                            if (it != null) {
-                                bookingIds.add(bookingIds.size, it.data.id)
-                                hideProgressingView()
-
-                                val bundle = Bundle()
-                                bundle.putIntegerArrayList("bookingIds", bookingIds)
-                                Navigation.findNavController(view).navigate(
-                                    R.id.action_bookingFragment_to_paymentFragment,
-                                    bundle
-                                )
-                            }
-                        }
+                        val bundle = Bundle()
+                        bundle.putIntegerArrayList("bookingIds", bookingIds)
+                        Log.d("Current booking id array is", bookingIds.toString())
+                        Navigation.findNavController(view).navigate(
+                            R.id.action_bookingFragment_to_roundBookingFragment,
+                            bundle
+                        )
                     }
                 }
             } else {
@@ -210,25 +212,26 @@ class BookingFragment : Fragment() {
                     showProgressingView()
                     bookNewTicket()
 
-                    viewModel.getPostBookingLD().observe(viewLifecycleOwner) {
-                        if (it != null) {
-                            bookingIds.add(bookingIds.size, it.data.id)
-                            hideProgressingView()
+                    viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
+                        hideProgressingView()
 
-                            val bundle = Bundle()
-                            bundle.putIntegerArrayList("bookingIds", bookingIds)
+                        val bundle = Bundle()
+                        bundle.putIntegerArrayList("bookingIds", bookingIds)
+                        Log.d("Current booking id array is", bookingIds.toString())
 
-                            Navigation.findNavController(view).navigate(
-                                R.id.action_bookingFragment_to_roundBookingFragment,
-                                bundle
-                            )
-                        }
+                        Navigation.findNavController(view).navigate(
+                            R.id.action_bookingFragment_to_roundBookingFragment,
+                            bundle
+                        )
+
+
                     }
 
                 }
             }
         }
     }
+
 
     private fun bookNewTicket() {
         val name = binding.inputFullname.editText?.text.toString()
@@ -238,6 +241,12 @@ class BookingFragment : Fragment() {
         food = foodOpt == "Yes"
         val homePhone = binding.inputEmail.editText?.text.toString()
         val mobilePhone = binding.inputMobileNumber.editText?.text.toString()
+        var tripType = ""
+        if (flightMode == "oneWay") {
+            tripType = "One Way"
+        } else if (flightMode == "roundTrip") {
+            tripType = "Round Trip"
+        }
 
         bookTicket(
             token,
@@ -249,7 +258,8 @@ class BookingFragment : Fragment() {
             homePhone,
             mobilePhone,
             flightPrice,
-            departDate
+            departDate,
+            tripType
         )
     }
 
@@ -281,7 +291,7 @@ class BookingFragment : Fragment() {
         //setting the textview
         binding.tvAircraftName.text = planeName
         binding.tvFromCity.text = fromAirport
-        binding.tvArrivalCity.text = toAirport
+        binding.tvArrivalCity.text = "- " + toAirport
         binding.tvTimeFrom.text = departureTime
         binding.tvTimeTo.text = "- " + arrivalTime
         binding.tvSeatTotal.text = seatCount.toString()
@@ -297,9 +307,11 @@ class BookingFragment : Fragment() {
         homephone: String,
         mobilephone: String,
         totalprice: Int,
-        departDate: String
+        departDate: String,
+        tripType: String
     ) {
         viewModel.postBookingApi(
+            this,
             token,
             id_flight,
             id_user,
@@ -309,7 +321,8 @@ class BookingFragment : Fragment() {
             homephone,
             mobilephone,
             totalprice,
-            departDate
+            departDate,
+            tripType
         )
 
     }

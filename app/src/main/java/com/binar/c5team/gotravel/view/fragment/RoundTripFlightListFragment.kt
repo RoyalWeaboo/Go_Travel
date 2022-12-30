@@ -11,7 +11,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentTicketListBinding
@@ -19,7 +18,7 @@ import com.binar.c5team.gotravel.model.Flight
 import com.binar.c5team.gotravel.view.adapter.FlightAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-
+import dagger.hilt.android.AndroidEntryPoint
 
 class RoundTripFlightListFragment : Fragment() {
 
@@ -99,7 +98,7 @@ class RoundTripFlightListFragment : Fragment() {
         getFlight(view, token, fromAirportId, toAirportId)
 
         binding.ticketListArrowBack.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_flightListFragment_to_homeFragment)
+            Navigation.findNavController(view).navigate(R.id.action_roundTripFlightListFragment_to_flightListFragment)
         }
 
     }

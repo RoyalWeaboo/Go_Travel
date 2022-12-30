@@ -6,18 +6,6 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface RestfulApi {
-    //Airport Data
-    @GET("airport")
-    fun getAirportData() : Call<AirportResponse>
-
-    //Register
-    @POST("register")
-    fun register(@Body register : RegisterData) : Call<RegisterResponse>
-
-    //Login
-    @POST("login")
-    fun login(@Body login : LoginData) : Call<LoginResponse>
-
     //Profile
     @GET("profile")
     fun getProfile() : Call<ProfileResponse>

@@ -39,6 +39,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_wishlist"
         android:layout_width="match_parent"
+        android:background="#EAEAEA"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_wishlist"
         android:layout_marginTop="16dp" />

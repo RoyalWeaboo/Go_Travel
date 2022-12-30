@@ -18,17 +18,14 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHomeBinding
-import com.binar.c5team.gotravel.viewmodel.AirportViewModel
+import com.binar.c5team.gotravel.view.MainActivity
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
-import com.binar.c5team.gotravel.viewmodel.UserViewModel
 import com.bumptech.glide.Glide
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.transition.MaterialFadeThrough
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -38,42 +35,47 @@ class HomeFragment : Fragment() {
     private lateinit var sharedPrefFlight: SharedPreferences
     private lateinit var sharedPrefBooking: SharedPreferences
 
-    private var token : String = ""
+    private var token: String = ""
 
     private val listSpinner: MutableList<String> = ArrayList()
     private val listCity: MutableList<String> = ArrayList()
 
-    private var defaultDepartDate : String = ""
-    private var defaultReturnDate : String = ""
+    private var defaultDepartDate: String = ""
+    private var defaultReturnDate: String = ""
 
     //progressbar
     var progressView: ViewGroup? = null
     private var isProgressShowing = false
+
+    var refresh = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
+        //set bottom nav
+        (activity as MainActivity?)?.setUpNavigation()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
-        navBar.visibility = View.VISIBLE
-
-        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
-        guestNavBar.visibility = View.GONE
-
         val callback: OnBackPressedCallback =
-            object : OnBackPressedCallback(true ) {
+            object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     //do nothing
                 }
             }
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
+
+//        refresh = arguments?.getBoolean("refresh", false)!!
+//        if(refresh){
+//            refreshFragment(view)
+//        }
 
         //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
@@ -86,16 +88,8 @@ class HomeFragment : Fragment() {
 
         token = sharedPref.getString("token", "").toString()
 
-        val viewModelUser = ViewModelProvider(this)[UserViewModel::class.java]
-        viewModelUser.loading.observe(viewLifecycleOwner) {
-            when (it) {
-                true -> showProgressingView()
-                false -> hideProgressingView()
-            }
-        }
-
-        val viewModelAirport = ViewModelProvider(this)[AirportViewModel::class.java]
-        viewModelAirport.loading.observe(viewLifecycleOwner) {
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
                 false -> hideProgressingView()
@@ -110,7 +104,8 @@ class HomeFragment : Fragment() {
         callAirportList()
 
         binding.wishlist.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_wishlistFragment)
+            Navigation.findNavController(view)
+                .navigate(R.id.action_homeFragment_to_wishlistFragment)
         }
 
         binding.userImageProfile.setOnClickListener {
@@ -181,8 +176,8 @@ class HomeFragment : Fragment() {
             val to = binding.spinnerTo.selectedItemId
             val fromCity = listCity[from.toInt()]
             val toCity = listCity[to.toInt()]
-            val fromCityId = from.toInt()+1
-            val toCityId = to.toInt()+1
+            val fromCityId = from.toInt() + 1
+            val toCityId = to.toInt() + 1
             val depDate = binding.departDateText.text.toString()
             val retDate = binding.returnDateText.text.toString()
 
@@ -194,14 +189,14 @@ class HomeFragment : Fragment() {
             val pickedDepartDate = parseToDate.parse(departDate)
             val pickedReturnDate = parseToDate.parse(returnDate)
 
-            val sdfDefault = SimpleDateFormat("YYYY-MM-dd", Locale.getDefault())
+            val sdfDefault = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             defaultDepartDate = sdfDefault.format(pickedDepartDate)
             defaultReturnDate = sdfDefault.format(pickedReturnDate)
 
             var flightMode = ""
-            flightMode = if (binding.lineOptionOneWay.visibility == View.VISIBLE){
+            flightMode = if (binding.lineOptionOneWay.visibility == View.VISIBLE) {
                 "oneWay"
-            }else{
+            } else {
                 "roundTrip"
             }
             val adultCountTotal = binding.adultCount.text.toString()
@@ -226,28 +221,19 @@ class HomeFragment : Fragment() {
             saveBookingInfo.putString("unparsedReturnDate", defaultDepartDate)
             saveBookingInfo.apply()
 
-            Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_flightListFragment)
+            Navigation.findNavController(view)
+                .navigate(R.id.action_homeFragment_to_flightListFragment)
         }
 
     }
 
-    private fun getProfileImage(token : String){
-        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
-        viewModel.callProfileApi(token)
-        viewModel.getProfileData().observe(viewLifecycleOwner) {
-            if (it.image != "") {
-                Glide
-                    .with(requireContext())
-                    .load(it.image)
-                    .centerCrop()
-                    .into(binding.userImageProfile)
-            } else {
-                Toast.makeText(context, "No Profile Image Found", Toast.LENGTH_SHORT).show()
-                Log.d("Profile Image Response :", it.toString())
-            }
-        }
-    }
-
+//    private fun refreshFragment(view: View) {
+//        refresh = false
+//        Log.d("status", "is refreshing..")
+//        val id = Navigation.findNavController(view).currentDestination?.id
+//        Navigation.findNavController(view).popBackStack(id!!,true)
+//        Navigation.findNavController(view).navigate(id)
+//    }
 
     private fun disableReturnCard() {
         binding.returnDateText.setTextColor(Color.parseColor("#808080"))
@@ -265,58 +251,73 @@ class HomeFragment : Fragment() {
     }
 
     private fun openDatePickerDepart() {
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val dpd = DatePickerDialog(
+        val datePickerDialog = DatePickerDialog(
             requireActivity(),
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-
-                // Display Selected date in textbox
-                val sdf = SimpleDateFormat("MMM")
-                val monthName = sdf.format(c.time)
-                binding.departDateText.text = "" + monthName + " " + dayOfMonth + ", " + year
+            { _, year, month, day ->
+                val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                val date = Calendar.getInstance()
+                date.set(year, month, day)
+                val dateString = formatter.format(date.time)
+                binding.departDateText.text = dateString
             },
             year,
             month,
             day
         )
-        dpd.show()
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+
+        datePickerDialog.show()
     }
 
-    private fun openDatePickerReturn() {
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
 
-        val dpd = DatePickerDialog(
+    private fun openDatePickerReturn() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
             requireActivity(),
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                // Display Selected date in textbox
-                val sdf = SimpleDateFormat("MMM")
-                val monthName = sdf.format(c.time)
-                binding.returnDateText.text = "" + monthName + " " + dayOfMonth + ", " + year
+            { _, year, month, day ->
+                val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                val date = Calendar.getInstance()
+                date.set(year, month, day)
+                val dateString = formatter.format(date.time)
+                binding.returnDateText.text = dateString
             },
             year,
             month,
             day
         )
-        dpd.show()
+
+        val departDate = binding.departDateText.text.toString()
+        val minDateFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+        val minDateParsed = minDateFormatter.parse(departDate)
+
+        if (minDateParsed != null) {
+            datePickerDialog.datePicker.minDate = minDateParsed.time
+        }else{
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+        }
+
+        datePickerDialog.show()
     }
 
     private fun callAirportList() {
-        val viewModel = ViewModelProvider(this)[AirportViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.getAirportListData().observe(viewLifecycleOwner) {
             if (it != null) {
 
                 //set json to arraylist
-                if(listSpinner.isEmpty()){
+                if (listSpinner.isEmpty()) {
                     for (element in it.data.airports) {
-                        listSpinner.add(element.name)
-                        listCity.add(element.city)
+                        listSpinner.add(element.city + " (" + element.code + ")")
+                        listCity.add(element.city + " (" + element.code + ")")
                     }
                     // Set result to spinner
                     val adapter = context?.let { it1 ->
@@ -359,5 +360,25 @@ class HomeFragment : Fragment() {
         val viewGroup = v as ViewGroup
         viewGroup.removeView(progressView)
         isProgressShowing = false
+    }
+
+    private fun getProfileImage(token: String) {
+        val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        viewModel.callProfileApi(token)
+        viewModel.getProfileData().observe(viewLifecycleOwner) {
+            if (it.image != null) {
+                Glide
+                    .with(requireContext())
+                    .load(it.image)
+                    .centerCrop()
+                    .into(binding.userImageProfile)
+            } else {
+                Glide
+                    .with(requireContext())
+                    .load(R.drawable.blank_user)
+                    .centerCrop()
+                    .into(binding.userImageProfile)
+            }
+        }
     }
 }

@@ -236,6 +236,7 @@
         android:id="@+id/rv_ticket_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#EAEAEA"
         android:layout_below="@id/round_flight_opt"
         android:layout_marginTop="16dp" />
 

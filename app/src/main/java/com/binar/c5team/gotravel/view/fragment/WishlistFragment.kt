@@ -19,6 +19,7 @@ import com.binar.c5team.gotravel.model.Whislists
 import com.binar.c5team.gotravel.view.adapter.WishlistAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
 class WishlistFragment : Fragment() {
     lateinit var binding: FragmentWishlistBinding
@@ -110,7 +111,7 @@ class WishlistFragment : Fragment() {
                 adapter = WishlistAdapter(filterWishlist)
                 binding.rvWishlist.adapter = adapter
 
-                adapter.onOrderClick = {
+                adapter.onOrderClick = { wishlist ->
                     if (userId != 0) {
                         val wishlistBookFlightMode = sharedPrefFlight.edit()
                         wishlistBookFlightMode.putString("flightMode", "oneWay")
@@ -120,16 +121,16 @@ class WishlistFragment : Fragment() {
                         val wishlistBook = sharedPrefBooking.edit()
 
                         wishlistBook.putInt("userId", userId)
-                        wishlistBook.putInt("flightId", it.flight.id)
-                        wishlistBook.putInt("flightPrice", it.flight.price)
-                        wishlistBook.putInt("availableSeat", it.flight.availableSeats)
+                        wishlistBook.putInt("flightId", wishlist.flight.id)
+                        wishlistBook.putInt("flightPrice", wishlist.flight.price)
+                        wishlistBook.putInt("availableSeat", wishlist.flight.availableSeats)
                         wishlistBook.putInt("totalSeat", 1)
-                        wishlistBook.putString("planeName", it.flight.plane.name)
-                        wishlistBook.putString("fromAirport", it.flight.fromAirport.city)
-                        wishlistBook.putString("toAirport", it.flight.toAirport.city)
-                        wishlistBook.putString("departureTime", it.flight.departureTime)
-                        wishlistBook.putString("arrivalTime", it.flight.arrivalTime)
-                        wishlistBook.putString("departureDate", it.flight.flightDate)
+                        wishlistBook.putString("planeName", wishlist.flight.plane.name)
+                        wishlistBook.putString("fromAirport", wishlist.flight.fromAirport.city)
+                        wishlistBook.putString("toAirport", wishlist.flight.toAirport.city)
+                        wishlistBook.putString("departureTime", wishlist.flight.departureTime)
+                        wishlistBook.putString("arrivalTime", wishlist.flight.arrivalTime)
+                        wishlistBook.putString("departureDate", wishlist.flight.flightDate)
 
                         wishlistBook.apply()
                         Navigation.findNavController(view).navigate(

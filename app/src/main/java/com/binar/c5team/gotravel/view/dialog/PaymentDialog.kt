@@ -1,6 +1,7 @@
 package com.binar.c5team.gotravel.view.dialog
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.ContentResolver
 import android.content.Context
@@ -34,7 +35,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-import java.util.*
 
 
 class PaymentDialog : DialogFragment() {
@@ -56,6 +56,9 @@ class PaymentDialog : DialogFragment() {
     //viewmodel
     private lateinit var viewModel: FlightViewModel
 
+    //progressbar
+    var progressView: ViewGroup? = null
+    private var isProgressShowing = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,7 +66,7 @@ class PaymentDialog : DialogFragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentUploadPaymentBinding.inflate(inflater, container, false)
-        dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE);
+        dialog!!.window!!.requestFeature(Window.FEATURE_NO_TITLE)
         return binding.root
     }
 
@@ -77,7 +80,6 @@ class PaymentDialog : DialogFragment() {
             requireActivity().getSharedPreferences("bookingInfo", Context.MODE_PRIVATE)
 
         bookingIds = arguments?.getIntegerArrayList("bookingIds") as ArrayList<Int>
-        Log.d("booking id", bookingIds.toString())
 
         //getting user data
         token = sharedPref.getString("token", "").toString()
@@ -89,6 +91,14 @@ class PaymentDialog : DialogFragment() {
         dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        viewModel.loading.observe(viewLifecycleOwner) {
+            when (it) {
+                true -> showProgressingView()
+                false -> hideProgressingView()
+            }
+        }
+
+        val fromBooking = arguments?.getBoolean("fromBooking")
 
         binding.imageUploadLayout.setOnClickListener {
             checkingPermissions()
@@ -102,8 +112,6 @@ class PaymentDialog : DialogFragment() {
                     Log.d("id uploaded", i.toString())
                 }
                 viewModel.postConfirmationLD().observe(viewLifecycleOwner) {
-                    if (it != null) {
-                    }
                     notification()
                 }
 
@@ -112,15 +120,15 @@ class PaymentDialog : DialogFragment() {
                 builder.setMessage("Proof of Payment successfully uploaded !, Please wait for ticket approval from Admin")
 
                 builder.setPositiveButton("Close") { _, _ ->
-                    val navControllerDialog = Navigation.findNavController(requireParentFragment().requireView())
-                    navControllerDialog.navigate(R.id.action_paymentDialog_to_homeFragment)
-
-//                    val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
-//                    val item = navBar.menu.findItem(R.id.historyFragment)
-//                    val navController = Navigation.findNavController(requireParentFragment().requireView())
-//                    NavigationUI.onNavDestinationSelected(item, navController)
-
-//                    restartSelf()
+                    if (fromBooking!!) {
+                        val navControllerDialog =
+                            Navigation.findNavController(requireParentFragment().requireView())
+                        navControllerDialog.navigate(R.id.action_paymentDialog_to_homeFragment)
+                    } else {
+                        val navControllerDialog =
+                            Navigation.findNavController(requireParentFragment().requireView())
+                        navControllerDialog.popBackStack()
+                    }
                 }
                 builder.show()
 
@@ -135,21 +143,6 @@ class PaymentDialog : DialogFragment() {
 
     private fun postImage(token: String, id: Int, imageMultiPart: MultipartBody.Part) {
         viewModel.postConfirmationPaymentImage(token, id, imageMultiPart)
-    }
-
-    private fun restartSelf() {
-        val am = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        am[AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 500] =
-            PendingIntent.getActivity(
-                activity,
-                0,
-                requireActivity().intent,
-                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_CANCEL_CURRENT
-            )
-        val i = requireActivity().baseContext.packageManager
-            .getLaunchIntentForPackage(requireActivity().baseContext.packageName)
-        i!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(i)
     }
 
     private fun checkingPermissions() {
@@ -169,16 +162,16 @@ class PaymentDialog : DialogFragment() {
 
     private fun isGranted(
         activity: Activity,
-        permission: String,
+        perm: String,
         permissions: Array<String>,
-        request: Int,
+        req: Int,
     ): Boolean {
-        val permissionCheck = ActivityCompat.checkSelfPermission(activity, permission)
+        val permissionCheck = ActivityCompat.checkSelfPermission(activity, perm)
         return if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(activity, perm)) {
                 showPermissionDeniedDialog()
             } else {
-                ActivityCompat.requestPermissions(activity, permissions, request)
+                ActivityCompat.requestPermissions(activity, permissions, req)
             }
             false
         } else {
@@ -232,6 +225,7 @@ class PaymentDialog : DialogFragment() {
             }
         }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private fun notification() {
         val mBuilder = NotificationCompat.Builder(requireContext().applicationContext, "1")
         val ii = Intent(requireContext().applicationContext, MainActivity::class.java)
@@ -264,4 +258,38 @@ class PaymentDialog : DialogFragment() {
 
         mNotificationManager.notify(0, mBuilder.build())
     }
+
+    @SuppressLint("InflateParams")
+    private fun showProgressingView() {
+        if (!isProgressShowing) {
+            isProgressShowing = true
+            progressView = layoutInflater.inflate(R.layout.progress_bar, null) as ViewGroup
+            val v: View = requireView().rootView
+            val viewGroup = v as ViewGroup
+            viewGroup.addView(progressView)
+        }
+    }
+
+    private fun hideProgressingView() {
+        val v: View = requireView().rootView
+        val viewGroup = v as ViewGroup
+        viewGroup.removeView(progressView)
+        isProgressShowing = false
+    }
+
+
+//    private fun restartSelf() {
+//        val am = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//        am[AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 500] =
+//            PendingIntent.getActivity(
+//                activity,
+//                0,
+//                requireActivity().intent,
+//                PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_CANCEL_CURRENT
+//            )
+//        val i = requireActivity().baseContext.packageManager
+//            .getLaunchIntentForPackage(requireActivity().baseContext.packageName)
+//        i!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+//        startActivity(i)
+//    }
 }

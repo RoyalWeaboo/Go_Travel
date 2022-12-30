@@ -4,15 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.lang.Exception
-
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
@@ -52,7 +51,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpGuestNavigation() {
+    fun setUpGuestNavigation() {
+        binding.bottomNav.visibility = View.GONE
+        binding.guestBottomNav.visibility = View.VISIBLE
+
         guestBottomNavigationView = binding.guestBottomNav
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment?
@@ -63,7 +65,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun setUpNavigation() {
+    fun setUpNavigation() {
+        binding.guestBottomNav.visibility = View.GONE
+        binding.bottomNav.visibility = View.VISIBLE
+
         bottomNavigationView = binding.bottomNav
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.fragmentContainerView) as NavHostFragment?

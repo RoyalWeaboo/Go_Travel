@@ -3,7 +3,6 @@ package com.binar.c5team.gotravel.view.fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHistoryBinding
@@ -19,6 +17,9 @@ import com.binar.c5team.gotravel.model.Booking
 import com.binar.c5team.gotravel.view.adapter.HistoryAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 
 class HistoryFragment : Fragment() {
     lateinit var binding : FragmentHistoryBinding
@@ -40,6 +41,8 @@ class HistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHistoryBinding.inflate(inflater, container, false)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
         return binding.root
     }
 

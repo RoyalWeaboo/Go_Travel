@@ -12,15 +12,14 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentTicketListBinding
 import com.binar.c5team.gotravel.model.Flight
 import com.binar.c5team.gotravel.view.adapter.FlightAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
-import com.binar.c5team.gotravel.viewmodel.UserViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
 class FlightListFragment : Fragment() {
     lateinit var binding: FragmentTicketListBinding
@@ -162,7 +161,6 @@ class FlightListFragment : Fragment() {
                         filterTicket.add(i)
                     }
                 }
-                Log.d("Id", fromAirportId.toString() + toAirportId.toString())
                 adapter = FlightAdapter(filterTicket)
                 binding.rvTicketList.adapter = adapter
 

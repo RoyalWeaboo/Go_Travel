@@ -3,13 +3,11 @@ package com.binar.c5team.gotravel.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Flight(
+data class FlightXXXXXX(
     @SerializedName("arrival_time")
     val arrivalTime: String,
     @SerializedName("available_seats")
     val availableSeats: Int,
-    @SerializedName("Bookings")
-    val bookings: List<BookingX>,
     @SerializedName("createdAt")
     val createdAt: String,
     @SerializedName("departure_time")
@@ -17,7 +15,7 @@ data class Flight(
     @SerializedName("flight_date")
     val flightDate: String,
     @SerializedName("FromAirport")
-    val fromAirport: FromAirportXXXX,
+    val fromAirport: FromAirportXXX,
     @SerializedName("from_airport_id")
     val fromAirportId: Int,
     @SerializedName("id")

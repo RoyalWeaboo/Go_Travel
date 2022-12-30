@@ -12,6 +12,7 @@ import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentLoginOrRegisterBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
 class OpeningFragment : Fragment() {
     lateinit var binding : FragmentLoginOrRegisterBinding
@@ -27,6 +28,8 @@ class OpeningFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //throw RuntimeException("Test Crash") // Force a crash
+
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
         val session = sharedPref.getString("session","").toString()
 

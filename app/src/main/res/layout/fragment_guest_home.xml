@@ -17,7 +17,7 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="280dp"
                 android:background="@drawable/home_background">
 
@@ -30,20 +30,31 @@
                     android:layout_marginTop="32dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="16dp"
-                    android:fontFamily="@font/inter"
-                    android:text="EN"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/inter_bold"
+                    android:text="EN"/>
 
-                <ImageView
-                    android:id="@+id/wishlist"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                <TextView
+                    android:id="@+id/guestLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="32dp"
                     android:layout_marginEnd="32dp"
-                    android:layout_marginBottom="32dp"
-                    android:src="@drawable/wishlist" />
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Log In"
+                    android:textColor="#F98C4B" />
+
+                <TextView
+                    android:id="@+id/guestSignUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:fontFamily="@font/inter_bold"
+                    android:layout_marginEnd="86dp"
+                    android:text="Sign Up" />
 
                 <TextView
                     android:id="@+id/tv_hi"

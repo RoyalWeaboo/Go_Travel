@@ -1,36 +1,28 @@
 package com.binar.c5team.gotravel.network
 
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
+
 
 object RetrofitClient {
-    private const val BASE_URL_API = "https://gotravel-ilms4lrona-as.a.run.app/"
-    private const val UPDATE_BASE_URL_API = "https://gotravel-ilms4lrona-as.a.run.app/api/v1/"
+    private const val BASE_URL_API = "https://gotravel-ilms4lrona-as.a.run.app/api/v1/"
 
-    val airportInstance : RestfulApi by lazy {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(UPDATE_BASE_URL_API)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        retrofit.create(RestfulApi::class.java)
-    }
+    private val logging: HttpLoggingInterceptor
+        get() {
+            val httpLoggingInterceptor = HttpLoggingInterceptor()
+            return httpLoggingInterceptor.apply {
+                httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+            }
+        }
 
-    val baseApiInstance: RestfulApi by lazy {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL_API)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        retrofit.create(RestfulApi::class.java)
-    }
-
-    val apiInstance : RestfulApi by lazy {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(UPDATE_BASE_URL_API)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        retrofit.create(RestfulApi::class.java)
-    }
+    private val loggingClient = OkHttpClient.Builder().addInterceptor(logging).build()
 
     fun apiWithToken(accessToken: String): RestfulApi {
         val client = OkHttpClient.Builder()
@@ -39,24 +31,19 @@ object RetrofitClient {
 
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(UPDATE_BASE_URL_API)
-            .client(client)
-            .build()
-
-        return retrofit.create(RestfulApi::class.java)
-    }
-
-    fun baseApiWithToken(accessToken: String): RestfulApi {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(OAuthInterceptor(accessToken))
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL_API)
             .client(client)
             .build()
 
         return retrofit.create(RestfulApi::class.java)
     }
+
+    fun apiWithoutToken(): RestfulApiWithoutToken =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL_API)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(loggingClient)
+            .build()
+            .create(RestfulApiWithoutToken::class.java)
+
 }

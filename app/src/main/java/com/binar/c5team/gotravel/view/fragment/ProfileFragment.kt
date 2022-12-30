@@ -21,12 +21,13 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentProfileBinding
-import com.binar.c5team.gotravel.viewmodel.UserViewModel
+import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.transition.MaterialFadeThrough
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -34,7 +35,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
@@ -60,6 +60,8 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
         return binding.root
     }
 
@@ -76,7 +78,7 @@ class ProfileFragment : Fragment() {
         //getting token
         token = sharedPref.getString("token", "").toString()
 
-        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -133,7 +135,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun profileData() {
-        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.callProfileApi(token)
         viewModel.getProfileData().observe(viewLifecycleOwner) {
             if (it != null) {
@@ -144,11 +146,20 @@ class ProfileFragment : Fragment() {
                     binding.gender.text = "Female"
                 }
 
-                Glide
-                    .with(requireContext())
-                    .load(it.image)
-                    .centerCrop()
-                    .into(binding.imgProfile)
+                if (it.image != null){
+                    Glide
+                        .with(requireContext())
+                        .load(it.image)
+                        .centerCrop()
+                        .into(binding.imgProfile)
+                }else{
+                    Glide
+                        .with(requireContext())
+                        .load(R.drawable.blank_user)
+                        .centerCrop()
+                        .into(binding.imgProfile)
+                    Toast.makeText(context, "No Profile Image Found", Toast.LENGTH_SHORT).show()
+                }
                 binding.tvUsername.text = it.username
                 binding.tvKtp.text = it.noKtp
                 binding.email.text = it.email
@@ -173,10 +184,10 @@ class ProfileFragment : Fragment() {
     }
 
     private fun getProfileImage(token : String){
-        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.callProfileApi(token)
         viewModel.getProfileData().observe(viewLifecycleOwner) {
-            if (it.image != "") {
+            if (it.image != null) {
                 Glide
                     .with(requireContext())
                     .load(it.image)
@@ -204,7 +215,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun postProfileImage(token : String, imageMultiPart: MultipartBody.Part) {
-        val viewModel = ViewModelProvider(this)[UserViewModel::class.java]
+        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.putProfileImageData().observe(viewLifecycleOwner) {
             if (it != null){
                 Toast.makeText(context, "Profile Picture Successfully Changed !", Toast.LENGTH_SHORT).show()

@@ -1,5 +1,6 @@
 package com.binar.c5team.gotravel.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import java.util.*
 
 class HistoryAdapter(private var listBooking: List<Booking>) :
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
-    var onTicketClick: ((Booking) -> Unit)? = null
+    private var onTicketClick: ((Booking) -> Unit)? = null
     var onStatusClick: ((Booking) -> Unit)? = null
 
     class ViewHolder(var binding: ItemHistoryBinding) : RecyclerView.ViewHolder(binding.root)
@@ -21,6 +22,7 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
         return ViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //getting booking date and time
         val bookingDate = listBooking[position].bookingDate.toString()
@@ -28,10 +30,10 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
         val flightArrivalTime = listBooking[position].flight.arrivalTime
 
         //simple date format
-        val bDate1 = SimpleDateFormat("YYYY-MM-dd", Locale.getDefault())
-        val bDate2 = SimpleDateFormat("MMM dd, YYYY", Locale.getDefault())
+        val bDate1 = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val bDate2 = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         val bDateinDate = bDate1.parse(bookingDate)
-        val bDateFormatted = bDate2.format(bDateinDate)
+        val bDateFormatted = bDateinDate?.let { bDate2.format(it) }
 
         val bookingYear = SimpleDateFormat("YYYY", Locale.getDefault())
         val bookingMonth = SimpleDateFormat("MM", Locale.getDefault())
@@ -56,7 +58,7 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
 
         //getting today`s date
         val currDate = Calendar.getInstance().time
-        val year = SimpleDateFormat("YYYY", Locale.getDefault())
+        val year = SimpleDateFormat("yyyy", Locale.getDefault())
         val month = SimpleDateFormat("MM", Locale.getDefault())
         val day = SimpleDateFormat("dd", Locale.getDefault())
         val hour = SimpleDateFormat("HH", Locale.getDefault())
@@ -70,16 +72,49 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
         //first of all, check whether the ticket has been paid or not
         //if its not paid yet
         if (listBooking[position].confirmation.isNullOrEmpty()) {
-            holder.binding.cvStatusNotPaid.visibility = View.VISIBLE
-            holder.binding.cvStatusNotPaid.setOnClickListener {
-                onStatusClick?.invoke(listBooking[position])
+            holder.binding.cardHistory.setOnClickListener {
+                onTicketClick?.invoke(listBooking[position])
+            }
+            if (bookYearInt > todaysYear) {
+                //then check the month
+                if (bookMonthInt >= todaysMonth) {
+                    //then check the day
+                    if (bookDayInt >= todaysDay) {
+                        //then check the hour
+                        if (bookHourInt <= todaysHour) {
+                            ///finally check the minute
+                            //check with range more than or less than
+                            if (bookMinuteInt < todaysMinute) {
+                                holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                            } else {
+                                holder.binding.cvStatusNotPaid.setOnClickListener {
+                                    onStatusClick?.invoke(listBooking[position])
+                                }
+                                holder.binding.cvStatusNotPaid.visibility = View.VISIBLE
+                            }
+                            //now if its within the ticket departure and arrival time
+                        } else if (todaysHour in bookHourArrivalInt..bookHourInt) {
+                            if (todaysMinute in bookMinuteArrivalInt..bookMinuteInt) {
+                                holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                            }
+                        } else {
+                            //if the flight is on after today's day
+                            holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                        }
+                    } else {
+                        //if the flight is on after today's month
+                        holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                    }
+                } else {
+                    holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                }
+            } else {
+                holder.binding.cvStatusWaiting.visibility = View.GONE
+                holder.binding.cvStatusInactive.visibility = View.VISIBLE
             }
         }
         //if its paid
         else {
-            holder.binding.cvStatusNotPaid.setOnClickListener {
-                //do nothing
-            }
             holder.binding.cardHistory.setOnClickListener {
                 onTicketClick?.invoke(listBooking[position])
             }
@@ -130,8 +165,27 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
         val dt = listBooking[position].flight.departureTime
         val at = listBooking[position].flight.arrivalTime
 
+        val kelas: String = when (listBooking[position].flight.kelas) {
+            "Economy Class" -> {
+                "Economy"
+            }
+            "First Class" -> {
+                "Executive"
+            }
+            "Business Class" -> {
+                "Business"
+            }
+            else -> {
+                listBooking[position].flight.kelas
+            }
+        }
+
+        holder.binding.planeClass.text = kelas
+        holder.binding.flightType.text = listBooking[position].tripType
+        holder.binding.codeFrom.text = listBooking[position].flight.fromAirport.code
+        holder.binding.codeTo.text = listBooking[position].flight.toAirport.code
         holder.binding.planeName.text = listBooking[position].flight.plane.name
-        holder.binding.codeText.text = "Code : "+ listBooking[position].id.toString()
+        holder.binding.bookingId.text = "Code : " + listBooking[position].id.toString()
         holder.binding.timeFrom.text = dt
         holder.binding.timeTo.text = at
         holder.binding.date.text = bDateFormatted

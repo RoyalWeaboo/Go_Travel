@@ -1,5 +1,6 @@
 package com.binar.c5team.gotravel.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -17,17 +18,35 @@ class FlightAdapter (private var listFlight : List<Flight>): RecyclerView.Adapte
         return  ViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //setting time
         val dt = listFlight[position].departureTime
         val at = listFlight[position].arrivalTime
 
-        holder.binding.planeClass.text = listFlight[position].kelas
+        val kelas: String = when (listFlight[position].kelas) {
+            "Economy Class" -> {
+                "Economy"
+            }
+            "First Class" -> {
+                "Executive"
+            }
+            "Business Class" -> {
+                "Business"
+            }
+            else -> {
+                listFlight[position].kelas
+            }
+        }
+
+        holder.binding.planeClass.text = kelas
         holder.binding.timeFrom.text = dt
         holder.binding.timeTo.text = at
         holder.binding.planeName.text = listFlight[position].plane.name
         holder.binding.price.text = "Rp."+ listFlight[position].price.toString()
-        holder.binding.btnOrder.setOnClickListener {
+        holder.binding.codeFrom.text = listFlight[position].fromAirport.code
+        holder.binding.codeTo.text = listFlight[position].toAirport.code
+        holder.binding.cardFlight.setOnClickListener {
             onOrderClick?.invoke(listFlight[position])
         }
         holder.binding.addWishlist.setOnClickListener {

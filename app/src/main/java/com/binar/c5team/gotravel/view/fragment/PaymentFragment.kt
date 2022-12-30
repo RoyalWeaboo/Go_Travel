@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentPaymentBinding
@@ -20,6 +20,7 @@ import com.binar.c5team.gotravel.model.Booking
 import com.binar.c5team.gotravel.view.adapter.PaymentAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
 class PaymentFragment : Fragment() {
     lateinit var binding: FragmentPaymentBinding
@@ -69,6 +70,7 @@ class PaymentFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
 
         bookingIds = arguments?.getIntegerArrayList("bookingIds") as ArrayList<Int>
+        Log.d("booking id", bookingIds.toString())
 
         //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
@@ -143,6 +145,7 @@ class PaymentFragment : Fragment() {
             builderPay.setPositiveButton("Upload Proof") { _, _ ->
                 val bundle = Bundle()
                 bundle.putIntegerArrayList("bookingIds", bookingIds)
+                bundle.putBoolean("fromBooking", true)
 
                 Navigation.findNavController(view).navigate(R.id.action_paymentFragment_to_paymentDialog, bundle)
             }
