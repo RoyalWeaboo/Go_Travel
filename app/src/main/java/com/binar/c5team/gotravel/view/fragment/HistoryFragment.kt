@@ -46,14 +46,23 @@ class HistoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHistoryBinding.inflate(inflater, container, false)
+        //transition anim
         enterTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
         exitTransition = MaterialFadeThrough()
+        //inflating layout
+        binding = FragmentHistoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.VISIBLE
+        val guestNavBar =
+            requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
 
         //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
@@ -118,17 +127,18 @@ class HistoryFragment : Fragment() {
                             val historyBundle = Bundle()
 
                             historyBundle.putString("planeNameDetail", detail.flight.plane.name)
+                            historyBundle.putString("bookingName", detail.name)
                             historyBundle.putInt("bookingIdDetail", detail.id)
                             historyBundle.putString("flightModeDetail", detail.tripType)
-                            historyBundle.putInt("flightIdDetail", detail.flight.id)
-                            historyBundle.putInt("availableSeatDetail", detail.flight.availableSeats)
+                            historyBundle.putInt("baggageDetail", detail.baggage)
+                            historyBundle.putString("foodDetail", detail.food.toString())
                             historyBundle.putString("fromAirportCityDetail", detail.flight.fromAirport.city)
                             historyBundle.putString("fromAirportCityCodeDetail", detail.flight.fromAirport.code)
                             historyBundle.putString("toAirportCityDetail", detail.flight.toAirport.city)
                             historyBundle.putString("toAirportCityCodeDetail", detail.flight.toAirport.code)
                             historyBundle.putString("departureTimeDetail", detail.flight.departureTime)
                             historyBundle.putString("arrivalTimeDetail", detail.flight.arrivalTime)
-                            historyBundle.putString("flightDateDetail", detail.flight.flightDate)
+                            historyBundle.putString("bookingDateDetail", detail.bookingDate.toString())
                             historyBundle.putString("classDetail", detail.flight.kelas)
 
                             Navigation.findNavController(view).navigate(R.id.action_historyFragment_to_ticketDetailFragment, historyBundle)

@@ -20,6 +20,7 @@ import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentBookingBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.transition.MaterialSharedAxis
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -55,8 +56,13 @@ class RoundBookingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
+        //transition anim
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X,false)
+        //vm
         viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        //inflating layout
         binding = FragmentBookingBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -121,31 +127,40 @@ class RoundBookingFragment : Fragment() {
             builder.show()
         }
 
+        var count = 1
         var tempCount = 0
         if (seatCount > 1) {
             binding.passengerNumber.visibility = View.VISIBLE
+            binding.passengerNumber.text = "Passenger - $count"
 
             binding.btnToPayment.setOnClickListener {
                 showProgressingView()
-                tempCount++
+                binding.passengerNumber.text = "Passenger - $count"
 
-                binding.passengerNumber.text = "Passenger - " + (tempCount+1).toString()
+                tempCount++
+                count++
 
                 bookNewTicket()
-                viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
-                    clearInput()
-                    hideProgressingView()
+                viewModel.loading.observe(viewLifecycleOwner) {
+                    if (!it) {
+                        clearInput()
+                        hideProgressingView()
+                    }
                 }
 
                 if (tempCount == seatCount) {
-                    viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
-                        val bundle = Bundle()
-                        bundle.putIntegerArrayList("bookingIds", bookingIds)
-                        Log.d("Current booking id array is", bookingIds.toString())
-                        Navigation.findNavController(view).navigate(
-                            R.id.action_roundBookingFragment_to_paymentFragment,
-                            bundle
-                        )
+                    showProgressingView()
+                    viewModel.loading.observe(viewLifecycleOwner) {
+                        if (!it) {
+                            val bundle = Bundle()
+                            bundle.putIntegerArrayList("bookingIds", bookingIds)
+                            hideProgressingView()
+                            Log.d("Current booking id array is", bookingIds.toString())
+                            Navigation.findNavController(view).navigate(
+                                R.id.action_roundBookingFragment_to_paymentFragment,
+                                bundle
+                            )
+                        }
                     }
                 }
             }
@@ -153,17 +168,19 @@ class RoundBookingFragment : Fragment() {
             binding.btnToPayment.setOnClickListener {
                 showProgressingView()
                 bookNewTicket()
-                viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
-                    Log.d("and the current booking id array is", bookingIds.toString())
-                    hideProgressingView()
+                viewModel.loading.observe(viewLifecycleOwner) {
+                    if (!it) {
+                        Log.d("and the current booking id array is", bookingIds.toString())
 
-                    val bundle = Bundle()
-                    bundle.putIntegerArrayList("bookingIds", bookingIds)
+                        val bundle = Bundle()
+                        bundle.putIntegerArrayList("bookingIds", bookingIds)
+                        hideProgressingView()
 
-                    Navigation.findNavController(view).navigate(
-                        R.id.action_roundBookingFragment_to_paymentFragment,
-                        bundle
-                    )
+                        Navigation.findNavController(view).navigate(
+                            R.id.action_roundBookingFragment_to_paymentFragment,
+                            bundle
+                        )
+                    }
                 }
             }
         }

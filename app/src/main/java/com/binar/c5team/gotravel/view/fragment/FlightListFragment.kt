@@ -3,7 +3,6 @@ package com.binar.c5team.gotravel.view.fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,7 @@ import com.binar.c5team.gotravel.model.Flight
 import com.binar.c5team.gotravel.view.adapter.FlightAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.hilt.android.AndroidEntryPoint
+import com.google.android.material.transition.MaterialSharedAxis
 
 class FlightListFragment : Fragment() {
     lateinit var binding: FragmentTicketListBinding
@@ -44,10 +43,20 @@ class FlightListFragment : Fragment() {
     var progressView: ViewGroup? = null
     private var isProgressShowing = false
 
+    //viewmodel
+    lateinit var viewModel: FlightViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //transition anim
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X,false)
+        //vm
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        //inflating layout
         binding = FragmentTicketListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -84,7 +93,6 @@ class FlightListFragment : Fragment() {
         val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
         guestNavBar.visibility = View.GONE
 
-        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -149,8 +157,6 @@ class FlightListFragment : Fragment() {
     }
 
     private fun getFlight(view : View, token: String, fromAirportId: Int, toAirportId: Int) {
-        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
-
         viewModel.getFlightListData().observe(viewLifecycleOwner) { it ->
             if (it != null) {
                 binding.rvTicketList.layoutManager = LinearLayoutManager(
@@ -247,8 +253,6 @@ class FlightListFragment : Fragment() {
     }
 
     private fun addNewWishlist(token: String, id_flight: Int, id_user: Int) {
-        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
-
         viewModel.postWishlistLD().observe(viewLifecycleOwner) {
             if (it != null) {
                 Toast.makeText(

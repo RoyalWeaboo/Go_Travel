@@ -12,7 +12,8 @@ import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentLoginOrRegisterBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.hilt.android.AndroidEntryPoint
+import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
 
 class OpeningFragment : Fragment() {
     lateinit var binding : FragmentLoginOrRegisterBinding
@@ -22,6 +23,10 @@ class OpeningFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //transition anim
+        enterTransition = MaterialFadeThrough()
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X,false)
         binding = FragmentLoginOrRegisterBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -30,15 +35,17 @@ class OpeningFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //throw RuntimeException("Test Crash") // Force a crash
 
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.GONE
+        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
+
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
         val session = sharedPref.getString("session","").toString()
 
         if (session == "true"){
             Navigation.findNavController(view).navigate(R.id.action_openingFragment_to_homeFragment)
-            val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
             navBar.visibility = View.VISIBLE
-
-            val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
             guestNavBar.visibility = View.GONE
         }else{
             Log.d("Session status", session)

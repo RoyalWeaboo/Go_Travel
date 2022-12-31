@@ -19,6 +19,7 @@ import com.binar.c5team.gotravel.model.Whislists
 import com.binar.c5team.gotravel.view.adapter.WishlistAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 
 class WishlistFragment : Fragment() {
@@ -38,10 +39,20 @@ class WishlistFragment : Fragment() {
     var progressView: ViewGroup? = null
     private var isProgressShowing = false
 
+    //viewmodel
+    lateinit var viewModel: FlightViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //transition anim
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X,false)
+        //vm
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        //inflating layout
         binding = FragmentWishlistBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -74,7 +85,6 @@ class WishlistFragment : Fragment() {
         val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
         guestNavBar.visibility = View.GONE
 
-        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -93,7 +103,6 @@ class WishlistFragment : Fragment() {
     }
 
     private fun getWishlist(view : View, token: String, userId: Int) {
-        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.getWishlistLD().observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.rvWishlist.layoutManager = LinearLayoutManager(

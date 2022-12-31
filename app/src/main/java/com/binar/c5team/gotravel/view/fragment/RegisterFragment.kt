@@ -16,6 +16,7 @@ import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentRegisterBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -26,22 +27,31 @@ class RegisterFragment : Fragment() {
     var progressView: ViewGroup? = null
     private var isProgressShowing = false
 
+    //viewmodel
+    lateinit var viewModel: FlightViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
+        //transition anim
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X,false)
+        //vm
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        //inflating layout
         binding = FragmentRegisterBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
+        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
 
-        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()

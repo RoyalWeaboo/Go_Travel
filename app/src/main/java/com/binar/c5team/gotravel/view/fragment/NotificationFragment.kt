@@ -13,10 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentNotificationBinding
 import com.binar.c5team.gotravel.model.Notification
-import com.binar.c5team.gotravel.model.NotificationResponse
-import com.binar.c5team.gotravel.view.adapter.HistoryAdapter
 import com.binar.c5team.gotravel.view.adapter.NotificationAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import com.google.android.material.transition.MaterialSharedAxis
 import java.util.ArrayList
 
 class NotificationFragment : Fragment() {
@@ -41,7 +40,13 @@ class NotificationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
+        //transition anim
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X,false)
+        //vm
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        //inflating layout
         binding = FragmentNotificationBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -55,8 +60,6 @@ class NotificationFragment : Fragment() {
         //getting user data
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
-
-        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
 
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {

@@ -28,6 +28,7 @@ import com.binar.c5team.gotravel.room.ProfileData
 import com.binar.c5team.gotravel.room.ProfileDatabase
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.transition.MaterialFadeThrough
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -62,18 +63,31 @@ class ProfileFragment : Fragment() {
     //room
     var profileDB: ProfileDatabase? = null
 
+    //viewmodel
+    lateinit var viewModel: FlightViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        //transition anim
         enterTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
         exitTransition = MaterialFadeThrough()
+        //vm
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        //inflating layout
+        binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.VISIBLE
+        val guestNavBar =
+            requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
 
         profileDB = ProfileDatabase.getInstance(requireActivity())
 
@@ -81,7 +95,6 @@ class ProfileFragment : Fragment() {
         //getting token
         token = sharedPref.getString("token", "").toString()
 
-        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -155,11 +168,23 @@ class ProfileFragment : Fragment() {
         }
 
         binding.btnLogout.setOnClickListener {
-            val saveData = sharedPref.edit()
-            saveData.clear()
-            saveData.apply()
-            Navigation.findNavController(view)
-                .navigate(R.id.action_profileFragment_to_loginFragment)
+            val builder = android.app.AlertDialog.Builder(context)
+            builder.setTitle("Logout")
+            builder.setIcon(R.drawable.ic_baseline_logout_24)
+            builder.setMessage("Do you want to log out from this account ?")
+
+            builder.setPositiveButton("Confirm") { _, _ ->
+                val saveData = sharedPref.edit()
+                saveData.clear()
+                saveData.apply()
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_profileFragment_to_loginFragment)
+            }
+            builder.setNegativeButton("Cancel") {_, _ ->
+                //do nothing
+            }
+            builder.show()
+
         }
     }
 
@@ -171,7 +196,6 @@ class ProfileFragment : Fragment() {
 
     private fun profileData() {
         if (connection) {
-            val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
             viewModel.callProfileApi(token)
             viewModel.getProfileData().observe(viewLifecycleOwner) {
                 if (it != null) {
@@ -228,7 +252,6 @@ class ProfileFragment : Fragment() {
 
     private fun getProfileImage(token: String) {
         if (connection) {
-            val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
             viewModel.callProfileApi(token)
             viewModel.getProfileData().observe(viewLifecycleOwner) {
                 if (it.image != null) {
@@ -262,7 +285,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun postProfileImage(token: String, imageMultiPart: MultipartBody.Part) {
-        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.putProfileImageData().observe(viewLifecycleOwner) {
             if (it != null) {
                 Toast.makeText(

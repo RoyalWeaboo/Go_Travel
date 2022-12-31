@@ -106,63 +106,63 @@
             android:layout_marginBottom="32dp">
 
             <TextView
-                android:id="@+id/gate"
+                android:id="@+id/name"
                 style="@style/grayText12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gate" />
+                android:text="Name" />
 
             <TextView
-                android:id="@+id/gate2"
+                android:id="@+id/name2"
                 style="@style/lightText20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/gate"
+                android:layout_below="@id/name"
                 android:layout_marginTop="4dp"
-                android:text="B1" />
+                android:text="Malik" />
 
             <TextView
-                android:id="@+id/flightId"
+                android:id="@+id/food"
                 style="@style/grayText12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/gate2"
+                android:layout_below="@id/name2"
                 android:layout_marginTop="16dp"
-                android:text="Flight Id" />
+                android:text="Food" />
 
             <TextView
-                android:id="@+id/flightId2"
+                android:id="@+id/food2"
                 style="@style/lightText20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/flightId"
+                android:layout_below="@id/food"
                 android:layout_marginTop="4dp"
-                android:text="1" />
+                android:text="Yes" />
 
             <TextView
-                android:id="@+id/seat"
+                android:id="@+id/baggage"
                 style="@style/grayText12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:text="Seat" />
+                android:text="Baggage" />
 
             <TextView
-                android:id="@+id/seat2"
+                android:id="@+id/baggage2"
                 style="@style/lightText20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/seat"
+                android:layout_below="@id/baggage"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="4dp"
-                android:text="40" />
+                android:text="2" />
 
             <TextView
                 android:id="@+id/flightClass"
                 style="@style/grayText12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/seat2"
+                android:layout_below="@+id/baggage2"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="16dp"
                 android:text="Class" />
@@ -175,7 +175,7 @@
                 android:layout_below="@id/flightClass"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="4dp"
-                android:text="DPS" />
+                android:text="Economy" />
 
         </RelativeLayout>
 

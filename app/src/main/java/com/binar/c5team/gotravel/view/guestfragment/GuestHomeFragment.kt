@@ -9,12 +9,12 @@ import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -22,12 +22,12 @@ import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentGuestHomeBinding
 import com.binar.c5team.gotravel.view.MainActivity
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
-import dagger.hilt.android.AndroidEntryPoint
+import com.google.android.material.transition.MaterialFadeThrough
 import java.text.SimpleDateFormat
 import java.util.*
 
 class GuestHomeFragment : Fragment() {
-    private lateinit var binding : FragmentGuestHomeBinding
+    private lateinit var binding: FragmentGuestHomeBinding
 
     //Shared Preferences
     private lateinit var sharedPref: SharedPreferences
@@ -37,8 +37,8 @@ class GuestHomeFragment : Fragment() {
     private val listSpinner: MutableList<String> = ArrayList()
     private val listCity: MutableList<String> = ArrayList()
 
-    private var defaultDepartDate : String = ""
-    private var defaultReturnDate : String = ""
+    private var defaultDepartDate: String = ""
+    private var defaultReturnDate: String = ""
 
     private lateinit var viewModel: FlightViewModel
 
@@ -46,10 +46,16 @@ class GuestHomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentGuestHomeBinding.inflate(inflater, container, false)
+        //transition anim
+        enterTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
+        exitTransition = MaterialFadeThrough()
         //set bottom nav
         (activity as MainActivity?)?.setUpGuestNavigation()
+        //vm
         viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
+        //inflating layout
+        binding = FragmentGuestHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -75,11 +81,13 @@ class GuestHomeFragment : Fragment() {
         callAirportList()
 
         binding.guestLogin.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_guestHomeFragment_to_loginFragment)
+            Navigation.findNavController(view)
+                .navigate(R.id.action_guestHomeFragment_to_loginFragment)
         }
 
         binding.guestSignUp.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_guestHomeFragment_to_registerFragment)
+            Navigation.findNavController(view)
+                .navigate(R.id.action_guestHomeFragment_to_registerFragment)
         }
 
         binding.menuOneWay.setOnClickListener {
@@ -146,8 +154,8 @@ class GuestHomeFragment : Fragment() {
             val to = binding.spinnerTo.selectedItemId
             val fromCity = listCity[from.toInt()]
             val toCity = listCity[to.toInt()]
-            val fromCityId = from.toInt()+1
-            val toCityId = to.toInt()+1
+            val fromCityId = from.toInt() + 1
+            val toCityId = to.toInt() + 1
             val depDate = binding.departDateText.text.toString()
             val retDate = binding.returnDateText.text.toString()
 
@@ -163,9 +171,9 @@ class GuestHomeFragment : Fragment() {
             defaultDepartDate = pickedDepartDate?.let { it1 -> sdfDefault.format(it1) }!!
             defaultReturnDate = pickedReturnDate?.let { it1 -> sdfDefault.format(it1) }!!
 
-            val flightMode: String = if (binding.lineOptionOneWay.visibility == View.VISIBLE){
+            val flightMode: String = if (binding.lineOptionOneWay.visibility == View.VISIBLE) {
                 "oneWay"
-            }else{
+            } else {
                 "roundTrip"
             }
             val adultCountTotal = binding.adultCount.text.toString()
@@ -263,7 +271,7 @@ class GuestHomeFragment : Fragment() {
 //                Log.d("Airport Data", it.toString())
 
                 //set json to arraylist
-                if(listSpinner.isEmpty()){
+                if (listSpinner.isEmpty()) {
                     for (element in it.data.airports) {
                         listSpinner.add(element.name)
                         listCity.add(element.city)

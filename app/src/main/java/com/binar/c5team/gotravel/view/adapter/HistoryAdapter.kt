@@ -81,28 +81,37 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                     //then check the day
                     if (bookDayInt >= todaysDay) {
                         //then check the hour
-                        if (bookHourInt <= todaysHour) {
+                        if (bookHourInt > todaysHour) {
                             ///finally check the minute
                             //check with range more than or less than
-                            if (bookMinuteInt < todaysMinute) {
-                                holder.binding.cvStatusInactive.visibility = View.VISIBLE
-                            } else {
+                            if (bookMinuteInt > todaysMinute) {
+                                holder.binding.cvStatusNotPaid.visibility = View.VISIBLE
                                 holder.binding.cvStatusNotPaid.setOnClickListener {
                                     onStatusClick?.invoke(listBooking[position])
                                 }
+                            } else {
                                 holder.binding.cvStatusNotPaid.visibility = View.VISIBLE
                             }
                             //now if its within the ticket departure and arrival time
                         } else if (todaysHour in bookHourArrivalInt..bookHourInt) {
                             if (todaysMinute in bookMinuteArrivalInt..bookMinuteInt) {
                                 holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                            } else {
+                                holder.binding.cvStatusInactive.visibility = View.VISIBLE
                             }
-                        } else {
-                            //if the flight is on after today's day
+                        } else if (bookHourInt == todaysHour) {
+                            if (bookMinuteInt > todaysMinute) {
+                                holder.binding.cvStatusNotPaid.visibility = View.VISIBLE
+                                holder.binding.cvStatusNotPaid.setOnClickListener {
+                                    onStatusClick?.invoke(listBooking[position])
+                                }
+                            } else {
+                                holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                            }
+                        }else{
                             holder.binding.cvStatusInactive.visibility = View.VISIBLE
                         }
                     } else {
-                        //if the flight is on after today's month
                         holder.binding.cvStatusInactive.visibility = View.VISIBLE
                     }
                 } else {
@@ -128,11 +137,11 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                         //then check the day
                         if (bookDayInt >= todaysDay) {
                             //then check the hour
-                            if (bookHourInt <= todaysHour) {
-                                ///finally check the minute
-                                //check with range more than or less than
-                                if (bookMinuteInt < todaysMinute) {
+                            if (bookHourInt > todaysHour) {
+                                ///check the minute
+                                if (bookMinuteInt > todaysMinute) {
                                     holder.binding.cvStatusActive.visibility = View.VISIBLE
+                                    holder.binding.cvStatusBoarded.visibility = View.GONE
                                 } else {
                                     holder.binding.cvStatusBoarded.visibility = View.VISIBLE
                                 }
@@ -141,7 +150,14 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                                 if (todaysMinute in bookMinuteArrivalInt..bookMinuteInt) {
                                     holder.binding.cvStatusOnBoard.visibility = View.VISIBLE
                                 }
-                            } else {
+                            }else if(bookHourInt == todaysHour){
+                                if (bookMinuteInt > todaysMinute) {
+                                    holder.binding.cvStatusActive.visibility = View.VISIBLE
+                                } else {
+                                    holder.binding.cvStatusBoarded.visibility = View.VISIBLE
+                                }
+                            }
+                            else {
                                 //if the flight is on after today's day
                                 holder.binding.cvStatusBoarded.visibility = View.VISIBLE
                             }

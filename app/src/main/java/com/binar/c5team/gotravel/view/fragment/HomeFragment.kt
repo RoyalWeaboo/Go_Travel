@@ -55,11 +55,14 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        //transition anim
         enterTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
         exitTransition = MaterialFadeThrough()
         //set bottom nav
         (activity as MainActivity?)?.setUpNavigation()
+        //inflating layout
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -237,7 +240,7 @@ class HomeFragment : Fragment() {
                 //save default date to sharedpref booking
                 val saveBookingInfo = sharedPrefBooking.edit()
                 saveBookingInfo.putString("unparsedDepartDate", defaultDepartDate)
-                saveBookingInfo.putString("unparsedReturnDate", defaultDepartDate)
+                saveBookingInfo.putString("unparsedReturnDate", defaultReturnDate)
                 saveBookingInfo.apply()
 
                 Navigation.findNavController(view)

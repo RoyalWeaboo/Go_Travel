@@ -12,7 +12,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-32dp"
+            android:layout_marginTop="-48dp"
             android:src="@drawable/background_history"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -208,7 +208,6 @@
             android:fontFamily="@font/inter"
             android:text="Passenger - 1"
             android:textColor="#000000"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView" />
 

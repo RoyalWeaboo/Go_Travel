@@ -18,6 +18,7 @@ import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentEditProfileBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,10 +35,19 @@ class EditProfileFragment : Fragment() {
     var progressView: ViewGroup? = null
     private var isProgressShowing = false
 
+    //viewmodel
+    lateinit var viewModel: FlightViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //transition anim
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X,false)
+        //vm
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        //inflating layout
         binding = FragmentEditProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -62,7 +72,6 @@ class EditProfileFragment : Fragment() {
         val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
         guestNavBar.visibility = View.GONE
 
-        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()

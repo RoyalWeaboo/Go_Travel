@@ -3,23 +3,20 @@ package com.binar.c5team.gotravel.view.fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentLoginBinding
-import com.binar.c5team.gotravel.model.LoginData
-import com.binar.c5team.gotravel.model.LoginResponse
-import com.binar.c5team.gotravel.network.RetrofitClient
+import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.hilt.android.AndroidEntryPoint
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.google.android.material.transition.MaterialSharedAxis
 
 class LoginFragment : Fragment() {
     lateinit var binding: FragmentLoginBinding
@@ -31,21 +28,41 @@ class LoginFragment : Fragment() {
     var progressView: ViewGroup? = null
     private var isProgressShowing = false
 
+    //data
+    var userId: Int = 0
+    var usernameRes: String = ""
+    var token: String = ""
+
+    //viewmodel
+    lateinit var viewModel: FlightViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //transition anim
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
+        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.X,false)
+        //vm
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        //inflating layout
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.GONE
+        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
 
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
 
         binding.btnBack.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_openingFragment)
+            Navigation.findNavController(view)
+                .navigate(R.id.action_loginFragment_to_openingFragment)
         }
 
         binding.btnLogin.setOnClickListener {
@@ -57,7 +74,7 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun validateLoginInput(view : View) {
+    private fun validateLoginInput(view: View) {
         val usernameInput = binding.inputUsername.editText?.text.toString()
         val passwordinput = binding.inputPassword.editText?.text.toString()
 
@@ -69,47 +86,22 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun validateLoginData(view : View, username: String, password: String) {
+    private fun validateLoginData(view: View, username: String, password: String) {
         showProgressingView()
-        RetrofitClient.apiWithoutToken().login(LoginData(username, password))
-            .enqueue(object : Callback<LoginResponse> {
-                override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        if (response.body()?.message == "Login Success") {
-                            Log.d("login response", response.body().toString())
-                            val saveData = sharedPref.edit()
-                            saveData.putString("session", "true")
-                            saveData.putInt("userId", response.body()!!.id)
-                            saveData.putString("username", response.body()?.username)
-                            saveData.putString("token", response.body()?.token)
-                            saveData.apply()
-                            Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
-                        }
-                    } else {
-                        Log.d("login response", response.body().toString())
-                        Toast.makeText(
-                            context,
-                            "Wrong Username or Password",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    hideProgressingView()
-                }
+        viewModel.postLoginApi(this, username, password)
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                    Log.d("Login Data Error", call.toString())
-                    Toast.makeText(
-                        context,
-                        "Something Went Wrong",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    hideProgressingView()
-                }
-
-            })
+        viewModel.loading.observe(viewLifecycleOwner) {
+            if (!it){
+                val saveData = sharedPref.edit()
+                saveData.putString("session", "true")
+                saveData.putInt("userId", userId)
+                saveData.putString("username", usernameRes)
+                saveData.putString("token", token)
+                saveData.apply()
+                hideProgressingView()
+                Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
+            }
+        }
     }
 
     private fun showProgressingView() {

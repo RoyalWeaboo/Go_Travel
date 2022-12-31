@@ -205,6 +205,9 @@
         <action
             android:id="@+id/action_guestHistoryFragment_to_guestHomeFragment"
             app:destination="@id/guestHomeFragment" />
+        <action
+            android:id="@+id/action_guestHistoryFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/guestHomeFragment"
@@ -235,6 +238,9 @@
         <action
             android:id="@+id/action_guestProfileFragment_to_guestHomeFragment"
             app:destination="@id/guestHomeFragment" />
+        <action
+            android:id="@+id/action_guestProfileFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <dialog
         android:id="@+id/paymentDialog"

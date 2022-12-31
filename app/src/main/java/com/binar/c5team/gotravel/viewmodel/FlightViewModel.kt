@@ -1,10 +1,12 @@
 package com.binar.c5team.gotravel.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.binar.c5team.gotravel.model.*
 import com.binar.c5team.gotravel.network.RetrofitClient
 import com.binar.c5team.gotravel.view.fragment.BookingFragment
+import com.binar.c5team.gotravel.view.fragment.LoginFragment
 import com.binar.c5team.gotravel.view.fragment.RoundBookingFragment
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -16,29 +18,34 @@ class FlightViewModel : ViewModel() {
     var loading = MutableLiveData<Boolean>()
 
     //user
-    var registerLiveData : MutableLiveData<RegisterResponse> = MutableLiveData()
-    var profileLiveData : MutableLiveData<ProfileResponse> = MutableLiveData()
-    var putProfileDataLiveData : MutableLiveData<PutProfileResponse> = MutableLiveData()
-    var profileImageLiveData : MutableLiveData<ProfileImagePutResponse> = MutableLiveData()
-    var notificationLiveData : MutableLiveData<NotificationResponse> = MutableLiveData()
-    var postNotificationLiveData : MutableLiveData<NotificationPostResponse> = MutableLiveData()
+    var registerLiveData: MutableLiveData<RegisterResponse> = MutableLiveData()
+    var loginLiveData: MutableLiveData<LoginResponse> = MutableLiveData()
+    var profileLiveData: MutableLiveData<ProfileResponse> = MutableLiveData()
+    var putProfileDataLiveData: MutableLiveData<PutProfileResponse> = MutableLiveData()
+    var profileImageLiveData: MutableLiveData<ProfileImagePutResponse> = MutableLiveData()
+    var notificationLiveData: MutableLiveData<NotificationResponse> = MutableLiveData()
+    var postNotificationLiveData: MutableLiveData<NotificationPostResponse> = MutableLiveData()
 
     //airport
     var airportList: MutableLiveData<AirportResponse> = MutableLiveData()
 
     //flight
-    var postBookingLiveData : MutableLiveData<BookingPostResponse> = MutableLiveData()
-    var flightLiveData : MutableLiveData<FlightResponse> = MutableLiveData()
-    var bookingLiveData : MutableLiveData<BookingResponse> = MutableLiveData()
-    var wishlistLiveData : MutableLiveData<WishlistResponse> = MutableLiveData()
-    var postWishlistLiveData : MutableLiveData<WishlistPostResponse> = MutableLiveData()
-    var delWishlistLiveData : MutableLiveData<Int> = MutableLiveData()
-    var postConfirmationLiveData : MutableLiveData<ConfirmationPostResponse> = MutableLiveData()
+    var postBookingLiveData: MutableLiveData<BookingPostResponse> = MutableLiveData()
+    var flightLiveData: MutableLiveData<FlightResponse> = MutableLiveData()
+    var bookingLiveData: MutableLiveData<BookingResponse> = MutableLiveData()
+    var wishlistLiveData: MutableLiveData<WishlistResponse> = MutableLiveData()
+    var postWishlistLiveData: MutableLiveData<WishlistPostResponse> = MutableLiveData()
+    var delWishlistLiveData: MutableLiveData<Int> = MutableLiveData()
+    var postConfirmationLiveData: MutableLiveData<ConfirmationPostResponse> = MutableLiveData()
 
 
     //user
     fun getRegisterData(): MutableLiveData<RegisterResponse> {
         return registerLiveData
+    }
+
+    fun postLoginData(): MutableLiveData<LoginResponse> {
+        return loginLiveData
     }
 
     fun getProfileData(): MutableLiveData<ProfileResponse> {
@@ -71,34 +78,42 @@ class FlightViewModel : ViewModel() {
         return flightLiveData
     }
 
-    fun getBookingLD():MutableLiveData<BookingResponse> {
+    fun getBookingLD(): MutableLiveData<BookingResponse> {
         return bookingLiveData
     }
 
-    fun getPostBookingLD():MutableLiveData<BookingPostResponse> {
+    fun getPostBookingLD(): MutableLiveData<BookingPostResponse> {
         return postBookingLiveData
     }
 
-    fun getWishlistLD():MutableLiveData<WishlistResponse> {
+    fun getWishlistLD(): MutableLiveData<WishlistResponse> {
         return wishlistLiveData
     }
 
-    fun postWishlistLD():MutableLiveData<WishlistPostResponse> {
+    fun postWishlistLD(): MutableLiveData<WishlistPostResponse> {
         return postWishlistLiveData
     }
 
-    fun deleteWishlistLD():MutableLiveData<Int> {
+    fun deleteWishlistLD(): MutableLiveData<Int> {
         return delWishlistLiveData
     }
 
-    fun postConfirmationLD():MutableLiveData<ConfirmationPostResponse> {
+    fun postConfirmationLD(): MutableLiveData<ConfirmationPostResponse> {
         return postConfirmationLiveData
     }
 
     //user
-    //user
-    fun callRegisterApi(username : String, fullname : String, email : String, password:String, dateBirth : String, gender : String, address : String) {
-        RetrofitClient.apiWithoutToken().register(RegisterData(username, fullname, email, password, dateBirth, gender, address))
+    fun callRegisterApi(
+        username: String,
+        fullname: String,
+        email: String,
+        password: String,
+        dateBirth: String,
+        gender: String,
+        address: String
+    ) {
+        RetrofitClient.apiWithoutToken()
+            .register(RegisterData(username, fullname, email, password, dateBirth, gender, address))
             .enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(
                     call: Call<RegisterResponse>,
@@ -120,8 +135,35 @@ class FlightViewModel : ViewModel() {
             })
     }
 
+    fun postLoginApi(fragment: LoginFragment, username: String, password: String) {
+        loading.value = true
+        RetrofitClient.apiWithoutToken().login(LoginData(username, password))
+            .enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        loginLiveData.value = response.body()
+                        fragment.userId = response.body()!!.id
+                        fragment.usernameRes = response.body()!!.username
+                        fragment.token = response.body()!!.token
+                        loading.value = false
+                    } else {
+                        Log.d("login response", response.body().toString())
+                        loading.value = false
+                    }
+                }
 
-    fun callProfileApi(token : String) {
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    Log.d("Login Data Error", call.toString())
+                    loading.value = false
+                }
+            })
+    }
+
+
+    fun callProfileApi(token: String) {
         loading.postValue(true)
         RetrofitClient.apiWithToken(token).getProfile()
             .enqueue(object : Callback<ProfileResponse> {
@@ -145,9 +187,18 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun putProfileData(token : String, no_ktp : String, gender : String, date_of_birth : String, address : String, email : String, name : String) {
+    fun putProfileData(
+        token: String,
+        no_ktp: String,
+        gender: String,
+        date_of_birth: String,
+        address: String,
+        email: String,
+        name: String
+    ) {
         loading.postValue(true)
-        RetrofitClient.apiWithToken(token).putProfile(ProfileData(no_ktp, gender, date_of_birth, address, email, name))
+        RetrofitClient.apiWithToken(token)
+            .putProfile(ProfileData(no_ktp, gender, date_of_birth, address, email, name))
             .enqueue(object : Callback<PutProfileResponse> {
                 override fun onResponse(
                     call: Call<PutProfileResponse>,
@@ -168,7 +219,7 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun putProfileImage(token : String, file : MultipartBody.Part) {
+    fun putProfileImage(token: String, file: MultipartBody.Part) {
         loading.postValue(true)
         RetrofitClient.apiWithToken(token).putProfileImage(file)
             .enqueue(object : Callback<ProfileImagePutResponse> {
@@ -191,17 +242,17 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun callNotificationApi(token : String){
+    fun callNotificationApi(token: String) {
         loading.postValue(true)
         RetrofitClient.apiWithToken(token).getNotification()
-            .enqueue(object : Callback<NotificationResponse>{
+            .enqueue(object : Callback<NotificationResponse> {
                 override fun onResponse(
                     call: Call<NotificationResponse>,
                     response: Response<NotificationResponse>
                 ) {
                     if (response.isSuccessful) {
                         notificationLiveData.postValue(response.body())
-                    }else{
+                    } else {
                         Log.d("Fetch Notification Failed", response.body().toString())
                     }
                     loading.postValue(false)
@@ -215,17 +266,17 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun postNotificationApi(token : String, message : String){
+    fun postNotificationApi(token: String, message: String) {
         loading.postValue(true)
         RetrofitClient.apiWithToken(token).postNotification(NotificationData(message))
-            .enqueue(object : Callback<NotificationPostResponse>{
+            .enqueue(object : Callback<NotificationPostResponse> {
                 override fun onResponse(
                     call: Call<NotificationPostResponse>,
                     response: Response<NotificationPostResponse>
                 ) {
                     if (response.isSuccessful) {
                         postNotificationLiveData.postValue(response.body())
-                    }else{
+                    } else {
                         Log.d("Post Notification Failed", response.body().toString())
                     }
                     loading.postValue(false)
@@ -265,7 +316,7 @@ class FlightViewModel : ViewModel() {
     }
 
     //flight
-    fun callFlightApi(token : String) {
+    fun callFlightApi(token: String) {
         RetrofitClient.apiWithToken(token).getFlight()
             .enqueue(object : Callback<FlightResponse> {
                 override fun onResponse(
@@ -286,7 +337,7 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun callWishlistApi(token : String) {
+    fun callWishlistApi(token: String) {
         loading.postValue(true)
         RetrofitClient.apiWithToken(token).getWishlist()
             .enqueue(object : Callback<WishlistResponse> {
@@ -310,17 +361,17 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun callBookingApi(token: String){
+    fun callBookingApi(token: String) {
         loading.postValue(true)
         RetrofitClient.apiWithToken(token).getBooking()
-            .enqueue(object : Callback<BookingResponse>{
+            .enqueue(object : Callback<BookingResponse> {
                 override fun onResponse(
                     call: Call<BookingResponse>,
                     response: Response<BookingResponse>
                 ) {
-                    if(response.isSuccessful){
+                    if (response.isSuccessful) {
                         bookingLiveData.value = response.body()
-                    }else{
+                    } else {
                         Log.d("Fetch Booking Failed", response.body().toString())
                     }
                     loading.postValue(false)
@@ -334,9 +385,35 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun postBookingApi(fragment : BookingFragment, token : String, id_flight : Int, id_user : Int, baggage : Int, food : Boolean, name : String, homePhone : String, mobilePhone : String, totalPrice : Int, bookingDate : String, trip_type : String) {
+    fun postBookingApi(
+        fragment: BookingFragment,
+        token: String,
+        id_flight: Int,
+        id_user: Int,
+        baggage: Int,
+        food: Boolean,
+        name: String,
+        homePhone: String,
+        mobilePhone: String,
+        totalPrice: Int,
+        bookingDate: String,
+        trip_type: String
+    ) {
         loading.value = true
-        RetrofitClient.apiWithToken(token).postBooking(BookingData(id_flight, id_user, baggage, food, name, homePhone, mobilePhone, totalPrice, bookingDate, trip_type))
+        RetrofitClient.apiWithToken(token).postBooking(
+            BookingData(
+                id_flight,
+                id_user,
+                baggage,
+                food,
+                name,
+                homePhone,
+                mobilePhone,
+                totalPrice,
+                bookingDate,
+                trip_type
+            )
+        )
             .enqueue(object : Callback<BookingPostResponse> {
                 override fun onResponse(
                     call: Call<BookingPostResponse>,
@@ -349,7 +426,10 @@ class FlightViewModel : ViewModel() {
                             val id = responseBody.data.id
                             fragment.bookingIds.add(id)
                         }
-                        Log.d("id that should have been added is", response.body()!!.data.id.toString())
+                        Log.d(
+                            "id that should have been added is",
+                            response.body()!!.data.id.toString()
+                        )
                         loading.value = false
                     } else {
                         Log.d("Booking Failed", response.body().toString())
@@ -365,9 +445,35 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun postRoundBookingApi(fragment : RoundBookingFragment, token : String, id_flight : Int, id_user : Int, baggage : Int, food : Boolean, name : String, homePhone : String, mobilePhone : String, totalPrice : Int, bookingDate : String, trip_type : String) {
+    fun postRoundBookingApi(
+        fragment: RoundBookingFragment,
+        token: String,
+        id_flight: Int,
+        id_user: Int,
+        baggage: Int,
+        food: Boolean,
+        name: String,
+        homePhone: String,
+        mobilePhone: String,
+        totalPrice: Int,
+        bookingDate: String,
+        trip_type: String
+    ) {
         loading.value = true
-        RetrofitClient.apiWithToken(token).postBooking(BookingData(id_flight, id_user, baggage, food, name, homePhone, mobilePhone, totalPrice, bookingDate, trip_type))
+        RetrofitClient.apiWithToken(token).postBooking(
+            BookingData(
+                id_flight,
+                id_user,
+                baggage,
+                food,
+                name,
+                homePhone,
+                mobilePhone,
+                totalPrice,
+                bookingDate,
+                trip_type
+            )
+        )
             .enqueue(object : Callback<BookingPostResponse> {
                 override fun onResponse(
                     call: Call<BookingPostResponse>,
@@ -380,7 +486,10 @@ class FlightViewModel : ViewModel() {
                             val id = responseBody.data.id
                             fragment.bookingIds.add(id)
                         }
-                        Log.d("id that should have been added is", response.body()!!.data.id.toString())
+                        Log.d(
+                            "id that should have been added is",
+                            response.body()!!.data.id.toString()
+                        )
                         loading.value = false
                     } else {
                         Log.d("Booking Failed", response.body().toString())
@@ -397,7 +506,7 @@ class FlightViewModel : ViewModel() {
     }
 
 
-    fun postWishlistApi(token : String, id_flight : Int, id_user : Int) {
+    fun postWishlistApi(token: String, id_flight: Int, id_user: Int) {
         loading.postValue(true)
         RetrofitClient.apiWithToken(token).postWishlist(WishlistData(id_flight, id_user))
             .enqueue(object : Callback<WishlistPostResponse> {
@@ -421,7 +530,7 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun callDeleteWishlist(token :String, id: Int) {
+    fun callDeleteWishlist(token: String, id: Int) {
         loading.postValue(true)
         RetrofitClient.apiWithToken(token).deleteWishlist(id)
             .enqueue(object : Callback<Int> {
@@ -446,7 +555,7 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun postConfirmationPaymentImage(token :String, id : Int, file : MultipartBody.Part) {
+    fun postConfirmationPaymentImage(token: String, id: Int, file: MultipartBody.Part) {
         loading.postValue(true)
         RetrofitClient.apiWithToken(token).postPaymentConfirmation(id, file)
             .enqueue(object : Callback<ConfirmationPostResponse> {
@@ -468,7 +577,6 @@ class FlightViewModel : ViewModel() {
                 }
             })
     }
-
 
 
 }
