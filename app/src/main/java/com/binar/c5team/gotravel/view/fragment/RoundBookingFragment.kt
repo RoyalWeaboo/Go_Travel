@@ -1,5 +1,6 @@
 package com.binar.c5team.gotravel.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -60,6 +61,7 @@ class RoundBookingFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -127,7 +129,7 @@ class RoundBookingFragment : Fragment() {
                 showProgressingView()
                 tempCount++
 
-                binding.passengerNumber.text = "Passenger - " + tempCount.toString()
+                binding.passengerNumber.text = "Passenger - " + (tempCount+1).toString()
 
                 bookNewTicket()
                 viewModel.postBookingLiveData.observe(viewLifecycleOwner) {
@@ -198,6 +200,7 @@ class RoundBookingFragment : Fragment() {
         )
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getSetData() {
         //getting flight data
         seatCount = sharedPrefBooking.getInt("totalSeat", 0)
@@ -217,9 +220,9 @@ class RoundBookingFragment : Fragment() {
 
         binding.tvAircraftName.text = planeName
         binding.tvFromCity.text = fromAirport
-        binding.tvArrivalCity.text = "- " + toAirport
+        binding.tvArrivalCity.text = "- $toAirport"
         binding.tvTimeFrom.text = departureTime
-        binding.tvTimeTo.text = "- " + arrivalTime
+        binding.tvTimeTo.text = "- $arrivalTime"
         binding.tvSeatTotal.text = seatCount.toString()
     }
 
@@ -281,6 +284,7 @@ class RoundBookingFragment : Fragment() {
     }
 
 
+    @SuppressLint("InflateParams")
     private fun showProgressingView() {
         if (!isProgressShowing) {
             isProgressShowing = true

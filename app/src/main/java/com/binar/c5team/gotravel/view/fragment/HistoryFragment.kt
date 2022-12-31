@@ -26,11 +26,13 @@ class HistoryFragment : Fragment() {
 
     //Shared Preferences
     private lateinit var sharedPref: SharedPreferences
+    private lateinit var sharedPrefBooking: SharedPreferences
 
     private lateinit var adapter : HistoryAdapter
 
     private var userId: Int = 0
     private var token: String = ""
+    private var session: String = ""
 
     //progressbar
     var progressView: ViewGroup? = null
@@ -51,10 +53,14 @@ class HistoryFragment : Fragment() {
 
         //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
+        //SharedPref for booking data
+        sharedPrefBooking = requireActivity().getSharedPreferences("bookingInfo", Context.MODE_PRIVATE)
 
         //getting user data
+        session
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
+        session = sharedPref.getString("session", "").toString()
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.VISIBLE
@@ -99,6 +105,37 @@ class HistoryFragment : Fragment() {
                     val bund = Bundle()
                     bund.putIntegerArrayList("bookingIds", ticketId)
                     Navigation.findNavController(view).navigate(R.id.action_historyFragment_to_paymentDialog, bund)
+                }
+
+                adapter.onTicketClick = { detail ->
+                    if (session == "true") {
+                        if (userId != 0) {
+                            //saving departure flight data to shared pref
+                            val historyBundle = Bundle()
+
+                            historyBundle.putString("planeNameDetail", detail.flight.plane.name)
+                            historyBundle.putInt("bookingIdDetail", detail.id)
+                            historyBundle.putString("flightModeDetail", detail.tripType)
+                            historyBundle.putInt("flightIdDetail", detail.flight.id)
+                            historyBundle.putInt("availableSeatDetail", detail.flight.availableSeats)
+                            historyBundle.putString("fromAirportCityDetail", detail.flight.fromAirport.city)
+                            historyBundle.putString("fromAirportCityCodeDetail", detail.flight.fromAirport.code)
+                            historyBundle.putString("toAirportCityDetail", detail.flight.toAirport.city)
+                            historyBundle.putString("toAirportCityCodeDetail", detail.flight.toAirport.code)
+                            historyBundle.putString("departureTimeDetail", detail.flight.departureTime)
+                            historyBundle.putString("arrivalTimeDetail", detail.flight.arrivalTime)
+                            historyBundle.putString("flightDateDetail", detail.flight.flightDate)
+                            historyBundle.putString("classDetail", detail.flight.kelas)
+
+                            Navigation.findNavController(view).navigate(R.id.action_historyFragment_to_ticketDetailFragment, historyBundle)
+                        }else{
+                            Toast.makeText(context, "Cannot Read User Id", Toast.LENGTH_SHORT).show()
+                            Navigation.findNavController(view).navigate(R.id.action_historyFragment_to_loginFragment)
+                        }
+                    }else{
+                        Toast.makeText(context, "Session is empty", Toast.LENGTH_SHORT).show()
+                        Navigation.findNavController(view).navigate(R.id.action_historyFragment_to_loginFragment)
+                    }
                 }
             }else{
                 Toast.makeText(context, "No History Found !", Toast.LENGTH_SHORT).show()

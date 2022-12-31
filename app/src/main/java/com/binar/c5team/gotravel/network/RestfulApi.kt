@@ -48,4 +48,12 @@ interface RestfulApi {
     @PUT("updateProfileUser")
     fun putProfileImage(@Part confirmation : MultipartBody.Part) : Call<ProfileImagePutResponse>
 
+    //Get Notification List
+    @GET("notification")
+    fun getNotification() : Call<NotificationResponse>
+
+    //Post Notification
+    @POST("notification")
+    fun postNotification(@Body notificationData : NotificationData) : Call<NotificationPostResponse>
+
 }

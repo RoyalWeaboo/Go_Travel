@@ -12,7 +12,7 @@ import java.util.*
 
 class HistoryAdapter(private var listBooking: List<Booking>) :
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
-    private var onTicketClick: ((Booking) -> Unit)? = null
+    var onTicketClick: ((Booking) -> Unit)? = null
     var onStatusClick: ((Booking) -> Unit)? = null
 
     class ViewHolder(var binding: ItemHistoryBinding) : RecyclerView.ViewHolder(binding.root)

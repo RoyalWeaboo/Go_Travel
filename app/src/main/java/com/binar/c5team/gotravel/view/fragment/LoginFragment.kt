@@ -41,10 +41,6 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
-        navBar.visibility = View.GONE
-        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
-        guestNavBar.visibility = View.GONE
 
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
 

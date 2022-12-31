@@ -20,6 +20,8 @@ class FlightViewModel : ViewModel() {
     var profileLiveData : MutableLiveData<ProfileResponse> = MutableLiveData()
     var putProfileDataLiveData : MutableLiveData<PutProfileResponse> = MutableLiveData()
     var profileImageLiveData : MutableLiveData<ProfileImagePutResponse> = MutableLiveData()
+    var notificationLiveData : MutableLiveData<NotificationResponse> = MutableLiveData()
+    var postNotificationLiveData : MutableLiveData<NotificationPostResponse> = MutableLiveData()
 
     //airport
     var airportList: MutableLiveData<AirportResponse> = MutableLiveData()
@@ -49,6 +51,14 @@ class FlightViewModel : ViewModel() {
 
     fun putProfileImageData(): MutableLiveData<ProfileImagePutResponse> {
         return profileImageLiveData
+    }
+
+    fun getNotificationData(): MutableLiveData<NotificationResponse> {
+        return notificationLiveData
+    }
+
+    fun postNotificationData(): MutableLiveData<NotificationPostResponse> {
+        return postNotificationLiveData
     }
 
     //airport
@@ -178,6 +188,54 @@ class FlightViewModel : ViewModel() {
                     Log.d("on failure", call.toString())
                     loading.postValue(false)
                 }
+            })
+    }
+
+    fun callNotificationApi(token : String){
+        loading.postValue(true)
+        RetrofitClient.apiWithToken(token).getNotification()
+            .enqueue(object : Callback<NotificationResponse>{
+                override fun onResponse(
+                    call: Call<NotificationResponse>,
+                    response: Response<NotificationResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        notificationLiveData.postValue(response.body())
+                    }else{
+                        Log.d("Fetch Notification Failed", response.body().toString())
+                    }
+                    loading.postValue(false)
+                }
+
+                override fun onFailure(call: Call<NotificationResponse>, t: Throwable) {
+                    Log.d("Fetch Notification Error", call.toString())
+                    loading.postValue(false)
+                }
+
+            })
+    }
+
+    fun postNotificationApi(token : String, message : String){
+        loading.postValue(true)
+        RetrofitClient.apiWithToken(token).postNotification(NotificationData(message))
+            .enqueue(object : Callback<NotificationPostResponse>{
+                override fun onResponse(
+                    call: Call<NotificationPostResponse>,
+                    response: Response<NotificationPostResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        postNotificationLiveData.postValue(response.body())
+                    }else{
+                        Log.d("Post Notification Failed", response.body().toString())
+                    }
+                    loading.postValue(false)
+                }
+
+                override fun onFailure(call: Call<NotificationPostResponse>, t: Throwable) {
+                    Log.d("Post Notification Error", call.toString())
+                    loading.postValue(false)
+                }
+
             })
     }
 

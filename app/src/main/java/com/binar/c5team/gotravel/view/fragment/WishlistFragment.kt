@@ -86,7 +86,7 @@ class WishlistFragment : Fragment() {
         getWishlist(view, token, userId)
 
         binding.wishlistArrowBack.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_wishlistFragment_to_homeFragment)
+            Navigation.findNavController(view).popBackStack()
         }
 
 

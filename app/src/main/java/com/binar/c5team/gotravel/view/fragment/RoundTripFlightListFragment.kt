@@ -70,13 +70,12 @@ class RoundTripFlightListFragment : Fragment() {
         sharedPrefBooking =
             requireActivity().getSharedPreferences("bookingInfo", Context.MODE_PRIVATE)
 
-        //letting user know that this is for return ticket
-        Toast.makeText(context, "Choose Return Ticket", Toast.LENGTH_LONG).show()
-
         //getting user data
         session = sharedPref.getString("session", "").toString()
         token = sharedPref.getString("token", "").toString()
         userId = sharedPref.getInt("userId", 0)
+
+        binding.flightModeReturn.visibility = View.VISIBLE
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE

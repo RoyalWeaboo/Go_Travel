@@ -36,7 +36,7 @@ class FlightListFragment : Fragment() {
     private var fromAirportId: Int = 0
     private var toAirportId: Int = 0
     private var adultCount: Int = 0
-    private var fligtMode: String = ""
+    private var flightMode: String = ""
 
     private var departDate: String = ""
     private var returnDate: String = ""
@@ -77,6 +77,8 @@ class FlightListFragment : Fragment() {
         userId = sharedPref.getInt("userId", 0)
         session = sharedPref.getString("session", "").toString()
 
+        binding.flightModeDeparture.visibility = View.VISIBLE
+
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
         val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
@@ -104,7 +106,7 @@ class FlightListFragment : Fragment() {
 
     private fun getSetData(view : View) {
         //getting flight data
-        fligtMode = sharedPrefFlight.getString("flightMode", " ").toString()
+        flightMode = sharedPrefFlight.getString("flightMode", " ").toString()
         fromAirportId = sharedPrefFlight.getInt("fromId", 0)
         toAirportId = sharedPrefFlight.getInt("toId", 0)
         adultCount = sharedPrefFlight.getString("adultCount", "")!!.toInt()
@@ -186,11 +188,11 @@ class FlightListFragment : Fragment() {
 
                             departureBookingData.apply()
 
-                            if (fligtMode == "oneWay") {
+                            if (flightMode == "oneWay") {
                                 Navigation.findNavController(view).navigate(
                                     R.id.action_flightListFragment_to_bookingFragment
                                 )
-                            } else if (fligtMode == "roundTrip") {
+                            } else if (flightMode == "roundTrip") {
                                 if(session == "true") {
                                     //open the flight list again for return ticket
                                     Navigation.findNavController(view).navigate(

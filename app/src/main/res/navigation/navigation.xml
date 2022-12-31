@@ -24,6 +24,9 @@
         <action
             android:id="@+id/action_homeFragment_to_wishlistFragment"
             app:destination="@id/wishlistFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_notificationFragment"
+            app:destination="@id/notificationFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -100,6 +103,12 @@
         <action
             android:id="@+id/action_historyFragment_to_paymentDialog"
             app:destination="@id/paymentDialog" />
+        <action
+            android:id="@+id/action_historyFragment_to_ticketDetailFragment"
+            app:destination="@id/ticketDetailFragment" />
+        <action
+            android:id="@+id/action_historyFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookingFragment"
@@ -265,6 +274,18 @@
             app:destination="@id/paymentDialog" />
         <action
             android:id="@+id/action_paymentFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.binar.c5team.gotravel.view.fragment.NotificationFragment"
+        android:label="NotificationFragment" />
+    <fragment
+        android:id="@+id/ticketDetailFragment"
+        android:name="com.binar.c5team.gotravel.view.fragment.TicketDetailFragment"
+        android:label="TicketDetailFragment" >
+        <action
+            android:id="@+id/action_ticketDetailFragment_to_historyFragment"
             app:destination="@id/historyFragment" />
     </fragment>
 </navigation>

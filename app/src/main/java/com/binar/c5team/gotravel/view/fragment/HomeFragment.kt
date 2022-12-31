@@ -108,6 +108,11 @@ class HomeFragment : Fragment() {
                 .navigate(R.id.action_homeFragment_to_wishlistFragment)
         }
 
+        binding.notification.setOnClickListener {
+            Navigation.findNavController(view)
+                .navigate(R.id.action_homeFragment_to_notificationFragment)
+        }
+
         binding.userImageProfile.setOnClickListener {
             Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_profileFragment)
         }

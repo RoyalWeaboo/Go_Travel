@@ -113,11 +113,12 @@ class PaymentDialog : DialogFragment() {
                 }
                 viewModel.postConfirmationLD().observe(viewLifecycleOwner) {
                     notification()
+                    postNotification(token)
                 }
 
                 val builder = android.app.AlertDialog.Builder(context)
                 builder.setTitle("Upload Success !")
-                builder.setMessage("Proof of Payment successfully uploaded !, Please wait for ticket approval from Admin")
+                builder.setMessage("Proof of Payment successfully uploaded ! Your ticket will be active as soon as your paymen is verified")
 
                 builder.setPositiveButton("Close") { _, _ ->
                     if (fromBooking!!) {
@@ -139,6 +140,11 @@ class PaymentDialog : DialogFragment() {
                     .navigate(R.id.action_paymentDialog_to_homeFragment)
             }
         }
+    }
+
+    private fun postNotification(token : String) {
+        val message = "Successfully booked a new Flight Ticket, check History to see your booking history"
+        viewModel.postNotificationApi(token, message)
     }
 
     private fun postImage(token: String, id: Int, imageMultiPart: MultipartBody.Part) {
