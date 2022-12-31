@@ -1,6 +1,8 @@
 package com.binar.c5team.gotravel.view.fragment
 
 import android.app.DatePickerDialog
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +20,7 @@ import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
 import java.util.*
 
 class RegisterFragment : Fragment() {
@@ -29,6 +32,9 @@ class RegisterFragment : Fragment() {
 
     //viewmodel
     lateinit var viewModel: FlightViewModel
+
+    //connection
+    var connection : Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +58,8 @@ class RegisterFragment : Fragment() {
         val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
         guestNavBar.visibility = View.GONE
 
+        checkConnection()
+
         viewModel.loading.observe(viewLifecycleOwner) {
             when (it) {
                 true -> showProgressingView()
@@ -73,8 +81,15 @@ class RegisterFragment : Fragment() {
         }
 
         binding.btnRegister.setOnClickListener {
-            validateInput(view)
-            Toast.makeText(context, binding.inputAddr.editText?.text.toString(), Toast.LENGTH_SHORT).show()
+            if (connection) {
+                validateInput(view)
+            }else{
+                Toast.makeText(
+                    context,
+                    "No internet connection",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
     }
@@ -112,12 +127,17 @@ class RegisterFragment : Fragment() {
         gender: String,
         address: String
     ) {
-        val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
+        showProgressingView()
+        viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.getRegisterData().observe(viewLifecycleOwner) {
             if (it!=null) {
                 Log.d("Register Response :", it.toString())
-                Toast.makeText(context, "Registration Success", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(
+                    context,
+                    "Succesfully register a new account !",
+                    Toast.LENGTH_SHORT
+                ).show()
+                hideProgressingView()
                 Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_loginFragment)
             } else {
                 Toast.makeText(
@@ -125,23 +145,34 @@ class RegisterFragment : Fragment() {
                     "Registration Failed",
                     Toast.LENGTH_SHORT
                 ).show()
+                hideProgressingView()
             }
         }
         viewModel.callRegisterApi(username, fullname, email, password, birthDate, gender, address)
     }
 
-
     private fun openDatePicker() {
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val dpd = DatePickerDialog(requireActivity(), DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            binding.inputDate.editText?.setText("" + year + "-" + month + "-" + dayOfMonth)
+        val datePickerDialog = DatePickerDialog(
+            requireActivity(),
+            { _, year, month, day ->
+                val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                val date = Calendar.getInstance()
+                date.set(year, month, day)
+                val dateString = formatter.format(date.time)
+                binding.inputDate.editText?.setText(dateString)
+            },
+            year,
+            month,
+            day
+        )
+        datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
 
-        }, year, month, day)
-        dpd.show()
+        datePickerDialog.show()
     }
 
     private fun showProgressingView() {
@@ -159,6 +190,12 @@ class RegisterFragment : Fragment() {
         val viewGroup = v as ViewGroup
         viewGroup.removeView(progressView)
         isProgressShowing = false
+    }
+
+    private fun checkConnection() {
+        val cm = requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val res = cm.activeNetwork
+        connection = res != null
     }
 
 }

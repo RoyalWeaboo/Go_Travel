@@ -238,7 +238,29 @@ class ProfileFragment : Fragment() {
                     binding.birthDate.text = formattedBirthDate
 
                     //save to room
-                    addNote(it.id, it.noKtp, it.gender, it.dateOfBirth, it.address, it.email, it.name, it.username)
+                    if (it.noKtp != null) {
+                        addNote(
+                            it.id,
+                            it.noKtp,
+                            it.gender,
+                            it.dateOfBirth,
+                            it.address,
+                            it.email,
+                            it.name,
+                            it.username
+                        )
+                    }else{
+                        addNote(
+                            it.id,
+                            "0",
+                            it.gender,
+                            it.dateOfBirth,
+                            it.address,
+                            it.email,
+                            it.name,
+                            it.username
+                        )
+                    }
 
                 } else {
                     Toast.makeText(context, "Failed to read profile data", Toast.LENGTH_SHORT)

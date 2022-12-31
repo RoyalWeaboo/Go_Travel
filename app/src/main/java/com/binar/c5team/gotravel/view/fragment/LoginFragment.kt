@@ -2,6 +2,7 @@ package com.binar.c5team.gotravel.view.fragment
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -36,6 +37,9 @@ class LoginFragment : Fragment() {
     //viewmodel
     lateinit var viewModel: FlightViewModel
 
+    //connection
+    var connection : Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,6 +62,8 @@ class LoginFragment : Fragment() {
         val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
         guestNavBar.visibility = View.GONE
 
+        checkConnection()
+
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
 
         binding.btnBack.setOnClickListener {
@@ -66,7 +72,12 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnLogin.setOnClickListener {
-            validateLoginInput(view)
+            if (connection){
+                validateLoginInput(view)
+            }else{
+                Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+            }
+
         }
         binding.tvRegister.setOnClickListener {
             Navigation.findNavController(view)
@@ -99,6 +110,7 @@ class LoginFragment : Fragment() {
                 saveData.putString("token", token)
                 saveData.apply()
                 hideProgressingView()
+                Toast.makeText(context, "Login Successful !", Toast.LENGTH_SHORT).show()
                 Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
             }
         }
@@ -119,5 +131,11 @@ class LoginFragment : Fragment() {
         val viewGroup = v as ViewGroup
         viewGroup.removeView(progressView)
         isProgressShowing = false
+    }
+
+    private fun checkConnection() {
+        val cm = requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val res = cm.activeNetwork
+        connection = res != null
     }
 }
