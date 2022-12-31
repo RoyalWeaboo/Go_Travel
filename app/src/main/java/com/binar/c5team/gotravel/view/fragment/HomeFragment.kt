@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
@@ -47,7 +48,8 @@ class HomeFragment : Fragment() {
     var progressView: ViewGroup? = null
     private var isProgressShowing = false
 
-    var refresh = false
+    //connection
+    var connection = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,11 +74,6 @@ class HomeFragment : Fragment() {
             }
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
 
-//        refresh = arguments?.getBoolean("refresh", false)!!
-//        if(refresh){
-//            refreshFragment(view)
-//        }
-
         //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
         //SharedPref for FlightData
@@ -96,21 +93,37 @@ class HomeFragment : Fragment() {
             }
         }
 
+        //checking connection
+        checkConnection()
+
         binding.tvUsername.text = sharedPref.getString("username", "User")
-        getProfileImage(token)
 
         disableReturnCard()
         getDate()
-        callAirportList()
+
+        if (connection) {
+            callAirportList()
+            getProfileImage(token)
+        }else{
+            Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+        }
 
         binding.wishlist.setOnClickListener {
-            Navigation.findNavController(view)
-                .navigate(R.id.action_homeFragment_to_wishlistFragment)
+            if (connection) {
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_homeFragment_to_wishlistFragment)
+            }else{
+                Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.notification.setOnClickListener {
-            Navigation.findNavController(view)
-                .navigate(R.id.action_homeFragment_to_notificationFragment)
+            if (connection) {
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_homeFragment_to_notificationFragment)
+            }else{
+                Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.userImageProfile.setOnClickListener {
@@ -177,68 +190,64 @@ class HomeFragment : Fragment() {
         }
 
         binding.btnSearchFlight.setOnClickListener {
-            val from = binding.spinnerFrom.selectedItemId
-            val to = binding.spinnerTo.selectedItemId
-            val fromCity = listCity[from.toInt()]
-            val toCity = listCity[to.toInt()]
-            val fromCityId = from.toInt() + 1
-            val toCityId = to.toInt() + 1
-            val depDate = binding.departDateText.text.toString()
-            val retDate = binding.returnDateText.text.toString()
+            if (connection) {
+                val from = binding.spinnerFrom.selectedItemId
+                val to = binding.spinnerTo.selectedItemId
+                val fromCity = listCity[from.toInt()]
+                val toCity = listCity[to.toInt()]
+                val fromCityId = from.toInt() + 1
+                val toCityId = to.toInt() + 1
+                val depDate = binding.departDateText.text.toString()
+                val retDate = binding.returnDateText.text.toString()
 
-            //setting date to default
-            val departDate = binding.departDateText.text.toString()
-            val returnDate = binding.returnDateText.text.toString()
+                //setting date to default
+                val departDate = binding.departDateText.text.toString()
+                val returnDate = binding.returnDateText.text.toString()
 
-            val parseToDate = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-            val pickedDepartDate = parseToDate.parse(departDate)
-            val pickedReturnDate = parseToDate.parse(returnDate)
+                val parseToDate = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                val pickedDepartDate = parseToDate.parse(departDate)
+                val pickedReturnDate = parseToDate.parse(returnDate)
 
-            val sdfDefault = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            defaultDepartDate = sdfDefault.format(pickedDepartDate)
-            defaultReturnDate = sdfDefault.format(pickedReturnDate)
+                val sdfDefault = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                defaultDepartDate = sdfDefault.format(pickedDepartDate)
+                defaultReturnDate = sdfDefault.format(pickedReturnDate)
 
-            var flightMode = ""
-            flightMode = if (binding.lineOptionOneWay.visibility == View.VISIBLE) {
-                "oneWay"
-            } else {
-                "roundTrip"
+                var flightMode = ""
+                flightMode = if (binding.lineOptionOneWay.visibility == View.VISIBLE) {
+                    "oneWay"
+                } else {
+                    "roundTrip"
+                }
+                val adultCountTotal = binding.adultCount.text.toString()
+                val childCountTotal = binding.childrenCount.text.toString()
+
+                //save flight info to shared preferences
+                val saveFlightInfo = sharedPrefFlight.edit()
+                saveFlightInfo.putInt("fromId", fromCityId)
+                saveFlightInfo.putInt("toId", toCityId)
+                saveFlightInfo.putString("fromAirport", fromCity)
+                saveFlightInfo.putString("toAirport", toCity)
+                saveFlightInfo.putString("adultCount", adultCountTotal)
+                saveFlightInfo.putString("childCount", childCountTotal)
+                saveFlightInfo.putString("departDate", depDate)
+                saveFlightInfo.putString("returnDate", retDate)
+                saveFlightInfo.putString("flightMode", flightMode)
+                saveFlightInfo.apply()
+
+                //save default date to sharedpref booking
+                val saveBookingInfo = sharedPrefBooking.edit()
+                saveBookingInfo.putString("unparsedDepartDate", defaultDepartDate)
+                saveBookingInfo.putString("unparsedReturnDate", defaultDepartDate)
+                saveBookingInfo.apply()
+
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_homeFragment_to_flightListFragment)
+            }else{
+                Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
             }
-            val adultCountTotal = binding.adultCount.text.toString()
-            val childCountTotal = binding.childrenCount.text.toString()
-
-            //save flight info to shared preferences
-            val saveFlightInfo = sharedPrefFlight.edit()
-            saveFlightInfo.putInt("fromId", fromCityId)
-            saveFlightInfo.putInt("toId", toCityId)
-            saveFlightInfo.putString("fromAirport", fromCity)
-            saveFlightInfo.putString("toAirport", toCity)
-            saveFlightInfo.putString("adultCount", adultCountTotal)
-            saveFlightInfo.putString("childCount", childCountTotal)
-            saveFlightInfo.putString("departDate", depDate)
-            saveFlightInfo.putString("returnDate", retDate)
-            saveFlightInfo.putString("flightMode", flightMode)
-            saveFlightInfo.apply()
-
-            //save default date to sharedpref booking
-            val saveBookingInfo = sharedPrefBooking.edit()
-            saveBookingInfo.putString("unparsedDepartDate", defaultDepartDate)
-            saveBookingInfo.putString("unparsedReturnDate", defaultDepartDate)
-            saveBookingInfo.apply()
-
-            Navigation.findNavController(view)
-                .navigate(R.id.action_homeFragment_to_flightListFragment)
         }
 
     }
-
-//    private fun refreshFragment(view: View) {
-//        refresh = false
-//        Log.d("status", "is refreshing..")
-//        val id = Navigation.findNavController(view).currentDestination?.id
-//        Navigation.findNavController(view).popBackStack(id!!,true)
-//        Navigation.findNavController(view).navigate(id)
-//    }
 
     private fun disableReturnCard() {
         binding.returnDateText.setTextColor(Color.parseColor("#808080"))
@@ -385,5 +394,11 @@ class HomeFragment : Fragment() {
                     .into(binding.userImageProfile)
             }
         }
+    }
+
+    private fun checkConnection() {
+        val cm = requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val res = cm.activeNetwork
+        connection = res != null
     }
 }

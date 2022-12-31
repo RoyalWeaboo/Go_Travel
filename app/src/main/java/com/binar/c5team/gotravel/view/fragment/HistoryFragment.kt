@@ -2,6 +2,7 @@ package com.binar.c5team.gotravel.view.fragment
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -38,6 +39,9 @@ class HistoryFragment : Fragment() {
     var progressView: ViewGroup? = null
     private var isProgressShowing = false
 
+    //connection
+    var connection : Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,11 +66,7 @@ class HistoryFragment : Fragment() {
         userId = sharedPref.getInt("userId", 0)
         session = sharedPref.getString("session", "").toString()
 
-        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
-        navBar.visibility = View.VISIBLE
-
-        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
-        guestNavBar.visibility = View.GONE
+        checkConnection()
 
         val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.loading.observe(viewLifecycleOwner) {
@@ -76,7 +76,11 @@ class HistoryFragment : Fragment() {
             }
         }
 
-        getHistory(view, token, userId)
+        if (connection) {
+            getHistory(view, token, userId)
+        }else{
+            Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getHistory(view : View, token: String, userId: Int) {
@@ -159,6 +163,12 @@ class HistoryFragment : Fragment() {
         val viewGroup = v as ViewGroup
         viewGroup.removeView(progressView)
         isProgressShowing = false
+    }
+
+    private fun checkConnection() {
+        val cm = requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val res = cm.activeNetwork
+        connection = res != null
     }
 
 }
