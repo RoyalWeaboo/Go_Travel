@@ -123,7 +123,7 @@ class EditProfileFragment : Fragment() {
                 }
                 putProfileData(view, token, noKtp, formatGender, dateofBirth, address, email, name)
             }else{
-                Toast.makeText(context, "Invalid Identity Id (must be at least 16 in length)", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Invalid Identity Id (must be 16 in length)", Toast.LENGTH_SHORT).show()
             }
         }
 

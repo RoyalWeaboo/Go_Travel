@@ -284,9 +284,6 @@ class ProfileFragment : Fragment() {
                         .load(it.image)
                         .centerCrop()
                         .into(binding.imgProfile)
-                } else {
-                    Toast.makeText(context, "No Profile Image Found", Toast.LENGTH_SHORT).show()
-                    Log.d("Profile Image Response :", it.toString())
                 }
             }
         } else {
