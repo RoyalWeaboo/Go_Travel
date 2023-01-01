@@ -239,7 +239,7 @@ class ProfileFragment : Fragment() {
                     binding.birthDate.text = formattedBirthDate
 
                     //save to room
-                    if (it.noKtp.isNullOrEmpty()) {
+                    if (it.noKtp.isNotEmpty()) {
                         addNote(
                             it.id,
                             "0",
