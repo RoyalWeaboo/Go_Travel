@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentLoginBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
@@ -108,8 +109,16 @@ class LoginFragment : Fragment() {
                 saveData.putString("token", token)
                 saveData.apply()
                 hideProgressingView()
-                Toast.makeText(context, "Login Successful !", Toast.LENGTH_SHORT).show()
-                Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_homeFragment)
+
+                //check whether the token was added(which mean login is success)
+                if (token != "") {
+                    Toast.makeText(context, "Login Successful !", Toast.LENGTH_SHORT).show()
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_loginFragment_to_homeFragment)
+                }else{
+                    refreshCurrentFragment()
+                    Toast.makeText(context, "Wrong username or password !", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -135,5 +144,11 @@ class LoginFragment : Fragment() {
         val cm = requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val res = cm.activeNetwork
         connection = res != null
+    }
+
+    private fun refreshCurrentFragment(){
+        val id = findNavController().currentDestination?.id
+        findNavController().popBackStack(id!!,true)
+        findNavController().navigate(id)
     }
 }
