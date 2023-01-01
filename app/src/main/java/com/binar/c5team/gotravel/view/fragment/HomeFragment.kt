@@ -8,7 +8,6 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -49,7 +48,7 @@ class HomeFragment : Fragment() {
     private var isProgressShowing = false
 
     //connection
-    var connection = false
+    private var connection = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -212,11 +211,10 @@ class HomeFragment : Fragment() {
                 val pickedReturnDate = parseToDate.parse(returnDate)
 
                 val sdfDefault = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                defaultDepartDate = sdfDefault.format(pickedDepartDate)
-                defaultReturnDate = sdfDefault.format(pickedReturnDate)
+                defaultDepartDate = pickedDepartDate?.let { it1 -> sdfDefault.format(it1) }.toString()
+                defaultReturnDate = pickedReturnDate?.let { it1 -> sdfDefault.format(it1) }.toString()
 
-                var flightMode = ""
-                flightMode = if (binding.lineOptionOneWay.visibility == View.VISIBLE) {
+                val flightMode: String = if (binding.lineOptionOneWay.visibility == View.VISIBLE) {
                     "oneWay"
                 } else {
                     "roundTrip"
@@ -275,10 +273,10 @@ class HomeFragment : Fragment() {
 
         val datePickerDialog = DatePickerDialog(
             requireActivity(),
-            { _, year, month, day ->
+            { _, y, m, d ->
                 val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                 val date = Calendar.getInstance()
-                date.set(year, month, day)
+                date.set(y, m, d)
                 val dateString = formatter.format(date.time)
                 binding.departDateText.text = dateString
             },
@@ -300,10 +298,10 @@ class HomeFragment : Fragment() {
 
         val datePickerDialog = DatePickerDialog(
             requireActivity(),
-            { _, year, month, day ->
+            { _, y, m, d ->
                 val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                 val date = Calendar.getInstance()
-                date.set(year, month, day)
+                date.set(y, m, d)
                 val dateString = formatter.format(date.time)
                 binding.returnDateText.text = dateString
             },
@@ -383,7 +381,7 @@ class HomeFragment : Fragment() {
         val viewModel = ViewModelProvider(requireActivity())[FlightViewModel::class.java]
         viewModel.callProfileApi(token)
         viewModel.getProfileData().observe(viewLifecycleOwner) {
-            if (it.image != null) {
+            if (it.image.isNotEmpty()) {
                 Glide
                     .with(requireContext())
                     .load(it.image)

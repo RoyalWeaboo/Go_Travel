@@ -21,7 +21,6 @@ import com.binar.c5team.gotravel.view.adapter.PaymentAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.transition.MaterialSharedAxis
-import dagger.hilt.android.AndroidEntryPoint
 
 class PaymentFragment : Fragment() {
     lateinit var binding: FragmentPaymentBinding
@@ -106,13 +105,13 @@ class PaymentFragment : Fragment() {
         //setting flight and booking data
         if (flightMode == "oneWay") {
             binding.tvQuantity.text = seatCount.toString()
-            binding.tvTicketCost.text = "Rp. " + flightPrice.toString()
+            binding.tvTicketCost.text = "Rp. $flightPrice"
             val departureTotal = seatCount * flightPrice
-            binding.totalPay.text = "Rp. " + departureTotal.toString()
+            binding.totalPay.text = "Rp. $departureTotal"
 
         } else if (flightMode == "roundTrip") {
             binding.tvQuantity.text = seatCount.toString()
-            binding.tvTicketCost.text = "Rp. " + flightPrice.toString()
+            binding.tvTicketCost.text = "Rp. $flightPrice"
 
             binding.textView3return.visibility = View.VISIBLE
             binding.textView4return.visibility = View.VISIBLE
@@ -120,12 +119,12 @@ class PaymentFragment : Fragment() {
             binding.tvTicketCostReturn.visibility = View.VISIBLE
 
             binding.tvQuantityreturn.text = seatCount.toString()
-            binding.tvTicketCostReturn.text = "Rp. " + roundFlightPrice.toString()
+            binding.tvTicketCostReturn.text = "Rp. $roundFlightPrice"
             val departureTotal = seatCount * flightPrice
             val returnTotal = seatCount * roundFlightPrice
             val roundTotal = departureTotal + returnTotal
 
-            binding.totalPay.text = "Rp. " + roundTotal.toString()
+            binding.totalPay.text = "Rp. $roundTotal"
         }
 
         getLoadingLD()

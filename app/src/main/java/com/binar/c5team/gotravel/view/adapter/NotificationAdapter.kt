@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.binar.c5team.gotravel.databinding.ItemNotificationBinding
 import com.binar.c5team.gotravel.model.Notification
 
-class NotificationAdapter(val listNotif : List<Notification>) : RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
+class NotificationAdapter(private val listNotif : List<Notification>) : RecyclerView.Adapter<NotificationAdapter.ViewHolder>() {
 
     class ViewHolder(var binding : ItemNotificationBinding): RecyclerView.ViewHolder(binding.root)
 

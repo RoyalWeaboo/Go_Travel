@@ -1,15 +1,13 @@
 package com.binar.c5team.gotravel.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentTicketDetailBinding
-import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.transition.MaterialSharedAxis
 import java.text.SimpleDateFormat
@@ -72,8 +70,8 @@ class TicketDetailFragment : Fragment() {
         val sdfToDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val sdfToString = SimpleDateFormat("MMM dd", Locale.getDefault())
 
-        val parseToDate = sdfToDate.parse(flightDate)
-        val formattedDate = sdfToString.format(parseToDate)
+        val parseToDate = flightDate?.let { sdfToDate.parse(it) }
+        val formattedDate = parseToDate?.let { sdfToString.format(it) }
 
         binding.name2.text = name
         binding.baggage2.text = "$baggage Kg"

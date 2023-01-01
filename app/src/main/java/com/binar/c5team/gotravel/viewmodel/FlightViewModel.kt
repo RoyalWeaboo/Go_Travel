@@ -44,10 +44,6 @@ class FlightViewModel : ViewModel() {
         return registerLiveData
     }
 
-    fun postLoginData(): MutableLiveData<LoginResponse> {
-        return loginLiveData
-    }
-
     fun getProfileData(): MutableLiveData<ProfileResponse> {
         return profileLiveData
     }
@@ -64,10 +60,6 @@ class FlightViewModel : ViewModel() {
         return notificationLiveData
     }
 
-    fun postNotificationData(): MutableLiveData<NotificationPostResponse> {
-        return postNotificationLiveData
-    }
-
     //airport
     fun getAirportListData(): MutableLiveData<AirportResponse> {
         return airportList
@@ -80,10 +72,6 @@ class FlightViewModel : ViewModel() {
 
     fun getBookingLD(): MutableLiveData<BookingResponse> {
         return bookingLiveData
-    }
-
-    fun getPostBookingLD(): MutableLiveData<BookingPostResponse> {
-        return postBookingLiveData
     }
 
     fun getWishlistLD(): MutableLiveData<WishlistResponse> {

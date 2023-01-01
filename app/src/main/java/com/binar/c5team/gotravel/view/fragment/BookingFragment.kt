@@ -318,9 +318,9 @@ class BookingFragment : Fragment() {
         //setting the textview
         binding.tvAircraftName.text = planeName
         binding.tvFromCity.text = fromAirport
-        binding.tvArrivalCity.text = "- " + toAirport
+        binding.tvArrivalCity.text = "- $toAirport"
         binding.tvTimeFrom.text = departureTime
-        binding.tvTimeTo.text = "- " + arrivalTime
+        binding.tvTimeTo.text = "- $arrivalTime"
         binding.tvSeatTotal.text = seatCount.toString()
     }
 

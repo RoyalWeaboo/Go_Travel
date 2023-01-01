@@ -1,14 +1,13 @@
 package com.binar.c5team.gotravel.view.guestfragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentGuestHistoryBinding
-import com.binar.c5team.gotravel.view.MainActivity
 import com.google.android.material.transition.MaterialFadeThrough
 
 

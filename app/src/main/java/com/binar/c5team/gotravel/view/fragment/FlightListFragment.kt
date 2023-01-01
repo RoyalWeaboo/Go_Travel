@@ -129,9 +129,9 @@ class FlightListFragment : Fragment() {
         //checking passenger count
         //adult count
         if (adultCount > 1) {
-            binding.adultTotalCount.text = adultCount.toString() + " Adults"
+            binding.adultTotalCount.text = "$adultCount Adults"
         } else if (adultCount == 1) {
-            binding.adultTotalCount.text = adultCount.toString() + " Adult"
+            binding.adultTotalCount.text = "$adultCount Adult"
         } else {
             binding.adultTotalCount.text = "- 0 Adult"
             Toast.makeText(context, "Error : Cannot read passenger count !", Toast.LENGTH_SHORT)
@@ -140,9 +140,9 @@ class FlightListFragment : Fragment() {
         }
         //child count
         if (childrenCount!!.toInt() > 1) {
-            binding.childTotalCount.text = "- " + childrenCount + " Children"
+            binding.childTotalCount.text = "- $childrenCount Children"
         } else if (childrenCount.toInt() == 1) {
-            binding.childTotalCount.text = "- " + childrenCount + " Child"
+            binding.childTotalCount.text = "- $childrenCount Child"
         } else if (childrenCount.toInt() == 0) {
             binding.childTotalCount.text = "- 0 Child"
         } else {

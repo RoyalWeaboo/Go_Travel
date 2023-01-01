@@ -38,6 +38,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Suppress("SameParameterValue")
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
 
@@ -61,7 +62,7 @@ class ProfileFragment : Fragment() {
     private var connection : Boolean = false
 
     //room
-    var profileDB: ProfileDatabase? = null
+    private var profileDB: ProfileDatabase? = null
 
     //viewmodel
     lateinit var viewModel: FlightViewModel
@@ -206,7 +207,7 @@ class ProfileFragment : Fragment() {
                         binding.gender.text = "Female"
                     }
 
-                    if (it.image != null) {
+                    if (it.image.isNotEmpty()) {
                         Glide
                             .with(requireContext())
                             .load(it.image)
@@ -233,15 +234,15 @@ class ProfileFragment : Fragment() {
                     val xBirthDateSdf = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                     val xBirthDate = birthDateSdf.parse(date) //to date
                     val formattedBirthDate =
-                        xBirthDateSdf.format(xBirthDate)//to string with second format
+                        xBirthDate?.let { it1 -> xBirthDateSdf.format(it1) }//to string with second format
 
                     binding.birthDate.text = formattedBirthDate
 
                     //save to room
-                    if (it.noKtp != null) {
+                    if (it.noKtp.isNullOrEmpty()) {
                         addNote(
                             it.id,
-                            it.noKtp,
+                            "0",
                             it.gender,
                             it.dateOfBirth,
                             it.address,
@@ -249,10 +250,11 @@ class ProfileFragment : Fragment() {
                             it.name,
                             it.username
                         )
+
                     }else{
                         addNote(
                             it.id,
-                            "0",
+                            it.noKtp,
                             it.gender,
                             it.dateOfBirth,
                             it.address,
@@ -276,7 +278,7 @@ class ProfileFragment : Fragment() {
         if (connection) {
             viewModel.callProfileApi(token)
             viewModel.getProfileData().observe(viewLifecycleOwner) {
-                if (it.image != null) {
+                if (it.image.isNotEmpty()) {
                     Glide
                         .with(requireContext())
                         .load(it.image)
@@ -431,8 +433,9 @@ class ProfileFragment : Fragment() {
             val date = data?.date_of_birth
             val birthDateSdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val xBirthDateSdf = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-            val xBirthDate = birthDateSdf.parse(date) //to date
-            val formattedBirthDate = xBirthDateSdf.format(xBirthDate)//to string with second format
+            val xBirthDate = date?.let { birthDateSdf.parse(it) } //to date
+            val formattedBirthDate =
+                xBirthDate?.let { xBirthDateSdf.format(it) }//to string with second format
 
             binding.birthDate.text = formattedBirthDate
 

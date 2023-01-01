@@ -71,7 +71,7 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
 
         //first of all, check whether the ticket has been paid or not
         //if its not paid yet
-        if (listBooking[position].confirmation.isNullOrEmpty()) {
+        if (listBooking[position].confirmation.isEmpty()) {
             holder.binding.cardHistory.setOnClickListener {
                 onTicketClick?.invoke(listBooking[position])
             }

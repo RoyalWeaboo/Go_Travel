@@ -19,14 +19,12 @@ import com.binar.c5team.gotravel.databinding.FragmentEditProfileBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.transition.MaterialSharedAxis
-import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
 class EditProfileFragment : Fragment() {
-    lateinit var binding : FragmentEditProfileBinding
+    lateinit var binding: FragmentEditProfileBinding
 
-    private var birthDate = ""
     private var token = ""
 
     //Shared Preferences
@@ -43,8 +41,8 @@ class EditProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         //transition anim
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X,true)
-        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X,false)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, false)
         //vm
         viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         //inflating layout
@@ -56,9 +54,10 @@ class EditProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val callback: OnBackPressedCallback =
-            object : OnBackPressedCallback(true ) {
+            object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    Navigation.findNavController(view).navigate(R.id.action_editProfileFragment_to_profileFragment)
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_editProfileFragment_to_profileFragment)
                 }
             }
         requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
@@ -69,7 +68,8 @@ class EditProfileFragment : Fragment() {
 
         val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
         navBar.visibility = View.GONE
-        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        val guestNavBar =
+            requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
         guestNavBar.visibility = View.GONE
 
         viewModel.loading.observe(viewLifecycleOwner) {
@@ -92,14 +92,15 @@ class EditProfileFragment : Fragment() {
         binding.inputDateofBirth.editText?.setText(arguments?.getString("dateOfBirth"))
 
         val gend = arguments?.getString("gender")
-        if (gend == "Male"){
-            (binding.inputGender.editText as? AutoCompleteTextView)?.setText("Male")
-        }else{
-            (binding.inputGender.editText as? AutoCompleteTextView)?.setText("Female")
+        if (gend == "Male") {
+            (binding.inputGender.editText as? AutoCompleteTextView)?.setText("Male", false)
+        } else {
+            (binding.inputGender.editText as? AutoCompleteTextView)?.setText("Female", false)
         }
 
         binding.arrowBackEditProfile.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_editProfileFragment_to_profileFragment)
+            Navigation.findNavController(view)
+                .navigate(R.id.action_editProfileFragment_to_profileFragment)
         }
 
         binding.pickDate.setOnClickListener {
@@ -108,30 +109,42 @@ class EditProfileFragment : Fragment() {
 
         binding.btnSave.setOnClickListener {
             val noKtp = binding.inputNoKtp.editText?.text.toString()
-            val gender = binding.inputGender.editText?.text.toString()
-            val dateofBirth = binding.inputDateofBirth.editText?.text.toString()
-            val address = binding.inputAddress.editText?.text.toString()
-            val email = binding.inputEmail.editText?.text.toString()
-            val name = binding.inputFullname.editText?.text.toString()
+            if (noKtp.length == 16) {
+                val gender = binding.inputGender.editText?.text.toString()
+                val dateofBirth = binding.inputDateofBirth.editText?.text.toString()
+                val address = binding.inputAddress.editText?.text.toString()
+                val email = binding.inputEmail.editText?.text.toString()
+                val name = binding.inputFullname.editText?.text.toString()
 
-            var formatGender = ""
-            formatGender = if (gender == "Male"){
-                "L"
+                val formatGender: String = if (gender == "Male") {
+                    "L"
+                } else {
+                    "P"
+                }
+                putProfileData(view, token, noKtp, formatGender, dateofBirth, address, email, name)
             }else{
-                "P"
+                Toast.makeText(context, "Invalid Identity Id (must be at least 16 in length)", Toast.LENGTH_SHORT).show()
             }
-
-            putProfileData(view, token, noKtp, formatGender, dateofBirth, address, email, name)
         }
 
     }
 
-    private fun putProfileData(view : View, token: String, no_ktp : String, gender : String, date_of_birth : String, address : String, email : String, name : String) {
+    private fun putProfileData(
+        view: View,
+        token: String,
+        no_ktp: String,
+        gender: String,
+        date_of_birth: String,
+        address: String,
+        email: String,
+        name: String
+    ) {
         val viewModel = ViewModelProvider(this)[FlightViewModel::class.java]
         viewModel.putProfileData().observe(viewLifecycleOwner) {
             if (it != null) {
                 Toast.makeText(context, "Profile updated !", Toast.LENGTH_SHORT).show()
-                Navigation.findNavController(view).navigate(R.id.action_editProfileFragment_to_profileFragment)
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_editProfileFragment_to_profileFragment)
             } else {
                 Toast.makeText(context, "Failed to read profile data", Toast.LENGTH_SHORT).show()
             }
@@ -140,28 +153,27 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun openDatePicker() {
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val dpd = DatePickerDialog(
+        val datePickerDialog = DatePickerDialog(
             requireActivity(),
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-
-                // Display Selected date in textbox
-                val sdf = SimpleDateFormat("MMM", Locale.getDefault())
-                val monthName = sdf.format(c.time)
-                binding.inputDateofBirth.editText?.setText("" + monthName + " " + dayOfMonth + ", " + year)
-
-                val sdf2 = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                birthDate = sdf2.format(c.time)
+            { _, y, m, d ->
+                val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val date = Calendar.getInstance()
+                date.set(y, m, d)
+                val dateString = formatter.format(date.time)
+                binding.inputDateofBirth.editText?.setText(dateString)
             },
             year,
             month,
             day
         )
-        dpd.show()
+        datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+
+        datePickerDialog.show()
     }
 
     private fun showProgressingView() {

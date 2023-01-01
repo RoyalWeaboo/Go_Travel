@@ -17,9 +17,7 @@ import com.binar.c5team.gotravel.databinding.FragmentTicketListBinding
 import com.binar.c5team.gotravel.model.Flight
 import com.binar.c5team.gotravel.view.adapter.FlightAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.transition.MaterialSharedAxis
-import dagger.hilt.android.AndroidEntryPoint
 
 class RoundTripFlightListFragment : Fragment() {
 
@@ -121,9 +119,9 @@ class RoundTripFlightListFragment : Fragment() {
         //checking passenger count
         //adult count
         if (adultCount > 1) {
-            binding.adultTotalCount.text = adultCount.toString() + " Adults"
+            binding.adultTotalCount.text = "$adultCount Adults"
         } else if (adultCount == 1) {
-            binding.adultTotalCount.text = adultCount.toString() + " Adult"
+            binding.adultTotalCount.text = "$adultCount Adult"
         } else {
             binding.adultTotalCount.text = "- 0 Adult"
             Toast.makeText(context, "Error : Cannot read passenger count !", Toast.LENGTH_SHORT)
@@ -132,9 +130,9 @@ class RoundTripFlightListFragment : Fragment() {
         }
         //child count
         if (childrenCount!!.toInt() > 1) {
-            binding.childTotalCount.text = "- " + childrenCount + " Children"
+            binding.childTotalCount.text = "- $childrenCount Children"
         } else if (childrenCount.toInt() == 1) {
-            binding.childTotalCount.text = "- " + childrenCount + " Child"
+            binding.childTotalCount.text = "- $childrenCount Child"
         } else if (childrenCount.toInt() == 0){
             binding.childTotalCount.text = "- 0 Child"
         }else {

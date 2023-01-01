@@ -5,13 +5,13 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.binar.c5team.gotravel.R
@@ -19,7 +19,6 @@ import com.binar.c5team.gotravel.databinding.FragmentRegisterBinding
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.transition.MaterialSharedAxis
-import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,7 +33,7 @@ class RegisterFragment : Fragment() {
     lateinit var viewModel: FlightViewModel
 
     //connection
-    var connection : Boolean = false
+    private var connection : Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -159,10 +158,10 @@ class RegisterFragment : Fragment() {
 
         val datePickerDialog = DatePickerDialog(
             requireActivity(),
-            { _, year, month, day ->
-                val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+            { _, y, m, d ->
+                val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 val date = Calendar.getInstance()
-                date.set(year, month, day)
+                date.set(y, m, d)
                 val dateString = formatter.format(date.time)
                 binding.inputDate.editText?.setText(dateString)
             },
