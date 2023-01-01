@@ -79,8 +79,10 @@ class LoginFragment : Fragment() {
 
         }
         binding.tvRegister.setOnClickListener {
+            val bun = Bundle()
+            bun.putString("fromDes", "login")
             Navigation.findNavController(view)
-                .navigate(R.id.action_loginFragment_to_registerFragment)
+                .navigate(R.id.action_loginFragment_to_registerFragment, bun)
         }
     }
 

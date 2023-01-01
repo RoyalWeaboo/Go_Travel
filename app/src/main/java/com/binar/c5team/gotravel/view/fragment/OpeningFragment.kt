@@ -52,11 +52,15 @@ class OpeningFragment : Fragment() {
         }
 
         binding.skipLogin.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_openingFragment_to_guestHomeFragment)
+            val bun = Bundle()
+            bun.putString("fromDes", "opening")
+            Navigation.findNavController(view).navigate(R.id.action_openingFragment_to_guestHomeFragment, bun)
         }
 
         binding.toCreate.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_openingFragment_to_registerFragment)
+            val bun = Bundle()
+            bun.putString("fromDes", "opening")
+            Navigation.findNavController(view).navigate(R.id.action_openingFragment_to_registerFragment, bun)
         }
 
         binding.toLogin.setOnClickListener {

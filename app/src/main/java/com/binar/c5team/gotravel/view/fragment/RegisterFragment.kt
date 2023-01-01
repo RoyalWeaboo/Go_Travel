@@ -4,8 +4,6 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -74,7 +72,14 @@ class RegisterFragment : Fragment() {
         (binding.inputGender.editText as? AutoCompleteTextView)?.setAdapter(adapter)
 
         binding.btnBack.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_openingFragment)
+            val fromDes = arguments?.getString("fromDes")
+            if (fromDes == "opening") {
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_registerFragment_to_openingFragment)
+            }else if (fromDes == "login"){
+                Navigation.findNavController(view)
+                    .navigate(R.id.action_registerFragment_to_loginFragment)
+            }
         }
 
         binding.pickDate.setOnClickListener {

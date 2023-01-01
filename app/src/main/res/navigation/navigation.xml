@@ -41,6 +41,7 @@
         <action
             android:id="@+id/action_loginFragment_to_openingFragment"
             app:destination="@id/openingFragment" />
+        <argument android:name="args" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -52,6 +53,7 @@
         <action
             android:id="@+id/action_registerFragment_to_openingFragment"
             app:destination="@id/openingFragment" />
+        <argument android:name="args" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -87,6 +89,7 @@
         <action
             android:id="@+id/action_openingFragment_to_guestHomeFragment"
             app:destination="@id/guestHomeFragment" />
+        <argument android:name="args" />
     </fragment>
     <fragment
         android:id="@+id/historyFragment"
