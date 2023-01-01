@@ -18,11 +18,15 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHomeBinding
 import com.binar.c5team.gotravel.view.MainActivity
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.transition.MaterialFadeThrough
 import java.text.SimpleDateFormat
 import java.util.*
@@ -129,7 +133,8 @@ class HomeFragment : Fragment() {
         }
 
         binding.userImageProfile.setOnClickListener {
-            Navigation.findNavController(view).navigate(R.id.action_homeFragment_to_profileFragment)
+            val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+            navBar.selectedItemId = R.id.profileFragment
         }
 
         binding.menuOneWay.setOnClickListener {

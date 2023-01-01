@@ -145,14 +145,12 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        binding.helpCard.setOnClickListener {
-            //open help page
-        }
 
         binding.webCard.setOnClickListener {
             checkConnection()
             if (connection) {
-                //open web
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://final-project-react-9w6623ic9-rayhanpj.vercel.app/"))
+                startActivity(intent)
             }else{
                 Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show()
             }

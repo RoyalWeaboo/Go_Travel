@@ -10,7 +10,7 @@
         android:label="HomeFragment" >
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            app:destination="@id/profileFragment"/>
         <action
             android:id="@+id/action_homeFragment_to_historyFragment"
             app:destination="@id/historyFragment" />

@@ -109,6 +109,10 @@ class HistoryFragment : Fragment() {
                 adapter = HistoryAdapter(filterHistory)
                 binding.rvHistory.adapter = adapter
 
+                if(filterHistory.size == 0){
+                    Toast.makeText(context, "No History Found !", Toast.LENGTH_SHORT).show()
+                }
+
                 adapter.onStatusClick = { bookingData->
                     val ticketId = ArrayList<Int>()
                     ticketId.add(0, bookingData.id)

@@ -5,9 +5,24 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+//    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('C:\\Users\\ricki\\keystore android\\GoTravel.jks')
+            storePassword 'gotravel'
+            keyAlias 'key0'
+            keyPassword 'gotravel'
+        }
+        release {
+            storeFile file('C:\\Users\\ricki\\keystore android\\GoTravel.jks')
+            storePassword 'gotravel'
+            keyAlias 'key0'
+            keyPassword 'gotravel'
+        }
+    }
     compileSdk 32
 
     defaultConfig {
@@ -24,6 +39,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -37,7 +53,7 @@ android {
         viewBinding true
     }
     lint{
-        disable 'ScopedStorage', 'AndroidGradlePluginVersion', 'VectorRaster', 'SetTextI18n', 'ContentDescription', 'HardcodedText', 'InflateParams', 'LabelFor', 'NotifyDataSetChanged'
+        disable 'ScopedStorage', 'AndroidGradlePluginVersion', 'VectorRaster', 'SetTextI18n', 'ContentDescription', 'HardcodedText', 'InflateParams', 'LabelFor', 'NotifyDataSetChanged', 'UseCompoundDrawables'
     }
 }
 

@@ -4,6 +4,8 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -100,12 +102,18 @@ class RegisterFragment : Fragment() {
         val password = binding.inputPassword.editText?.text.toString()
         val conPassword = binding.inputConfirmPassword.editText?.text.toString()
         val birthDate = binding.inputDate.editText?.text.toString()
-        val gender = binding.inputGender.editText?.text.toString()
         val address = binding.inputAddr.editText?.text.toString()
+        val gender = binding.inputGender.editText?.text.toString()
+
+        val formattedGender : String = if (gender == "Male"){
+            "L"
+        }else{
+            "P"
+        }
 
         if (conPassword == password){
             if (username.isNotBlank()&&fullname.isNotBlank()&&email.isNotBlank()&&password.isNotBlank()&&birthDate.isNotBlank()&&gender.isNotBlank()&&address.isNotBlank()){
-                register(view, username, fullname, email, password, birthDate, gender, address)
+                register(view, username, fullname, email, password, birthDate, formattedGender, address)
             }else{
                 Toast.makeText(context, "You must fill all data required !", Toast.LENGTH_SHORT)
                     .show()
