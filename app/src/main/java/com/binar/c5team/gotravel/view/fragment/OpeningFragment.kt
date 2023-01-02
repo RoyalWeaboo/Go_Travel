@@ -1,9 +1,6 @@
 package com.binar.c5team.gotravel.view.fragment
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +14,6 @@ import com.google.android.material.transition.MaterialSharedAxis
 
 class OpeningFragment : Fragment() {
     lateinit var binding : FragmentLoginOrRegisterBinding
-    lateinit var sharedPref: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,17 +35,6 @@ class OpeningFragment : Fragment() {
         navBar.visibility = View.GONE
         val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
         guestNavBar.visibility = View.GONE
-
-        sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
-        val session = sharedPref.getString("session","").toString()
-
-        if (session == "true"){
-            Navigation.findNavController(view).navigate(R.id.action_openingFragment_to_homeFragment)
-            navBar.visibility = View.VISIBLE
-            guestNavBar.visibility = View.GONE
-        }else{
-            Log.d("Session status", session)
-        }
 
         binding.skipLogin.setOnClickListener {
             val bun = Bundle()

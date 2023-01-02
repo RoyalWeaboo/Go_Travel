@@ -53,7 +53,7 @@ android {
         viewBinding true
     }
     lint{
-        disable 'ScopedStorage', 'AndroidGradlePluginVersion', 'VectorRaster', 'SetTextI18n', 'ContentDescription', 'HardcodedText', 'InflateParams', 'LabelFor', 'NotifyDataSetChanged', 'UseCompoundDrawables'
+        disable 'ScopedStorage', 'AndroidGradlePluginVersion', 'VectorRaster', 'SetTextI18n', 'ContentDescription', 'HardcodedText', 'InflateParams', 'LabelFor', 'NotifyDataSetChanged', 'UseCompoundDrawables', 'CustomSplashScreen'
     }
 }
 
