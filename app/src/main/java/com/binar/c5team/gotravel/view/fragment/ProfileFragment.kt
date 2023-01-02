@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentProfileBinding
 import com.binar.c5team.gotravel.room.ProfileData
@@ -176,8 +177,9 @@ class ProfileFragment : Fragment() {
                 val saveData = sharedPref.edit()
                 saveData.clear()
                 saveData.apply()
-                Navigation.findNavController(view)
-                    .navigate(R.id.action_profileFragment_to_loginFragment)
+
+                findNavController().popBackStack(R.id.profileFragment, true)
+                findNavController().navigate(R.id.action_openingFragment_to_loginFragment)
             }
             builder.setNegativeButton("Cancel") {_, _ ->
                 //do nothing

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -149,6 +150,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun refreshCurrentFragment(){
+        Log.d("Refreshing fragment", "true")
         val id = findNavController().currentDestination?.id
         findNavController().popBackStack(id!!,true)
         findNavController().navigate(id)
