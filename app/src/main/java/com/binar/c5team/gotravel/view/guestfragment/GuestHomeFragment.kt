@@ -283,7 +283,7 @@ class GuestHomeFragment : Fragment() {
 
                 //set json to arraylist
                 if (listSpinner.isEmpty()) {
-                    Log.d("list spinner is", "not empty")
+                    Log.d("list spinner is", " empty")
                     for (element in it.data.airports) {
                         listSpinner.add(element.city + " (" + element.code + ")")
                         listCity.add(element.city + " (" + element.code + ")")
