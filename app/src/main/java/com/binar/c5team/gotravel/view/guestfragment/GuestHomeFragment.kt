@@ -1,6 +1,5 @@
 package com.binar.c5team.gotravel.view.guestfragment
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,6 +7,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -219,62 +219,74 @@ class GuestHomeFragment : Fragment() {
 
     }
 
-    @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun openDatePickerDepart() {
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val dpd = DatePickerDialog(
+        val datePickerDialog = DatePickerDialog(
             requireActivity(),
-            { _, y, _, dayOfMonth ->
-
-                // Display Selected date in textbox
-                val sdf = SimpleDateFormat("MMM")
-                val monthName = sdf.format(c.time)
-                binding.departDateText.text = "$monthName $dayOfMonth, $y"
+            { _, y, m, d ->
+                val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                val date = Calendar.getInstance()
+                date.set(y, m, d)
+                val dateString = formatter.format(date.time)
+                binding.departDateText.text = dateString
             },
             year,
             month,
             day
         )
-        dpd.show()
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+
+        datePickerDialog.show()
     }
 
-    @SuppressLint("SimpleDateFormat", "SetTextI18n")
+
     private fun openDatePickerReturn() {
-        val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val dpd = DatePickerDialog(
+        val datePickerDialog = DatePickerDialog(
             requireActivity(),
-            { _, y, _, dayOfMonth ->
-
-                // Display Selected date in textbox
-                val sdf = SimpleDateFormat("MMM")
-                val monthName = sdf.format(c.time)
-                binding.returnDateText.text = "$monthName $dayOfMonth, $y"
+            { _, y, m, d ->
+                val formatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                val date = Calendar.getInstance()
+                date.set(y, m, d)
+                val dateString = formatter.format(date.time)
+                binding.returnDateText.text = dateString
             },
             year,
             month,
             day
         )
-        dpd.show()
+
+        val departDate = binding.departDateText.text.toString()
+        val minDateFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+        val minDateParsed = minDateFormatter.parse(departDate)
+
+        if (minDateParsed != null) {
+            datePickerDialog.datePicker.minDate = minDateParsed.time
+        }else{
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+        }
+
+        datePickerDialog.show()
     }
 
     private fun callAirportList() {
         viewModel.getAirportListData().observe(viewLifecycleOwner) {
             if (it != null) {
-//                Log.d("Airport Data", it.toString())
 
                 //set json to arraylist
                 if (listSpinner.isEmpty()) {
+                    Log.d("list spinner is", "not empty")
                     for (element in it.data.airports) {
-                        listSpinner.add(element.name)
-                        listCity.add(element.city)
+                        listSpinner.add(element.city + " (" + element.code + ")")
+                        listCity.add(element.city + " (" + element.code + ")")
                     }
                     // Set result to spinner
                     val adapter = context?.let { it1 ->
@@ -286,6 +298,9 @@ class GuestHomeFragment : Fragment() {
                     adapter?.setDropDownViewResource(R.layout.simple_spinner_item)
                     binding.spinnerFrom.adapter = adapter
                     binding.spinnerTo.adapter = adapter
+
+                    binding.spinnerFrom.setSelection(0)
+                    binding.spinnerTo.setSelection(1)
                 }
 
             } else {

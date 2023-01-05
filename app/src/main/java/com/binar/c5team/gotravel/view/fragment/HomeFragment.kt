@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +19,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import com.binar.c5team.gotravel.R
 import com.binar.c5team.gotravel.databinding.FragmentHomeBinding
 import com.binar.c5team.gotravel.view.MainActivity
@@ -333,6 +333,7 @@ class HomeFragment : Fragment() {
 
                 //set json to arraylist
                 if (listSpinner.isEmpty()) {
+                    Log.d("list spinner is", "not empty")
                     for (element in it.data.airports) {
                         listSpinner.add(element.city + " (" + element.code + ")")
                         listCity.add(element.city + " (" + element.code + ")")
