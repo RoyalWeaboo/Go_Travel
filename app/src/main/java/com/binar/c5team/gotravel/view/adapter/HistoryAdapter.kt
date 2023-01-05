@@ -108,7 +108,7 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                             } else {
                                 holder.binding.cvStatusInactive.visibility = View.VISIBLE
                             }
-                        }else{
+                        } else {
                             holder.binding.cvStatusInactive.visibility = View.VISIBLE
                         }
                     } else {
@@ -150,14 +150,13 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                                 if (todaysMinute in bookMinuteArrivalInt..bookMinuteInt) {
                                     holder.binding.cvStatusOnBoard.visibility = View.VISIBLE
                                 }
-                            }else if(bookHourInt == todaysHour){
+                            } else if (bookHourInt == todaysHour) {
                                 if (bookMinuteInt > todaysMinute) {
                                     holder.binding.cvStatusActive.visibility = View.VISIBLE
                                 } else {
                                     holder.binding.cvStatusBoarded.visibility = View.VISIBLE
                                 }
-                            }
-                            else {
+                            } else {
                                 //if the flight is on after today's day
                                 holder.binding.cvStatusBoarded.visibility = View.VISIBLE
                             }
@@ -172,7 +171,42 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                     holder.binding.cvStatusBoarded.visibility = View.VISIBLE
                 }
             } else {
-                holder.binding.cvStatusWaiting.visibility = View.VISIBLE
+                if (bookYearInt > todaysYear) {
+                    //then check the month
+                    if (bookMonthInt >= todaysMonth) {
+                        //then check the day
+                        if (bookDayInt >= todaysDay) {
+                            //then check the hour
+                            if (bookHourInt > todaysHour) {
+                                ///check the minute
+                                if (bookMinuteInt > todaysMinute) {
+                                    holder.binding.cvStatusWaiting.visibility = View.VISIBLE
+                                } else {
+                                    holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                                }
+                                //now if its within the ticket departure and arrival time
+                            } else if (todaysHour in bookHourArrivalInt..bookHourInt) {
+                                if (todaysMinute in bookMinuteArrivalInt..bookMinuteInt) {
+                                    holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                                }
+                            } else if (bookHourInt == todaysHour) {
+                                if (bookMinuteInt > todaysMinute) {
+                                    holder.binding.cvStatusWaiting.visibility = View.VISIBLE
+                                } else {
+                                    holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                                }
+                            } else {
+                                //if the flight is on after today's day
+                                holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                            }
+                        } else {
+                            //if the flight is on after today's month
+                            holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                        }
+                    } else {
+                        holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                    }
+                }
             }
         }
 
