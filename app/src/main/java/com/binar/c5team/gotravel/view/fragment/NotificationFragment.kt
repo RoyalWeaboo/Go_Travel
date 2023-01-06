@@ -84,11 +84,10 @@ class NotificationFragment : Fragment() {
                 )
 
                 val filterNotification: MutableList<Notification> = ArrayList()
-                if (filterNotification.isEmpty()){
-                    for(i in it.data.notifications){
-                        if (i.idUser == userId){
-                            filterNotification.add(i)
-                        }
+                filterNotification.clear()
+                for(i in it.data.notifications){
+                    if (i.idUser == userId){
+                        filterNotification.add(i)
                     }
                 }
 

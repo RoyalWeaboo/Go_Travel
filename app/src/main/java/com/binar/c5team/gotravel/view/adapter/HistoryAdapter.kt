@@ -27,7 +27,7 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
         //getting booking date and time
         val bookingDate = listBooking[position].bookingDate.toString()
         val flightTime = listBooking[position].flight.departureTime
-        val flightArrivalTime = listBooking[position].flight.arrivalTime
+//        val flightArrivalTime = listBooking[position].flight.arrivalTime
 
         //simple date format
         val bDate1 = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -45,16 +45,14 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
         val bookDay = bookingDay.parse(bookingDate)
         val bookHour = bookingHour.parse(flightTime)
         val bookMinute = bookingMinute.parse(flightTime)
-        val bookHourArrival = bookingHour.parse(flightArrivalTime)
-        val bookMinuteArrival = bookingMinute.parse(flightArrivalTime)
+//        val bookHourArrival = bookingHour.parse(flightArrivalTime)
+//        val bookMinuteArrival = bookingMinute.parse(flightArrivalTime)
 
         val bookYearInt = bookYear?.let { bookingYear.format(it) }!!.toInt()
         val bookMonthInt = bookMonth?.let { bookingMonth.format(it) }!!.toInt()
         val bookDayInt = bookDay?.let { bookingDay.format(it) }!!.toInt()
         val bookHourInt = bookHour?.let { bookingHour.format(it) }!!.toInt()
         val bookMinuteInt = bookMinute?.let { bookingMinute.format(it) }!!.toInt()
-        val bookHourArrivalInt = bookHourArrival?.let { bookingHour.format(it) }!!.toInt()
-        val bookMinuteArrivalInt = bookMinuteArrival?.let { bookingMinute.format(it) }!!.toInt()
 
         //getting today`s date
         val currDate = Calendar.getInstance().time
@@ -75,13 +73,13 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
             holder.binding.cardHistory.setOnClickListener {
                 onTicketClick?.invoke(listBooking[position])
             }
-            if (bookYearInt > todaysYear) {
+            if (bookYearInt >= todaysYear) {
                 //then check the month
-                if (bookMonthInt >= todaysMonth) {
+                if (bookMonthInt <= todaysMonth) {
                     //then check the day
-                    if (bookDayInt >= todaysDay) {
+                    if (bookDayInt <= todaysDay) {
                         //then check the hour
-                        if (bookHourInt > todaysHour) {
+                        if (bookHourInt < todaysHour) {
                             ///finally check the minute
                             //check with range more than or less than
                             if (bookMinuteInt > todaysMinute) {
@@ -93,12 +91,6 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                                 holder.binding.cvStatusNotPaid.visibility = View.VISIBLE
                             }
                             //now if its within the ticket departure and arrival time
-                        } else if (todaysHour in bookHourArrivalInt..bookHourInt) {
-                            if (todaysMinute in bookMinuteArrivalInt..bookMinuteInt) {
-                                holder.binding.cvStatusInactive.visibility = View.VISIBLE
-                            } else {
-                                holder.binding.cvStatusInactive.visibility = View.VISIBLE
-                            }
                         } else if (bookHourInt == todaysHour) {
                             if (bookMinuteInt > todaysMinute) {
                                 holder.binding.cvStatusNotPaid.visibility = View.VISIBLE
@@ -118,8 +110,8 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                     holder.binding.cvStatusInactive.visibility = View.VISIBLE
                 }
             } else {
-                holder.binding.cvStatusWaiting.visibility = View.GONE
-                holder.binding.cvStatusInactive.visibility = View.VISIBLE
+                holder.binding.cvStatusInactive.visibility = View.GONE
+                holder.binding.cvStatusWaiting.visibility = View.VISIBLE
             }
         }
         //if its paid
@@ -131,13 +123,13 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
             if (listBooking[position].approved) {
                 //check the time to change status between active, on board, or boarded
                 //check year first
-                if (bookYearInt > todaysYear) {
+                if (bookYearInt <= todaysYear) {
                     //then check the month
-                    if (bookMonthInt >= todaysMonth) {
+                    if (bookMonthInt <= todaysMonth) {
                         //then check the day
-                        if (bookDayInt >= todaysDay) {
+                        if (bookDayInt <= todaysDay) {
                             //then check the hour
-                            if (bookHourInt > todaysHour) {
+                            if (bookHourInt < todaysHour) {
                                 ///check the minute
                                 if (bookMinuteInt > todaysMinute) {
                                     holder.binding.cvStatusActive.visibility = View.VISIBLE
@@ -146,10 +138,6 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                                     holder.binding.cvStatusBoarded.visibility = View.VISIBLE
                                 }
                                 //now if its within the ticket departure and arrival time
-                            } else if (todaysHour in bookHourArrivalInt..bookHourInt) {
-                                if (todaysMinute in bookMinuteArrivalInt..bookMinuteInt) {
-                                    holder.binding.cvStatusOnBoard.visibility = View.VISIBLE
-                                }
                             } else if (bookHourInt == todaysHour) {
                                 if (bookMinuteInt > todaysMinute) {
                                     holder.binding.cvStatusActive.visibility = View.VISIBLE
@@ -171,13 +159,13 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                     holder.binding.cvStatusBoarded.visibility = View.VISIBLE
                 }
             } else {
-                if (bookYearInt > todaysYear) {
+                if (bookYearInt <= todaysYear) {
                     //then check the month
-                    if (bookMonthInt >= todaysMonth) {
+                    if (bookMonthInt <= todaysMonth) {
                         //then check the day
-                        if (bookDayInt >= todaysDay) {
+                        if (bookDayInt <= todaysDay) {
                             //then check the hour
-                            if (bookHourInt > todaysHour) {
+                            if (bookHourInt < todaysHour) {
                                 ///check the minute
                                 if (bookMinuteInt > todaysMinute) {
                                     holder.binding.cvStatusWaiting.visibility = View.VISIBLE
@@ -185,10 +173,6 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                                     holder.binding.cvStatusInactive.visibility = View.VISIBLE
                                 }
                                 //now if its within the ticket departure and arrival time
-                            } else if (todaysHour in bookHourArrivalInt..bookHourInt) {
-                                if (todaysMinute in bookMinuteArrivalInt..bookMinuteInt) {
-                                    holder.binding.cvStatusInactive.visibility = View.VISIBLE
-                                }
                             } else if (bookHourInt == todaysHour) {
                                 if (bookMinuteInt > todaysMinute) {
                                     holder.binding.cvStatusWaiting.visibility = View.VISIBLE
@@ -206,6 +190,8 @@ class HistoryAdapter(private var listBooking: List<Booking>) :
                     } else {
                         holder.binding.cvStatusInactive.visibility = View.VISIBLE
                     }
+                }else{
+                    holder.binding.cvStatusInactive.visibility = View.VISIBLE
                 }
             }
         }

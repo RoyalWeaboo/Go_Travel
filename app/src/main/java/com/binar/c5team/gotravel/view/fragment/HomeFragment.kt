@@ -8,7 +8,6 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -108,7 +107,7 @@ class HomeFragment : Fragment() {
         if (connection) {
             callAirportList()
             getProfileImage(token)
-        }else{
+        } else {
             Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
         }
 
@@ -116,7 +115,7 @@ class HomeFragment : Fragment() {
             if (connection) {
                 Navigation.findNavController(view)
                     .navigate(R.id.action_homeFragment_to_wishlistFragment)
-            }else{
+            } else {
                 Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
             }
         }
@@ -125,7 +124,7 @@ class HomeFragment : Fragment() {
             if (connection) {
                 Navigation.findNavController(view)
                     .navigate(R.id.action_homeFragment_to_notificationFragment)
-            }else{
+            } else {
                 Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
             }
         }
@@ -214,8 +213,10 @@ class HomeFragment : Fragment() {
                 val pickedReturnDate = parseToDate.parse(returnDate)
 
                 val sdfDefault = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                defaultDepartDate = pickedDepartDate?.let { it1 -> sdfDefault.format(it1) }.toString()
-                defaultReturnDate = pickedReturnDate?.let { it1 -> sdfDefault.format(it1) }.toString()
+                defaultDepartDate =
+                    pickedDepartDate?.let { it1 -> sdfDefault.format(it1) }.toString()
+                defaultReturnDate =
+                    pickedReturnDate?.let { it1 -> sdfDefault.format(it1) }.toString()
 
                 val flightMode: String = if (binding.lineOptionOneWay.visibility == View.VISIBLE) {
                     "oneWay"
@@ -246,7 +247,7 @@ class HomeFragment : Fragment() {
 
                 Navigation.findNavController(view)
                     .navigate(R.id.action_homeFragment_to_flightListFragment)
-            }else{
+            } else {
                 Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
             }
         }
@@ -319,7 +320,7 @@ class HomeFragment : Fragment() {
 
         if (minDateParsed != null) {
             datePickerDialog.datePicker.minDate = minDateParsed.time
-        }else{
+        } else {
             datePickerDialog.datePicker.minDate = System.currentTimeMillis()
         }
 
@@ -332,12 +333,10 @@ class HomeFragment : Fragment() {
             if (it != null) {
 
                 //set json to arraylist
-                if (listSpinner.isEmpty()) {
-                    Log.d("list spinner is", "v")
-                    for (element in it.data.airports) {
-                        listSpinner.add(element.city + " (" + element.code + ")")
-                        listCity.add(element.city + " (" + element.code + ")")
-                    }
+                listSpinner.clear()
+                for (element in it.data.airports) {
+                    listSpinner.add(element.city + " (" + element.code + ")")
+                    listCity.add(element.city + " (" + element.code + ")")
                     // Set result to spinner
                     val adapter = context?.let { it1 ->
                         ArrayAdapter(
@@ -402,7 +401,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkConnection() {
-        val cm = requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val cm =
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val res = cm.activeNetwork
         connection = res != null
     }

@@ -254,9 +254,9 @@ class FlightViewModel : ViewModel() {
             })
     }
 
-    fun postNotificationApi(token: String, message: String) {
+    fun postNotificationApi(token: String, message: String, idUser : Int) {
         loading.postValue(true)
-        RetrofitClient.apiWithToken(token).postNotification(NotificationData(message))
+        RetrofitClient.apiWithToken(token).postNotification(NotificationData(message, idUser))
             .enqueue(object : Callback<NotificationPostResponse> {
                 override fun onResponse(
                     call: Call<NotificationPostResponse>,
@@ -264,6 +264,7 @@ class FlightViewModel : ViewModel() {
                 ) {
                     if (response.isSuccessful) {
                         postNotificationLiveData.postValue(response.body())
+                        Log.d("Post Notification Success, id is", response.body()!!.data.id.toString())
                     } else {
                         Log.d("Post Notification Failed", response.body().toString())
                     }

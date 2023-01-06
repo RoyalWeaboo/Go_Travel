@@ -45,6 +45,7 @@ class PaymentDialog : DialogFragment() {
     private lateinit var sharedPrefBooking: SharedPreferences
 
     private var token: String = ""
+    private var idUser : Int = 0
 
     //image
     private var imageMultiPart: MultipartBody.Part? = null
@@ -83,6 +84,8 @@ class PaymentDialog : DialogFragment() {
 
         //getting user data
         token = sharedPref.getString("token", "").toString()
+        idUser = sharedPref.getInt("userId", 0)
+        Log.d("user id", idUser.toString())
 
         dialog!!.window!!.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -111,9 +114,11 @@ class PaymentDialog : DialogFragment() {
                     postImage(token, i, imageMultiPart!!)
                     Log.d("id uploaded", i.toString())
                 }
-                viewModel.postConfirmationLD().observe(viewLifecycleOwner) {
-                    notification()
-                    postNotification(token)
+                viewModel.loading.observe(viewLifecycleOwner) {
+                    if (!it) {
+                        notification()
+                        postNotification(token)
+                    }
                 }
 
                 val builder = android.app.AlertDialog.Builder(context)
@@ -144,7 +149,7 @@ class PaymentDialog : DialogFragment() {
 
     private fun postNotification(token : String) {
         val message = "Successfully booked a new Flight Ticket, check History to see your booking history"
-        viewModel.postNotificationApi(token, message)
+        viewModel.postNotificationApi(token, message, idUser)
     }
 
     private fun postImage(token: String, id: Int, imageMultiPart: MultipartBody.Part) {

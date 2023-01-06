@@ -179,7 +179,7 @@ class ProfileFragment : Fragment() {
                 saveData.apply()
 
                 findNavController().popBackStack(R.id.profileFragment, true)
-                findNavController().navigate(R.id.action_splashScreenFragment_to_loginFragment)
+                findNavController().navigate(R.id.action_openingFragment_to_loginFragment)
             }
             builder.setNegativeButton("Cancel") {_, _ ->
                 //do nothing
