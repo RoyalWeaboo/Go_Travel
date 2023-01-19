@@ -15,6 +15,7 @@ import com.binar.c5team.gotravel.databinding.FragmentNotificationBinding
 import com.binar.c5team.gotravel.model.Notification
 import com.binar.c5team.gotravel.view.adapter.NotificationAdapter
 import com.binar.c5team.gotravel.viewmodel.FlightViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.transition.MaterialSharedAxis
 import java.util.ArrayList
 
@@ -53,6 +54,11 @@ class NotificationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val navBar = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navBar.visibility = View.GONE
+        val guestNavBar = requireActivity().findViewById<BottomNavigationView>(R.id.guest_bottom_nav)
+        guestNavBar.visibility = View.GONE
 
         //SharedPref for user data
         sharedPref = requireActivity().getSharedPreferences("data", Context.MODE_PRIVATE)
