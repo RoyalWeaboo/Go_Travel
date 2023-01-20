@@ -168,7 +168,7 @@ class BookingFragment : Fragment() {
                                 hideProgressingView()
                                 Log.d("Current booking id array is", bookingIds.toString())
                                 Navigation.findNavController(view).navigate(
-                                    R.id.action_bookingFragment_to_roundBookingFragment,
+                                    R.id.action_bookingFragment_to_paymentFragment,
                                     bundle
                                 )
                             }

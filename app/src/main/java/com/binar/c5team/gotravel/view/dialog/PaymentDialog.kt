@@ -112,18 +112,18 @@ class PaymentDialog : DialogFragment() {
             if (bookingIds.size != 0) {
                 for (i in bookingIds) {
                     postImage(token, i, imageMultiPart!!)
+                    postNotification(token, i)
                     Log.d("id uploaded", i.toString())
                 }
                 viewModel.loading.observe(viewLifecycleOwner) {
                     if (!it) {
                         notification()
-                        postNotification(token)
                     }
                 }
 
                 val builder = android.app.AlertDialog.Builder(context)
                 builder.setTitle("Upload Success !")
-                builder.setMessage("Proof of Payment successfully uploaded ! Your ticket will be active as soon as your paymen is verified")
+                builder.setMessage("Proof of Payment successfully uploaded ! Your ticket will be active as soon as your payment is verified")
 
                 builder.setPositiveButton("Close") { _, _ ->
                     if (fromBooking!!) {
@@ -133,7 +133,7 @@ class PaymentDialog : DialogFragment() {
                     } else {
                         val navControllerDialog =
                             Navigation.findNavController(requireParentFragment().requireView())
-                        navControllerDialog.popBackStack()
+                        navControllerDialog.popBackStack(R.id.homeFragment,true)
                     }
                 }
                 builder.show()
@@ -147,8 +147,8 @@ class PaymentDialog : DialogFragment() {
         }
     }
 
-    private fun postNotification(token : String) {
-        val message = "Successfully booked a new Flight Ticket, check History to see your booking history"
+    private fun postNotification(token : String, bookingId : Int) {
+        val message = "Successfully upload payment proof for Flight Ticket id : $bookingId, Your ticket will be active as soon as your payment is verified"
         viewModel.postNotificationApi(token, message, idUser)
     }
 

@@ -163,7 +163,7 @@ class PaymentFragment : Fragment() {
             builderBack.setMessage("Cancel sending payment proof ? you can continue to pay via the history menu before the ticket is forfeited")
 
             builderBack.setPositiveButton("Confirm") { _, _ ->
-                Navigation.findNavController(view).navigate(R.id.action_paymentFragment_to_historyFragment)
+                Navigation.findNavController(view).popBackStack(R.id.homeFragment,true)
             }
             builderBack.show()
         }
